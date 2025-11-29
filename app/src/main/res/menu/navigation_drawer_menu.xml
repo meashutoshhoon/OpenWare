@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/main_item">
+
+        <item
+            android:id="@+id/search_item"
+            android:checkable="true"
+            android:icon="@drawable/person_2"
+            android:title="@string/profile"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/rotation_item"
+            android:checkable="true"
+            android:icon="@drawable/ic_file"
+            android:title="@string/sketchware_projects"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/accelerator_item"
+            android:checkable="true"
+            android:icon="@drawable/code"
+            android:title="@string/java_codes"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/dashboard_item"
+            android:checkable="true"
+            android:icon="@drawable/add_circle"
+            android:title="@string/upload_a_project"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/dashboard_query"
+            android:checkable="true"
+            android:icon="@drawable/request_f"
+            android:title="@string/request_verification"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/dashboard_item_two"
+            android:checkable="true"
+            android:icon="@drawable/settings"
+            android:title="@string/settings"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/label_one"
+            android:checkable="true"
+            android:icon="@drawable/info"
+            android:title="@string/about_us"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/label_five"
+            android:checkable="true"
+            android:icon="@drawable/logs"
+            android:title="@string/change_logs"
+            app:showAsAction="ifRoom" />
+
+    </group>
+    <group android:id="@+id/labels_item">
+        <item
+            android:id="@+id/label_two"
+            android:checkable="true"
+            android:icon="@drawable/feedback"
+            android:title="@string/feedback"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/label_three"
+            android:checkable="true"
+            android:icon="@drawable/menu_invite"
+            android:title="@string/invite_friends"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/label_four"
+            android:checkable="true"
+            android:icon="@drawable/features"
+            android:title="@string/codekosh_features"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/label_five_"
+            android:checkable="true"
+            android:icon="@drawable/help"
+            android:title="@string/help"
+            app:showAsAction="ifRoom" />
+
+    </group>
+
+</menu>

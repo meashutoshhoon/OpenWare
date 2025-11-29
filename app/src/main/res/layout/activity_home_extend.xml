@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="false"
+        android:stateListAnimator="@null"
+        app:liftOnScroll="false">
+
+        <LinearLayout
+            android:id="@+id/toolbar_card"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/search_bar_background"
+            android:theme="@style/ThemeOverlay.CodeKosh.MainToolbar"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:contentInsetStartWithNavigation="0dp"
+                app:menu="@menu/profile_menu"
+                app:navigationIcon="@drawable/back_2">
+
+                <in.afi.codekosh.components.SearchEditText
+                    android:id="@+id/search_view"
+                    style="@style/Widget.CodeKosh.SearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="Search Projects"
+                    android:imeOptions="actionSearch"
+                    android:importantForAutofill="no"
+                    android:singleLine="true" />
+            </com.google.android.material.appbar.MaterialToolbar>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:gravity="center"
+        android:transitionGroup="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="2dp"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/progressbar1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/layout_progress"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

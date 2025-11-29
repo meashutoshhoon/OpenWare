@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.drawer.UploadActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Widget.Material3.AppBarLayout">
+
+        <LinearLayout
+            android:id="@+id/tools"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_gravity="left"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="RtlHardcoded,UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="5dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@null"
+                android:padding="2dp"
+                android:src="@drawable/back" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/opensans_semibold"
+                android:text="Title"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/listview1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="none"
+                android:fastScrollEnabled="true"
+                android:smoothScrollbar="true" />
+
+            <LinearLayout
+                android:id="@+id/linear_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+
+                        <include layout="@layout/comments_shrimmer" />
+                    </LinearLayout>
+
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+
+            <EditText
+                android:id="@+id/edittext1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/opensans_regular"
+                android:hint="Type Here..."
+                android:padding="8dp"
+                android:inputType="text"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imageview2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:hapticFeedbackEnabled="true"
+                android:padding="6dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/send"
+                android:contentDescription="@null" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

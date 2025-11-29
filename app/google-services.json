@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "264686181045",
+    "firebase_url": "https://codekosh-afi-default-rtdb.firebaseio.com",
+    "project_id": "codekosh-afi",
+    "storage_bucket": "codekosh-afi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264686181045:android:639ec0919cf2815a4dbcfc",
+        "android_client_info": {
+          "package_name": "in.afi.codekosh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264686181045-nb988r7j01r7npg7s269ohdea4aoot58.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoJT7mdEeb9E1V-nGre-OO4WWfXm1MrZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264686181045-nb988r7j01r7npg7s269ohdea4aoot58.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

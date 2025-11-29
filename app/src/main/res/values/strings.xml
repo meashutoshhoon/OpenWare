@@ -1,0 +1,76 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <string name="app_name">OpenWare</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="app_crashed">App has crashed</string>
+    <string name="crash_report">Crash report</string>
+    <string name="copy" tools:override="true">Copy</string>
+    <string name="report">Report</string>
+    <string name="share">Share</string>
+
+    <string name="company_name">© AFI Studio Productions</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="login_screen_msg">By clicking on the button, you indicate your consent to abide\n by our terms and conditions as well as our\n privacy policy.</string>
+    <string name="register">Register</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="welcome_dev">Welcome</string>
+    <string name="back">back</string>
+    <string name="password_recovery">Password Recovery</string>
+    <string name="please_provide_us_with_your_email_address_to_initiate_the_password_recovery_process">Please provide us with your email address to initiate the password recovery process.</string>
+    <string name="email_address">Email address</string>
+    <string name="reset_password">Reset password</string>
+    <string name="continue_">Continue</string>
+    <string name="beep_bop_beep_bop">Beep bop, Beep bop?</string>
+    <string name="are_you_a_robot">Are you a robot?</string>
+    <string name="verify">Verify</string>
+    <string name="dear_developers_in_order_to_continue_using_the_app_please_sign_in_to_the_application">Dear developers, in order to continue using the app, please sign in to the application.</string>
+    <string name="profile">Profile</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="feedback">Feedback</string>
+    <string name="about_us">About us</string>
+    <string name="upload_a_project">Upload a project</string>
+    <string name="java_codes">Java Codes</string>
+    <string name="sketchware_projects">Sketchware projects</string>
+    <string name="help">Help</string>
+    <string name="settings">Settings</string>
+    <string name="change_logs">Change logs</string>
+    <string name="queries">Queries</string>
+    <string name="about_app">CodeKosh is a platform for sharing projects related to development tools like Sketchware, Sketchware Pro, Android Studio, AIDE, and web development and others too. It has a sleek Material 3-based UI design, is network-efficient, and includes a Queries feature that allows users to ask questions and collaborate with other developers. Developed in India, the app helps developers worldwide to showcase their work, connect with others in the community, and learn new skills.</string>
+    <string name="version">Version</string>
+    <string name="_1_0_0">1.0.0</string>
+    <string name="contact">Contact</string>
+    <string name="about_developer">About Developers</string>
+    <string name="about_beta">About Beta testers and Moderators</string>
+    <string name="user_policy">User Policy</string>
+    <string name="afi_studio_productions">© AFI Studio Productions</string>
+    <string name="dev">Ashutosh</string>
+    <string name="founder_main_developer_indian">•Main Developer •Bhartiya 🇮🇳</string>
+    <string name="dev_abt">- Young self-taught coder.\n- Works in Java/Kotlin.\n- 17 years old.\n- Founder and developer CodeKosh.\n- Learns new programming languages.\n- 97% developed CodeKosh\n^_~</string>
+    <string name="other_dev_s">Other Dev\'s</string>
+    <string name="chat_gpt">Prateek Singh Rajawat</string>
+    <string name="sb_txt">•3% contributor •Bhartiya 🇮🇳 •UI/UX developer</string>
+    <string name="sb">Lucy</string>
+    <string name="moderators">Moderators</string>
+    <string name="beta_testers">Beta testers</string>
+    <string name="apply_for_moderator_or_beta_tester">Apply for Moderator or Beta tester</string>
+    <string name="beta_moderator_apply_text">If you want to become a moderator or beta tester for our app, fill out our form. Moderators help keep our community safe, while beta testers get to try out new features and provide feedback. We\'ll review your application and get back to you soon. Thanks for your interest!</string>
+    <string name="apply">Apply</string>
+    <string name="not_interested">Not interested</string>
+    <string name="email_feed">codekosh.afi@gmail.com</string>
+    <string name="codekosh_features">CodeKosh Features</string>
+    <string name="upload_project">Upload Project</string>
+    <string name="request_verification">Request Verification</string>
+    <string name="verification_msg">Dear User,\n\n We would like to inform you that you have the opportunity to apply for a verification badge for your account at no cost, provided you meet the basic eligibility criteria. Our team will carefully review your past activities and account details during the verification process. If everything aligns with our standards, you will be granted the verification badge.\n\nThe eligibility criteria for the verification badge are as follows:\n\n*b•*bMinimum of 10 projects completed successfully.\n*b•*bPresence of more than 200 likes on your account.\n*b•*bAbsence of any negative past activities associated with your account.\n*b•*bNo history of account suspension or bans.\n*b•*bConsistent adherence to our user policies and guidelines.\n\nWe appreciate your understanding and cooperation.\n\n Thank you for your attention.\n\n Sincerely,\n\n CodeKosh\'s Team</string>
+</resources>

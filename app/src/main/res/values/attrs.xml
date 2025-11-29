@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CodeView">
+        <attr name="cv_wrap_line" format="boolean" />
+        <attr name="cv_font_size" format="integer" />
+        <attr name="cv_zoom_enable" format="boolean" />
+        <attr name="cv_show_line_number" format="boolean" />
+        <attr name="cv_start_line_number" format="integer" />
+        <attr name="cv_highlight_line_number" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="TemplateView">
+        <attr name="gnt_template_type" format="reference" />
+    </declare-styleable>
+    <attr name="myButtonStyle" format="reference" />
+    <declare-styleable name="SelectableViewWidget">
+        <attr name="titleText" format="string" />
+        <attr name="descriptionText" format="reference" />
+        <attr name="isSelected" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="YourCustomView">
+        <attr name="toolBarContentScrim" format="reference|color"/>
+    </declare-styleable>
+
+</resources>
