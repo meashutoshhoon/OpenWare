@@ -37,8 +37,6 @@ It brings together scattered open-source Android projects into one beautifully d
 
 ## 🖼 Screenshots
 
-> Place your screenshots in `/screenshots`.
-
 <p align="center">
   <img src="screenshots/home.png" width="250" alt="Home Screen"/>
   <img src="screenshots/details.png" width="250" alt="Details Screen"/>
