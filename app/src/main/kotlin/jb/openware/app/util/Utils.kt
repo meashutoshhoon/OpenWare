@@ -1,10 +1,12 @@
 package jb.openware.app.util
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -15,6 +17,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.math.roundToInt
+import androidx.core.net.toUri
 
 object Utils {
 
@@ -23,6 +26,29 @@ object Utils {
             activity.onBackPressedDispatcher.onBackPressed()
         }
     }
+
+    fun convertDpToPixel(dp: Float, context: Context): Float {
+        val scale = context.resources.displayMetrics.density
+        return dp * scale + 0.5f
+    }
+
+
+    fun openUrl(context: Context, url: String) {
+        val uri = url.toUri()
+
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            if (context !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        }
+
+        try {
+            context.startActivity(intent)
+        } catch (_: ActivityNotFoundException) {
+            // ignore — same behavior as your Java code
+        }
+    }
+
 
     fun hideKeyboard(view: View?) {
         view?.let {

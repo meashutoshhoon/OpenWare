@@ -9,6 +9,29 @@
     <string name="copy" tools:override="true">Copy</string>
     <string name="report">Report</string>
     <string name="share">Share</string>
+    <string name="mail">E-mail</string>
+    <string
+        name="github"
+        translatable="false">Github</string>
+    <string name="des_github">Visit the github repository of OpenWare</string>
+    <string name="telegram">Telegram</string>
+    <string name="support_message">Like what I do?\nConsider buying me a coffee !</string>
+    <string name="check_updates">Check updates</string>
+    <string name="changelogs">Changelogs</string>
+    <string name="des_changelogs">History of all the changes made to the app</string>
+    <string name="report_issue">Report an issue</string>
+    <string name="des_report_issue">Report any issue you have faced while using the app</string>
+    <string name="feature_request">Feature request</string>
+    <string name="des_feature_request">If you have any ideas or suggestions in your mind , let us know</string>
+    <string name="license">License</string>
+    <string name="des_license">Learn about the license this app is using</string>
+    <string name="app">App</string>
+    <string name="atharv_about">A tech enthusiast currently exploring programming, development, and problem-solving. I enjoy learning new technologies, building clean projects, and improving my skills everyday.</string>'
+    <string name="anushka_about">Usne bataya nhi kya likhna to yahi likh diya.</string>
+    <string name="ankit_about">One of the padaku coder.</string>
+    <string name="contributors">Contributors</string>
+    <string name="ashutosh_about">Just a guy who loves long term things and attention.</string>
+    <string name="lead_developer">Lead developer</string>
 
     <string name="company_name">© AFI Studio Productions</string>
     <!-- TODO: Remove or change this placeholder text -->

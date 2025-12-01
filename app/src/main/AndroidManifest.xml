@@ -104,11 +104,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.about.AboutDevActivity"
-            android:exported="false"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".activity.drawer.AboutUsActivity"
             android:exported="false"
             android:hardwareAccelerated="true"

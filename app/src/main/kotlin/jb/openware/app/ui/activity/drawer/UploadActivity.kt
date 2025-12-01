@@ -163,7 +163,7 @@ class UploadActivity: AppCompatActivity() {
                 return false
             }
 
-            if (premium.isChecked) {
+            if (binding.premium.isChecked) {
                 if (premiumCode.isBlank()) {
                     alertToast("Enter the unlock code")
                     return false
@@ -289,7 +289,5 @@ class UploadActivity: AppCompatActivity() {
             }
         }
     }
-
-
 
 }
