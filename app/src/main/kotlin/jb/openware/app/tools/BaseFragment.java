@@ -87,7 +87,6 @@ import java.util.concurrent.Executors;
 
 import in.afi.codekosh.components.AppConfig;
 import in.afi.codekosh.components.FolderManagement;
-import in.afi.codekosh.components.LoadingDialog;
 
 public abstract class BaseFragment extends AppCompatActivity {
     protected static final int WHITE = 0xFFFFFFFF;

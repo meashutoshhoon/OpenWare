@@ -1,14 +1,14 @@
 package jb.openware.app.ui.components
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import jb.openware.app.databinding.ProfileMenuBinding
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 object DrawableGenerator {
 
@@ -35,10 +35,10 @@ object DrawableGenerator {
         )
         binding.root.layout(0, 0, size, size)
 
-        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(size, size)
         binding.root.draw(Canvas(bitmap))
 
-        return BitmapDrawable(context.resources, bitmap)
+        return bitmap.toDrawable(context.resources)
     }
 
     private fun dp(context: Context): Int {

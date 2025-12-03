@@ -76,11 +76,6 @@ object Utils {
         Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
-    fun dp(context: Context, dp: Int): Int {
-        val density = context.resources.displayMetrics.density
-        return (dp * density).roundToInt()
-    }
-
     fun shareOutput(activity: Activity, context: Context, fileName: String, content: String) {
         try {
             val file = File(activity.cacheDir, fileName)

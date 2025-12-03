@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import jb.openware.app.databinding.ActivityChangeLogBinding
 import jb.openware.app.ui.activity.drawer.logs.fragments.ChangeLogFragment
 import jb.openware.app.ui.activity.drawer.logs.fragments.UpdateLogFragment
+import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
 class ChangeLogActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class ChangeLogActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        ThemeUtil.updateTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityChangeLogBinding.inflate(layoutInflater)
         setContentView(binding.root)

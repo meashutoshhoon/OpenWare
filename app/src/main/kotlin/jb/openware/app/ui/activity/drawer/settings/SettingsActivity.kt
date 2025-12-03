@@ -2,6 +2,7 @@ package jb.openware.app.ui.activity.drawer.settings
 
 import android.os.Bundle
 import android.util.Pair
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.component1
 import androidx.core.util.component2
@@ -16,6 +17,7 @@ import jb.openware.app.ui.viewmodel.SettingsItemViewModel
 import jb.openware.app.ui.viewmodel.SettingsViewModel
 import jb.openware.app.util.Const
 import jb.openware.app.util.SMOOTH_SCROLLING
+import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
 class SettingsActivity : AppCompatActivity() {
@@ -31,7 +33,8 @@ class SettingsActivity : AppCompatActivity() {
     private var rvPositionAndOffset: Pair<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        enableEdgeToEdge()
+        ThemeUtil.updateTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
