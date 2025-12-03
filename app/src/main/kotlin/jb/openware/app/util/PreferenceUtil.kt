@@ -7,6 +7,7 @@ const val THEME_MODE = "theme_mode"
 const val AMOLED_THEME = "amoled_theme"
 const val DYNAMIC_THEME = "dynamic_theme"
 const val HAPTICS_VIBRATION = "haptics_vibration"
+const val SMOOTH_SCROLLING = "smooth_scrolling"
 const val APP_THEME = "app_theme"
 
 
@@ -25,6 +26,7 @@ private val BooleanPreferenceDefaults =
         HAPTICS_VIBRATION to true,
         AMOLED_THEME to true,
         DYNAMIC_THEME to true,
+        SMOOTH_SCROLLING to true,
     )
 
 

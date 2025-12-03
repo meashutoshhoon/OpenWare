@@ -62,8 +62,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.afi.codekosh.R;
-import in.afi.codekosh.activity.drawer.AboutUsActivity;
-import in.afi.codekosh.activity.drawer.SettingsActivity;
 import in.afi.codekosh.activity.drawer.UploadActivity;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.adapter.ListProjectAdapter;

@@ -5,19 +5,20 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Pair
 import android.widget.Button
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
-import androidx.lifecycle.ViewModelProvider
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityAboutUsBinding
 import jb.openware.app.ui.adapter.AboutAdapter
 import jb.openware.app.ui.items.CategoryAbout
 import jb.openware.app.util.Const.Contributors
 import jb.openware.app.util.Const
+import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
-class AboutActivity :
+class AboutUsActivity :
     AppCompatActivity(),
     AboutAdapter.AdapterListener {
     private lateinit var binding: ActivityAboutUsBinding
@@ -28,6 +29,8 @@ class AboutActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        ThemeUtil.updateTheme(this)
         binding = ActivityAboutUsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -35,15 +38,11 @@ class AboutActivity :
         setupListeners()
     }
 
-    // ------------------------------------------------------------------------
-    // UI Setup
-    // ------------------------------------------------------------------------
-
     private fun setupRecyclerView() = with(binding.rvAbout) {
-        layoutManager = LinearLayoutManager(this@AboutActivity)
+        layoutManager = LinearLayoutManager(this@AboutUsActivity)
 
-        val adapter = AboutAdapter(initializeItems(), this@AboutActivity).apply {
-            setAdapterListener(this@AboutActivity)
+        val adapter = AboutAdapter(initializeItems(), this@AboutUsActivity).apply {
+            setAdapterListener(this@AboutUsActivity)
         }
 
         this.adapter = adapter
@@ -64,7 +63,7 @@ class AboutActivity :
             CategoryAbout.LeadDeveloperItem(
                 title = Contributors.ASHUTOSH.displayName,
                 description = getString(R.string.ashutosh_about),
-                imageRes = R.mipmap.dp_hridayan
+                imageRes = R.mipmap.dp_ashutosh
             )
         )
 
@@ -75,7 +74,7 @@ class AboutActivity :
                 id = Contributors.ANKIT,
                 title = Contributors.ANKIT.displayName,
                 description = getString(R.string.ankit_about),
-                imageRes = R.mipmap.dp_krishna
+                imageRes = R.mipmap.dp_ankit
             )
         )
         add(
@@ -83,7 +82,7 @@ class AboutActivity :
                 id = Contributors.ANUSHKA,
                 title = Contributors.ANUSHKA.displayName,
                 description = getString(R.string.anushka_about),
-                imageRes = R.mipmap.dp_shivam
+                imageRes = R.mipmap.dp_anushka
             )
         )
         add(
@@ -91,7 +90,7 @@ class AboutActivity :
                 id = Contributors.ATHARV,
                 title = Contributors.ATHARV.displayName,
                 description = getString(R.string.atharv_about),
-                imageRes = R.mipmap.dp_drdisagree
+                imageRes = R.mipmap.dp_atharv
             )
         )
 

@@ -87,10 +87,6 @@ class AboutAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    // ------------------------------------------------------------------------
-    // ViewHolders
-    // ------------------------------------------------------------------------
-
     private class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
 

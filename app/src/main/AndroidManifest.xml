@@ -85,7 +85,7 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.drawer.SettingsActivity"
+            android:name=".ui.activity.drawer.settings.SettingsActivity"
             android:exported="false"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
@@ -104,9 +104,8 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.drawer.AboutUsActivity"
+            android:name=".ui.activity.drawer.AboutUsActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.drawer.logs.ChangeLogActivity"

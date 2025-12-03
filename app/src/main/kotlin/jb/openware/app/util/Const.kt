@@ -6,6 +6,8 @@ object Const {
     const val URL_DEV_GITHUB = "https://github.com/meashutoshhoon"
     const val URL_DEV_BM_COFFEE = "https://github.com/meashutoshhoon"
     const val ID_ABOUT = "id_about"
+    const val ID_LOOK_AND_FEEL = "id_look_and_feel"
+    const val PREF_SMOOTH_SCROLL = "id_smooth_scroll"
     const val ID_VERSION = "id_version"
     const val ID_CHANGELOGS = "id_changelogs"
     const val ID_REPORT = "id_report"

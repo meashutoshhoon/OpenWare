@@ -32,6 +32,25 @@
     <string name="contributors">Contributors</string>
     <string name="ashutosh_about">Just a guy who loves long term things and attention.</string>
     <string name="lead_developer">Lead developer</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="system">System</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="additional_settings">Additional settings</string>
+    <string name="high_contrast_dark_theme">High contrast dark theme</string>
+    <string name="des_amoled_theme">Pure black theme for devices with OLED panel</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="des_dynamic_colors">Automatically set the app theme according to the device wallpaper</string>
+    <string name="vibration">Haptics and vibration</string>
+    <string name="des_vibration">Interactive haptics for touch feedback</string>
+    <string name="default_language">Default language</string>
+    <string name="des_default_language">Choose the default language for the app</string>
+    <string name="look_and_feel">Look &amp; Feel</string>
+    <string name="des_look_and_feel">Dynamic colors, Dark theme, Language</string>
+    <string name="smooth_scrolling">Smooth scrolling</string>
+    <string name="des_smooth_scroll">Enables smooth scrolling in the shell output when top or bottom arrow is clicked</string>
+    <string name="about">About</string>
+    <string name="des_about">Version &amp; Credits</string>
 
     <string name="company_name">© AFI Studio Productions</string>
     <!-- TODO: Remove or change this placeholder text -->
