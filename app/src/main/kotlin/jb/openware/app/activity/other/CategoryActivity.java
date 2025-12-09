@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import in.afi.codekosh.R;
-import in.afi.codekosh.adapter.ListProjectAdapter;
 import in.afi.codekosh.tools.BaseFragment;
 import in.afi.codekosh.tools.ThemeBuilder;
 
@@ -45,7 +44,7 @@ public class CategoryActivity extends BaseFragment {
         public void onDataChange(@NonNull DataSnapshot _param1) {
             try {
                 all_map.clear();
-                GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {
+                GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<>() {
                 };
                 for (DataSnapshot _data : _param1.getChildren()) {
                     HashMap<String, Object> _map = _data.getValue(_ind);

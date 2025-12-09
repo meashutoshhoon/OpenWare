@@ -1,75 +1,73 @@
-package jb.openware.app.nativeAds;
+package jb.openware.app.nativeAds
 
-import android.app.Activity;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.LinearLayout;
+import android.app.Activity
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+import jb.openware.app.util.UserConfig
 
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
+class MobileAdsLoader(
+    private val activity: Activity
+) {
+    val testDeviceId: String = "C8D32B707CD883FC6D3281468723FC8E"
+    private val nativeAdId: String = "ca-app-pub-8844795823361502/2387419837"
+    private val testNativeAdId: String = "ca-app-pub-3940256099942544/2247696110"
+    private val interstitialAdId: String = "ca-app-pub-8844795823361502/1912228374"
+    private val testInterstitialAdId: String = "ca-app-pub-3940256099942544/1033173712"
 
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
+    fun buildConfig(): MobileAdsLoader = apply {
+        MobileAds.initialize(activity) { }
 
-import java.util.Collections;
+        val configuration = RequestConfiguration.Builder()
+            .setTestDeviceIds(listOf(testDeviceId))
+            .build()
 
-import in.afi.codekosh.tools.UserConfig;
-
-public class MobileAdsLoader {
-    public final String testDeviceId = "C8D32B707CD883FC6D3281468723FC8E";
-    public final String nativeAdID = "ca-app-pub-8844795823361502/2387419837";
-    private final Activity activity;
-    private final String testNativeAdID = "ca-app-pub-3940256099942544/2247696110";
-    private final String interstitialAdID = "ca-app-pub-8844795823361502/1912228374";
-    private final String testInterstitialAdID = "ca-app-pub-3940256099942544/1033173712";
-
-    public MobileAdsLoader(Activity activity) {
-        this.activity = activity;
+        MobileAds.setRequestConfiguration(configuration)
     }
 
-    public MobileAdsLoader builtConfig() {
-        MobileAds.initialize(activity, initializationStatus -> {
-        });
-        RequestConfiguration configuration = new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList(testDeviceId)).build();
-        MobileAds.setRequestConfiguration(configuration);
-        return this;
-    }
+    fun loadNativeAd(templateView: TemplateView, container: View): MobileAdsLoader =
+        loadNativeAd(templateView, container, test = false)
 
-    public MobileAdsLoader loadNativeAd(TemplateView templateView, View view) {
-        loadNativeAd(templateView, view, false);
-        return this;
-    }
+    fun loadNativeAd(
+        templateView: TemplateView,
+        container: View,
+        test: Boolean
+    ): MobileAdsLoader = apply {
+        val adUnitId = if (test) testNativeAdId else nativeAdId
 
-    public MobileAdsLoader loadNativeAd(TemplateView templateView, View view, boolean test) {
-        String s = test ? testNativeAdID : nativeAdID;
-        if (new UserConfig(activity).getBadge() == 0) {
-            AdLoader adLoader = new AdLoader.Builder(activity, s)
-                    .forNativeAd(nativeAd -> {
-                        NativeTemplateStyle styles = new
-                                NativeTemplateStyle.Builder().build();
-                        templateView.setStyles(styles);
-                        templateView.setNativeAd(nativeAd);
-                        transitionManager(view);
-                        templateView.setVisibility(View.VISIBLE);
-                    })
-                    .build();
+        // Badge 0 => show ads, otherwise hide
+        if (UserConfig(activity).badge == 0) {
+            val adLoader = AdLoader.Builder(activity, adUnitId)
+                .forNativeAd { nativeAd ->
+                    val styles = NativeTemplateStyle.Builder().build()
+                    templateView.setStyles(styles)
+                    templateView.setNativeAd(nativeAd)
 
-            adLoader.loadAd(new AdRequest.Builder().build());
+                    runTransition(container)
+                    templateView.visibility = View.VISIBLE
+                }
+                .build()
+
+            adLoader.loadAd(AdRequest.Builder().build())
         } else {
-            templateView.setVisibility(View.GONE);
+            templateView.visibility = View.GONE
         }
-        return this;
     }
 
+    private fun runTransition(view: View) {
+        val viewGroup = view as? ViewGroup ?: return
 
-    private void transitionManager(final View view) {
-        LinearLayout viewGroup = (LinearLayout) view;
+        val autoTransition = AutoTransition().apply {
+            duration = 400L
+            interpolator = DecelerateInterpolator()
+        }
 
-        AutoTransition autoTransition = new AutoTransition();
-        autoTransition.setDuration((long) (double) 400);
-        autoTransition.setInterpolator(new DecelerateInterpolator());
-        TransitionManager.beginDelayedTransition(viewGroup, autoTransition);
+        TransitionManager.beginDelayedTransition(viewGroup, autoTransition)
     }
 }

@@ -2,15 +2,13 @@ package jb.openware.app.ui.cells
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import jb.openware.app.databinding.ProjectCellBinding
-import jb.openware.app.databinding.ProjectHorizontalBinding
 import jb.openware.app.ui.items.ProjectCategory
-import jb.openware.app.ui.items.ProjectItem
+import androidx.core.graphics.drawable.toDrawable
 
 @SuppressLint("ViewConstructor")
 class ProjectCell(context: Context) : FrameLayout(context) {
@@ -46,7 +44,7 @@ class ProjectCell(context: Context) : FrameLayout(context) {
     fun setData(item: ProjectCategory) {
         Glide.with(context)
             .load(item.icon)
-            .placeholder(ColorDrawable(0xFFE0E0E0.toInt()))
+            .placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(iconUser)
 
         projectName.text = item.title

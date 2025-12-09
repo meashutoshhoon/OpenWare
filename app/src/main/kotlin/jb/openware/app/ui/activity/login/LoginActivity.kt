@@ -7,8 +7,8 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.Settings
 import android.util.Patterns
-import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
@@ -18,40 +18,55 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import jb.openware.app.databinding.ActivityLoginBinding
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.RadialProgressView
+import jb.openware.app.ui.items.UserProfile
 import jb.openware.app.util.HapticUtils
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::inflate) {
 
     private var isNameEditTextVisible: Boolean = false
     private var login = false
     private var token: String? = null
-    private var colorCode: String? = null
+    private lateinit var colorCode: String
     private var id: String = ""
-    private var deviceName: String = ""
     private val userMap = mutableMapOf<String, Any>()
-    private val hashMap = mutableMapOf<String, Any>()
     private val usernames = mutableListOf<String>()
 
     private lateinit var progressView: RadialProgressView
-    private val calendar = Calendar.getInstance()
 
     private lateinit var auth: FirebaseAuth
     private val firebase: FirebaseDatabase by lazy { FirebaseDatabase.getInstance() }
     private val users: DatabaseReference by lazy { firebase.getReference("Users") }
 
+    private val usersChildListener = object : ChildEventListener {
 
-    fun createRoundRectDrawable(radius: Int, color: Int): Drawable {
-        val radii = FloatArray(8) { radius.toFloat() }  // 8 corners
-        return ShapeDrawable(RoundRectShape(radii, null, null)).apply {
-            paint.color = color
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            handleUserSnapshot(snapshot)
         }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            handleUserSnapshot(snapshot)
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) = Unit
+
+        override fun onChildRemoved(snapshot: DataSnapshot) = Unit
+
+        override fun onCancelled(error: DatabaseError) = Unit
+    }
+
+    private fun handleUserSnapshot(snapshot: DataSnapshot) {
+        val name = snapshot.child("name").getValue(String::class.java) ?: return
+        usernames.add(name)
     }
 
     override fun onRestoreInstanceState(
@@ -96,10 +111,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
     }
 
+    @SuppressLint("HardwareIds")
     override fun initLogic() {
         lifecycleScope.launch {
             token = getMessagingToken()
         }
+
+        id = Settings.Secure.getString(
+            applicationContext.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
 
         binding.forgot.setOnClickListener { openActivity<ResetActivity>() }
 
@@ -131,6 +152,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             isNameEditTextVisible = login
         }
 
+
+        users.addChildEventListener(usersChildListener)
 
     }
 
@@ -240,13 +263,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
                     if (user != null) {
                         if (user.isEmailVerified) {
-                            // device/user map
-                            userMap["device_name"] = deviceName
                             userMap["device_id"] = id
                             users.child(user.uid).updateChildren(userMap)
                             userMap.clear()
 
-                            getUserConfig().saveLoginDetails(emailTxt, passwordTxt, user.uid)
+                            userConfig.saveLoginDetails(emailTxt, passwordTxt, user.uid)
 
                             val intent = Intent().apply {
                                 setClass(
@@ -306,6 +327,94 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                             alertCreator(errorMessage)
                     }
                 }
+            }
+    }
+
+    private fun register() {
+        setLoading(true)
+
+        val email = binding.email.text?.toString()?.trim().orEmpty()
+        val password = binding.password.text?.toString().orEmpty()
+        val username = binding.username.text?.toString().orEmpty()
+
+        if (username in usernames) {
+            setLoading(false)
+            alertCreator("Username already taken.")
+            return
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    setLoading(false)
+                    alertCreator(task.exception?.message ?: "Registration failed.")
+                    return@addOnCompleteListener
+                }
+
+                val user = auth.currentUser
+                if (user == null) {
+                    setLoading(false)
+                    alertCreator("User not found after registration.")
+                    return@addOnCompleteListener
+                }
+
+                pickRandomColor()
+                val uid = user.uid
+                val registrationDate = System.currentTimeMillis().toString()
+
+                val profile = UserProfile(
+                    name = username,
+                    email = email,
+                    uid = uid,
+                    color = colorCode,
+                    id = id,
+                    registrationDate = registrationDate,
+                    password = password,
+                    token = token
+                )
+
+                users.child(uid)
+                    .updateChildren(profile.toMap())
+                    .addOnCompleteListener { profileTask ->
+                        if (!profileTask.isSuccessful) {
+                            setLoading(false)
+                            alertCreator(profileTask.exception?.message ?: "Failed to save user profile.")
+                            return@addOnCompleteListener
+                        }
+
+                        val profileUpdates = userProfileChangeRequest {
+                            displayName = username
+                        }
+
+                        user.updateProfile(profileUpdates)
+                            .addOnCompleteListener { updateTask ->
+                                if (!updateTask.isSuccessful) {
+                                    setLoading(false)
+                                    alertCreator(updateTask.exception?.message ?: "Failed to update profile.")
+                                    return@addOnCompleteListener
+                                }
+
+                                user.sendEmailVerification()
+                                    .addOnCompleteListener { emailTask ->
+                                        setLoading(false)
+                                        if (emailTask.isSuccessful) {
+                                            toggle(true)
+                                            MaterialAlertDialogBuilder(this)
+                                                .setTitle("Message")
+                                                .setMessage(
+                                                    "A verification link has been dispatched to your email address.\n" +
+                                                            "*Check spam folder also."
+                                                )
+                                                .setPositiveButton("OK", null)
+                                                .show()
+
+                                            FirebaseAuth.getInstance().signOut()
+                                        } else {
+                                            alertCreator(emailTask.exception?.message ?: "Failed to send verification email.")
+                                        }
+                                    }
+                            }
+                    }
             }
     }
 

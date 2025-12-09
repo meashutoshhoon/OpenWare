@@ -46,6 +46,7 @@ import jb.openware.app.ui.components.MaterialProgressDialog
 import jb.openware.app.util.ConnectionManager
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.ThemeUtil
+import jb.openware.app.util.UserConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -411,6 +412,9 @@ abstract class BaseActivity<VB : ViewBinding>(
             startActivity(it)
         }
     }
+
+    val userConfig: UserConfig
+        get() = UserConfig(this)
 
     fun delayTask(delayMillis: Long = 200, task: () -> Unit) {
         lifecycleScope.launch {

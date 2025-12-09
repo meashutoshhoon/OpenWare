@@ -29,8 +29,6 @@ import java.util.Objects;
 import in.afi.codekosh.R;
 import in.afi.codekosh.activity.project.ProjectViewActivity;
 import in.afi.codekosh.cells.ProjectCell;
-import in.afi.codekosh.components.SearchBarView;
-import in.afi.codekosh.components.SearchEditText;
 import in.afi.codekosh.tools.BaseFragment;
 import in.afi.codekosh.tools.ThemeBuilder;
 

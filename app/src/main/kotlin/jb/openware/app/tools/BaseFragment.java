@@ -85,7 +85,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import in.afi.codekosh.components.AppConfig;
 import in.afi.codekosh.components.FolderManagement;
 
 public abstract class BaseFragment extends AppCompatActivity {
