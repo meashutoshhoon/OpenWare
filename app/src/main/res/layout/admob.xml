@@ -29,8 +29,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/en_light"
                 android:text="Advertisement"
-                android:textColorHint="#000"
-                android:textSize="22sp" />
+                android:textAppearance="?attr/textAppearanceTitleLarge" />
         </FrameLayout>
 
         <androidx.cardview.widget.CardView
@@ -76,8 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/en_light"
-                    android:textColorHint="#000"
-                    android:textSize="16sp" />
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <RatingBar
                     android:id="@+id/rating_bar"
@@ -86,9 +84,7 @@
                     android:layout_height="wrap_content"
                     android:lines="1"
                     android:numStars="5"
-                    android:stepSize="1"
-                    android:textColor="#808080"
-                    android:textSize="12sp" />
+                    android:stepSize="1" />
 
                 <TextView
                     android:id="@+id/secondary"
@@ -96,15 +92,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/opensans_semibold" />
+                    android:fontFamily="@font/opensans_semibold"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="right"
+            android:layout_gravity="end"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <TextView
@@ -115,11 +112,13 @@
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:paddingStart="10dp"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cta"
+                style="@style/Widget.Material3Expressive.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

@@ -105,6 +105,8 @@ ktfmt { kotlinLangStyle() }
 kotlin { jvmToolchain(21) }
 
 dependencies {
+    implementation(project(":imageViewer"))
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

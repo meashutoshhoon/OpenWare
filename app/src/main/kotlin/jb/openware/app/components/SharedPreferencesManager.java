@@ -1,4 +1,4 @@
-package in.afi.codekosh.components;
+package jb.openware.app.components;
 
 import android.content.Context;
 import android.content.SharedPreferences;

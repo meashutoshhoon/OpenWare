@@ -41,38 +41,35 @@ public class JsonParser {
         @Override
         public Void call() {
             ArrayList<HashMap<String, Object>> parsedData = new ArrayList<>();
-            JsonReader reader = new JsonReader(new StringReader(jsonResponse));
 
-            try {
-                reader.beginArray();
-                while (reader.hasNext()) {
-                    HashMap<String, Object> item = new HashMap<>();
-                    reader.beginObject();
-                    while (reader.hasNext()) {
-                        String key = reader.nextName();
-                        Object value = null;
-                        if (reader.peek() != JsonToken.NULL) {
-                            value = reader.nextString(); // You might need to handle other data types accordingly
-                        } else {
-                            reader.nextNull();
-                        }
-                        item.put(key, value);
-                    }
-                    reader.endObject();
-                    parsedData.add(item);
-                }
-                reader.endArray();
-
-                listener.onParseComplete(parsedData);
-            } catch (IOException e) {
-                e.printStackTrace();
-                listener.onError("Error occurred while parsing JSON response.");
-            } finally {
+            try (JsonReader reader = new JsonReader(new StringReader(jsonResponse))) {
                 try {
-                    reader.close();
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        HashMap<String, Object> item = new HashMap<>();
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            String key = reader.nextName();
+                            Object value = null;
+                            if (reader.peek() != JsonToken.NULL) {
+                                value = reader.nextString(); // You might need to handle other data types accordingly
+                            } else {
+                                reader.nextNull();
+                            }
+                            item.put(key, value);
+                        }
+                        reader.endObject();
+                        parsedData.add(item);
+                    }
+                    reader.endArray();
+
+                    listener.onParseComplete(parsedData);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    listener.onError("Error occurred while parsing JSON response.");
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             return null;

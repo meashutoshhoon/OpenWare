@@ -27,13 +27,14 @@
                 android:paddingEnd="8dp">
 
                 <TextView
-                    android:id="@+id/tool_text"
+                    android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:focusable="false"
                     android:fontFamily="@font/en_light"
                     android:padding="8dp"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
                     android:text="Notifications"
                     android:textSize="29sp" />
             </LinearLayout>
@@ -41,7 +42,7 @@
 
 
         <LinearLayout
-            android:id="@+id/layout1"
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"

@@ -1,5 +1,5 @@
 [versions]
-activityCompose = "1.11.0"
+activityCompose = "1.12.1"
 agp = "8.13.1"
 appcompat = "1.7.1"
 circleimageview = "3.1.0"
@@ -7,24 +7,27 @@ constraintlayout = "2.2.1"
 drawerlayout = "1.2.0"
 glide = "5.0.5"
 googleServices = "4.4.4"
-firebaseBom = "34.5.0"
+firebaseBom = "34.6.0"
 lottie = "6.7.1"
-material = "1.14.0-alpha06"
+material = "1.14.0-alpha07"
 navigationUi = "2.9.6"
 navigationFragment = "2.9.6"
-okhttp = "5.3.0"
+okhttp = "5.3.2"
 gson = "2.13.2"
-playServicesAds = "24.7.0"
+photoview = "2.2.0"
+playServicesAds = "24.8.0"
 playServicesSafetynet = "18.1.0"
 roundedimageview = "2.3.0"
 shimmer = "0.5.0"
-swiperefreshlayout = "1.1.0"
+swiperefreshlayout = "1.2.0"
+transition = "1.6.0"
 userMessagingPlatform = "4.0.0"
 kotlin = "2.2.21"
 viewpager2 = "1.1.0"
 volley = "1.2.1"
 ktfmt = "0.25.0"
-mmkv = "2.2.4"
+mmkv = "2.3.0"
+coreKtx = "1.17.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -39,6 +42,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 
 drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
 
+photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer" }
@@ -47,6 +51,7 @@ lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"
 
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
+transition = { group = "androidx.transition", name = "transition", version.ref = "transition" }
 viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
@@ -72,6 +77,7 @@ play-services-ads = { group = "com.google.android.gms", name = "play-services-ad
 play-services-safetynet = { group = "com.google.android.gms", name = "play-services-safetynet", version.ref = "playServicesSafetynet" }
 
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

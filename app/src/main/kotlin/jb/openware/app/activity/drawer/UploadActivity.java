@@ -56,7 +56,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.afi.codekosh.R;
 import in.afi.codekosh.components.FileUtil;
 import in.afi.codekosh.components.FirebaseUtils;
-import in.afi.codekosh.components.SketchwareUtils;
 import in.afi.codekosh.tools.BaseFragment;
 import in.afi.codekosh.tools.ThemeBuilder;
 

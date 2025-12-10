@@ -33,7 +33,6 @@ import in.afi.codekosh.R;
 import in.afi.codekosh.activity.home.HomeActivity;
 import in.afi.codekosh.activity.login.LoginActivity;
 import in.afi.codekosh.components.SharedPreferencesManager;
-import in.afi.codekosh.pages.components.LayoutHelper;
 import in.afi.codekosh.pages.components.SlideContainer;
 import jb.openware.app.pages.components.SlideView;
 import in.afi.codekosh.tools.AndroidUtils;

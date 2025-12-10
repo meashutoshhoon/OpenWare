@@ -1,273 +1,244 @@
-package jb.openware.app.nativeAds;
+package jb.openware.app.nativeAds
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
+import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Typeface
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RatingBar
+import android.widget.TextView
+import com.google.android.gms.ads.nativead.MediaView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import jb.openware.app.R
 
-import androidx.annotation.Nullable;
+class TemplateView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
 
-import com.google.android.gms.ads.nativead.MediaView;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdView;
-
-import jb.openware.app.R;
-
-public class TemplateView extends FrameLayout {
-
-    private static final String SMALL_TEMPLATE = "small_template";
-    private static final String MEDIUM_TEMPLATE = "medium_template";
-    private int templateType;
-    private NativeTemplateStyle styles;
-    private NativeAd nativeAd;
-    private NativeAdView nativeAdView;
-    private TextView primaryView;
-    private TextView secondaryView;
-    private RatingBar ratingBar;
-    private TextView tertiaryView;
-    private ImageView iconView;
-    private MediaView mediaView;
-    private Button callToActionView;
-    private LinearLayout background;
-
-    public TemplateView(Context context) {
-        super(context);
+    companion object {
+        private const val SMALL_TEMPLATE = "small_template"
+        private const val MEDIUM_TEMPLATE = "medium_template"
     }
 
-    public TemplateView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initView(context, attrs);
+    private var templateType: Int = 0
+    private var styles: NativeTemplateStyle? = null
+    private var nativeAd: NativeAd? = null
+
+    private lateinit var nativeAdView: NativeAdView
+    private lateinit var primaryView: TextView
+    private lateinit var secondaryView: TextView
+    private var tertiaryView: TextView? = null
+    private lateinit var ratingBar: RatingBar
+    private lateinit var iconView: ImageView
+    private lateinit var mediaView: MediaView
+    private lateinit var callToActionView: Button
+    private lateinit var background: LinearLayout
+
+    init {
+        initView(context, attrs)
     }
 
-    public TemplateView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView(context, attrs);
+    fun setStyles(styles: NativeTemplateStyle) {
+        this.styles = styles
+        applyStyles()
     }
 
-    public TemplateView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initView(context, attrs);
+    fun getNativeAdView(): NativeAdView = nativeAdView
+
+    private fun applyStyles() {
+        val style = styles ?: return
+
+        style.mainBackgroundColor?.let { mainBackground ->
+            background.background = mainBackground
+            primaryView.background = mainBackground
+            secondaryView.background = mainBackground
+            tertiaryView?.background = mainBackground
+        }
+
+        style.primaryTextTypeface?.let { tf: Typeface ->
+            primaryView.typeface = tf
+        }
+
+        style.secondaryTextTypeface?.let { tf: Typeface ->
+            secondaryView.typeface = tf
+        }
+
+        style.tertiaryTextTypeface?.let { tf: Typeface ->
+            tertiaryView?.typeface = tf
+        }
+
+        style.callToActionTextTypeface?.let { tf: Typeface ->
+            callToActionView.typeface = tf
+        }
+
+        style.primaryTextTypefaceColor?.let { color ->
+            primaryView.setTextColor(color)
+        }
+
+        style.secondaryTextTypefaceColor?.let { color ->
+            secondaryView.setTextColor(color)
+        }
+
+        style.tertiaryTextTypefaceColor?.let { color ->
+            tertiaryView?.setTextColor(color)
+        }
+
+        style.callToActionTypefaceColor?.let { color ->
+            callToActionView.setTextColor(color)
+        }
+
+        if (style.callToActionTextSize > 0f) {
+            callToActionView.textSize = style.callToActionTextSize
+        }
+
+        if (style.primaryTextSize > 0f) {
+            primaryView.textSize = style.primaryTextSize
+        }
+
+        if (style.secondaryTextSize > 0f) {
+            secondaryView.textSize = style.secondaryTextSize
+        }
+
+        if (style.tertiaryTextSize > 0f) {
+            tertiaryView?.textSize = style.tertiaryTextSize
+        }
+
+        style.callToActionBackgroundColor?.let { bg ->
+            callToActionView.background = bg
+        }
+
+        style.primaryTextBackgroundColor?.let { bg ->
+            primaryView.background = bg
+        }
+
+        style.secondaryTextBackgroundColor?.let { bg ->
+            secondaryView.background = bg
+        }
+
+        style.tertiaryTextBackgroundColor?.let { bg ->
+            tertiaryView?.background = bg
+        }
+
+        invalidate()
+        requestLayout()
     }
 
-    public void setStyles(NativeTemplateStyle styles) {
-        this.styles = styles;
-        this.applyStyles();
+    private fun adHasOnlyStore(nativeAd: NativeAd): Boolean {
+        val store = nativeAd.store
+        val advertiser = nativeAd.advertiser
+        return !store.isNullOrEmpty() && advertiser.isNullOrEmpty()
     }
 
-    public NativeAdView getNativeAdView() {
-        return nativeAdView;
-    }
+    fun setNativeAd(nativeAd: NativeAd) {
+        this.nativeAd = nativeAd
 
-    private void applyStyles() {
+        val store = nativeAd.store
+        val advertiser = nativeAd.advertiser
+        val headline = nativeAd.headline
+        val body = nativeAd.body
+        val cta = nativeAd.callToAction
+        val starRating = nativeAd.starRating
+        val icon = nativeAd.icon
 
-        Drawable mainBackground = styles.getMainBackgroundColor();
-        if (mainBackground != null) {
-            background.setBackground(mainBackground);
-            if (primaryView != null) {
-                primaryView.setBackground(mainBackground);
-            }
-            if (secondaryView != null) {
-                secondaryView.setBackground(mainBackground);
-            }
-            if (tertiaryView != null) {
-                tertiaryView.setBackground(mainBackground);
-            }
-        }
+        var secondaryText: String? = null
 
-        Typeface primary = styles.getPrimaryTextTypeface();
-        if (primary != null && primaryView != null) {
-            primaryView.setTypeface(primary);
-        }
+        nativeAdView.callToActionView = callToActionView
+        nativeAdView.headlineView = primaryView
+        nativeAdView.mediaView = mediaView
 
-        Typeface secondary = styles.getSecondaryTextTypeface();
-        if (secondary != null && secondaryView != null) {
-            secondaryView.setTypeface(secondary);
-        }
+        secondaryView.visibility = VISIBLE
 
-        Typeface tertiary = styles.getTertiaryTextTypeface();
-        if (tertiary != null && tertiaryView != null) {
-            tertiaryView.setTypeface(tertiary);
-        }
-
-        Typeface ctaTypeface = styles.getCallToActionTextTypeface();
-        if (ctaTypeface != null && callToActionView != null) {
-            callToActionView.setTypeface(ctaTypeface);
-        }
-
-        if (styles.getPrimaryTextTypefaceColor() != null && primaryView != null) {
-            primaryView.setTextColor(styles.getPrimaryTextTypefaceColor());
-        }
-
-        if (styles.getSecondaryTextTypefaceColor() != null && secondaryView != null) {
-            secondaryView.setTextColor(styles.getSecondaryTextTypefaceColor());
-        }
-
-        if (styles.getTertiaryTextTypefaceColor() != null && tertiaryView != null) {
-            tertiaryView.setTextColor(styles.getTertiaryTextTypefaceColor());
-        }
-
-        if (styles.getCallToActionTypefaceColor() != null && callToActionView != null) {
-            callToActionView.setTextColor(styles.getCallToActionTypefaceColor());
-        }
-
-        float ctaTextSize = styles.getCallToActionTextSize();
-        if (ctaTextSize > 0 && callToActionView != null) {
-            callToActionView.setTextSize(ctaTextSize);
-        }
-
-        float primaryTextSize = styles.getPrimaryTextSize();
-        if (primaryTextSize > 0 && primaryView != null) {
-            primaryView.setTextSize(primaryTextSize);
-        }
-
-        float secondaryTextSize = styles.getSecondaryTextSize();
-        if (secondaryTextSize > 0 && secondaryView != null) {
-            secondaryView.setTextSize(secondaryTextSize);
-        }
-
-        float tertiaryTextSize = styles.getTertiaryTextSize();
-        if (tertiaryTextSize > 0 && tertiaryView != null) {
-            tertiaryView.setTextSize(tertiaryTextSize);
-        }
-
-        Drawable ctaBackground = styles.getCallToActionBackgroundColor();
-        if (ctaBackground != null && callToActionView != null) {
-            callToActionView.setBackground(ctaBackground);
-        }
-
-        Drawable primaryBackground = styles.getPrimaryTextBackgroundColor();
-        if (primaryBackground != null && primaryView != null) {
-            primaryView.setBackground(primaryBackground);
-        }
-
-        Drawable secondaryBackground = styles.getSecondaryTextBackgroundColor();
-        if (secondaryBackground != null && secondaryView != null) {
-            secondaryView.setBackground(secondaryBackground);
-        }
-
-        Drawable tertiaryBackground = styles.getTertiaryTextBackgroundColor();
-        if (tertiaryBackground != null && tertiaryView != null) {
-            tertiaryView.setBackground(tertiaryBackground);
-        }
-
-        invalidate();
-        requestLayout();
-    }
-
-    private boolean adHasOnlyStore(NativeAd nativeAd) {
-        String store = nativeAd.getStore();
-        String advertiser = nativeAd.getAdvertiser();
-        return !TextUtils.isEmpty(store) && TextUtils.isEmpty(advertiser);
-    }
-
-    public void setNativeAd(NativeAd nativeAd) {
-        this.nativeAd = nativeAd;
-
-        String store = nativeAd.getStore();
-        String advertiser = nativeAd.getAdvertiser();
-        String headline = nativeAd.getHeadline();
-        String body = nativeAd.getBody();
-        String cta = nativeAd.getCallToAction();
-        Double starRating = nativeAd.getStarRating();
-        NativeAd.Image icon = nativeAd.getIcon();
-
-        String secondaryText;
-
-        nativeAdView.setCallToActionView(callToActionView);
-        nativeAdView.setHeadlineView(primaryView);
-        nativeAdView.setMediaView(mediaView);
-        secondaryView.setVisibility(VISIBLE);
         if (adHasOnlyStore(nativeAd)) {
-            nativeAdView.setStoreView(secondaryView);
-            secondaryText = store;
-        } else if (!TextUtils.isEmpty(advertiser)) {
-            nativeAdView.setAdvertiserView(secondaryView);
-            secondaryText = advertiser;
+            nativeAdView.storeView = secondaryView
+            secondaryText = store
+        } else if (!advertiser.isNullOrEmpty()) {
+            nativeAdView.advertiserView = secondaryView
+            secondaryText = advertiser
         } else {
-            secondaryText = "";
+            secondaryText = ""
         }
 
-        primaryView.setText(headline);
-        callToActionView.setText(cta);
+        primaryView.text = headline
+        callToActionView.text = cta
 
-        //  Set the secondary view to be the star rating if available.
         if (starRating != null && starRating > 0) {
-            secondaryView.setVisibility(GONE);
-            ratingBar.setVisibility(VISIBLE);
-            ratingBar.setRating(starRating.floatValue());
-
-            nativeAdView.setStarRatingView(ratingBar);
+            secondaryView.visibility = GONE
+            ratingBar.visibility = VISIBLE
+            ratingBar.rating = starRating.toFloat()
+            nativeAdView.starRatingView = ratingBar
         } else {
-            secondaryView.setText(secondaryText);
-            secondaryView.setVisibility(VISIBLE);
-            ratingBar.setVisibility(GONE);
+            secondaryView.text = secondaryText
+            secondaryView.visibility = VISIBLE
+            ratingBar.visibility = GONE
         }
 
         if (icon != null) {
-            iconView.setVisibility(VISIBLE);
-            iconView.setImageDrawable(icon.getDrawable());
+            iconView.visibility = VISIBLE
+            iconView.setImageDrawable(icon.drawable)
         } else {
-            iconView.setVisibility(GONE);
+            iconView.visibility = GONE
         }
 
-        if (tertiaryView != null) {
-            tertiaryView.setText(body);
-            nativeAdView.setBodyView(tertiaryView);
+        tertiaryView?.let { bodyView ->
+            bodyView.text = body
+            nativeAdView.bodyView = bodyView
         }
 
-        nativeAdView.setNativeAd(nativeAd);
+        nativeAdView.setNativeAd(nativeAd)
     }
 
-    public void destroyNativeAd() {
-        nativeAd.destroy();
+    fun destroyNativeAd() {
+        nativeAd?.destroy()
+        nativeAd = null
     }
 
-    public String getTemplateTypeName() {
-        if (templateType == R.layout.admob) {
-            return MEDIUM_TEMPLATE;
-        } else if (templateType == R.layout.gnt_small_template_view) {
-            return SMALL_TEMPLATE;
-        }
-        return "";
+    fun getTemplateTypeName(): String = when (templateType) {
+        R.layout.admob -> MEDIUM_TEMPLATE
+        R.layout.gnt_small_template_view -> SMALL_TEMPLATE
+        else -> ""
     }
 
-    private void initView(Context context, AttributeSet attributeSet) {
-
-        TypedArray attributes = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.TemplateView, 0, 0);
+    private fun initView(context: Context, attrs: AttributeSet?) {
+        val attributes: TypedArray = context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.TemplateView,
+            0,
+            0
+        )
 
         try {
-            templateType = attributes.getResourceId(R.styleable.TemplateView_gnt_template_type, R.layout.admob);
+            templateType = attributes.getResourceId(
+                R.styleable.TemplateView_gnt_template_type,
+                R.layout.admob
+            )
         } finally {
-            attributes.recycle();
+            attributes.recycle()
         }
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(templateType, this);
+
+        LayoutInflater.from(context).inflate(templateType, this, true)
     }
 
-    @Override
-    public void onFinishInflate() {
-        super.onFinishInflate();
-        nativeAdView = (NativeAdView) findViewById(R.id.native_ad_view);
-        primaryView = (TextView) findViewById(R.id.primary);
-        secondaryView = (TextView) findViewById(R.id.secondary);
-        tertiaryView = (TextView) findViewById(R.id.body);
+    override fun onFinishInflate() {
+        super.onFinishInflate()
 
-        ratingBar = (RatingBar) findViewById(R.id.rating_bar);
-        ratingBar.setEnabled(false);
+        nativeAdView = findViewById(R.id.native_ad_view)
+        primaryView = findViewById(R.id.primary)
+        secondaryView = findViewById(R.id.secondary)
+        tertiaryView = findViewById(R.id.body)
 
-        callToActionView = (Button) findViewById(R.id.cta);
-        iconView = (ImageView) findViewById(R.id.icon);
-        mediaView = (MediaView) findViewById(R.id.media_view);
-        background = (LinearLayout) findViewById(R.id.background);
+        ratingBar = findViewById(R.id.rating_bar)
+        ratingBar.isEnabled = false
 
+        callToActionView = findViewById(R.id.cta)
+        iconView = findViewById(R.id.icon)
+        mediaView = findViewById(R.id.media_view)
+        background = findViewById(R.id.background)
     }
 }

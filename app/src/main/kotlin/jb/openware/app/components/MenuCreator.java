@@ -1,6 +1,5 @@
 package jb.openware.app.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,16 +35,13 @@ public class MenuCreator {
         if (menuItem != null) {
             menuItem.setIcon(iconResId);
         }
-
     }
 
     public void setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener listener) {
         popupMenu.setOnMenuItemClickListener(listener);
-
     }
 
     public void show() {
         popupMenu.show();
-
     }
 }

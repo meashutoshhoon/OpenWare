@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OpenWare"
 include(":app")
+include(":imageViewer")

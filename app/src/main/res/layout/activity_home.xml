@@ -36,9 +36,9 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:navigationIcon="@drawable/menu">
 
-                <in.afi.codekosh.components.SearchEditText
+                <jb.openware.app.ui.components.SearchEditText
                     android:id="@+id/search_view"
-                    style="@style/Widget.CodeKosh.SearchView"
+                    style="@style/TextAppearance.OW.SearchView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
