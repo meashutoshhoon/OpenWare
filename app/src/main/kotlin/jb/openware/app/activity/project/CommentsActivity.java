@@ -1,6 +1,6 @@
 package in.afi.codekosh.activity.project;
 
-import static in.afi.codekosh.tools.StringUtilsKt.moderatorUrl;
+import static jb.openware.app.util.StringUtilsKt.moderatorUrl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

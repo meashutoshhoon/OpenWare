@@ -9,3 +9,9 @@ data class NotificationItem(
     val message: String = "",
     val date: String = ""
 )
+
+@Serializable
+data class CategoryItem(
+    val url: String = "",
+    val name: String = ""
+)

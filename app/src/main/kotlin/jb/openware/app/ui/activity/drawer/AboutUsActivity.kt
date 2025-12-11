@@ -152,19 +152,6 @@ class AboutUsActivity :
         )
     }
 
-    fun generateLongMessage(): String = buildString {
-        append("Long Exception Message: ")
-        for (i in 0 until 1000) {
-            append("This is an intentional crash ")
-            append(i)
-            append(". ")
-        }
-    }
-
-    fun throwLongException() {
-        throw RuntimeException(generateLongMessage())
-    }
-
     override fun onCheckUpdate(
         button: Button,
         loadingDots: LottieAnimationView

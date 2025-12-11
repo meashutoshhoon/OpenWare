@@ -45,11 +45,6 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.splash.LinkageActivity"
-            android:exported="false"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".activity.home.MoreProjectsActivity"
             android:exported="false"
             android:hardwareAccelerated="true"
@@ -60,9 +55,8 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.other.CategoryActivity"
+            android:name=".ui.activity.other.CategoryActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.project.CommentsActivity"

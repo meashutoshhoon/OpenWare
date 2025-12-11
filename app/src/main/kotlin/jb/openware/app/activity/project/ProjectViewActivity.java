@@ -2,8 +2,8 @@ package in.afi.codekosh.activity.project;
 
 import static jb.openware.app.net.DownloadServiceKt.downloadFile;
 import static jb.openware.app.net.DownloadServiceKt.downloadFile2;
-import static in.afi.codekosh.tools.StringUtilsKt.moderatorUrl;
-import static in.afi.codekosh.tools.StringUtilsKt.websiteUrl;
+import static jb.openware.app.util.StringUtilsKt.moderatorUrl;
+import static jb.openware.app.util.StringUtilsKt.websiteUrl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -69,7 +69,6 @@ import java.util.Objects;
 
 import in.afi.codekosh.R;
 import in.afi.codekosh.activity.drawer.UploadActivity;
-import in.afi.codekosh.activity.other.CategoryActivity;
 import in.afi.codekosh.activity.other.LikesCountActivity;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.components.FirebaseUtils;

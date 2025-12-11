@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -12,57 +13,20 @@
         android:layout_height="wrap_content"
         android:theme="@style/Widget.Material3.AppBarLayout">
 
-        <LinearLayout
-            android:id="@+id/tools"
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="start"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="RtlHardcoded,UseCompoundDrawables">
+            android:layout_height="wrap_content"
+            app:menu="@menu/program_info_menu"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:title="Edit your profile" />
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:padding="4dp"
-                android:src="@drawable/back"
-                app:tint="#000000" />
-
-            <TextView
-                android:id="@+id/toolbar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
-                android:text="Edit your profile"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/edit"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:padding="4dp"
-                android:src="@drawable/done"
-                app:tint="#000000" />
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider"
+        <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_color" />
+            android:layout_height="wrap_content"
+            app:dividerColor="?attr/colorSurfaceContainerHighest" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -96,7 +60,7 @@
                     android:orientation="horizontal">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/circleimageview1"
+                        android:id="@+id/circleimageview"
                         android:layout_width="175dp"
                         android:layout_height="175dp"
                         android:src="@drawable/logo_avatar"
@@ -108,8 +72,8 @@
                         android:id="@+id/linear_word"
                         android:layout_width="175dp"
                         android:layout_height="175dp"
-                        android:background="@color/md_theme_light_primary"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:background="?attr/colorPrimary"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
@@ -118,7 +82,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/en_light"
                             android:text="U"
-                            android:textColor="#FFFFFF"
+                            android:textColor="?attr/colorOnPrimary"
                             android:textSize="55sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -127,9 +91,9 @@
                     android:id="@+id/picker"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/add_photo_2"
                     android:layout_gravity="center"
-                    android:contentDescription="@null" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/add_photo_2" />
             </FrameLayout>
 
             <LinearLayout
@@ -144,9 +108,9 @@
                     style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="5dp"
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"
@@ -167,9 +131,9 @@
                     style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="5dp"
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"

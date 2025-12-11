@@ -49,6 +49,5 @@
             android:paddingEnd="5dp"
             tools:ignore="RtlSymmetry" />
 
-
     </LinearLayout>
 </FrameLayout>

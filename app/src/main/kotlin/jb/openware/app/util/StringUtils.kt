@@ -1,4 +1,4 @@
-package `in`.afi.codekosh.tools
+package jb.openware.app.util
 
 const val serverUrl = "https://ashutoshgupta01.github.io/codekosh/codekosh.json"
 const val privacyUrl = "https://codekosh-afi.github.io/codekosh.github.io/privacy_policy.html"

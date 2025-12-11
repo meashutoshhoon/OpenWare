@@ -1,6 +1,6 @@
 package in.afi.codekosh.activity.profile;
 
-import static in.afi.codekosh.tools.StringUtilsKt.websiteUrl;
+import static jb.openware.app.util.StringUtilsKt.websiteUrl;
 
 import android.app.Activity;
 import android.content.Intent;

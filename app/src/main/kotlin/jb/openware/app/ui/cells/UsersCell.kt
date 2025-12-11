@@ -3,7 +3,6 @@ package jb.openware.app.ui.cells
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import jb.openware.app.R
 import jb.openware.app.databinding.CellUsersBinding
 import jb.openware.app.ui.components.BadgeDrawable
 import androidx.core.graphics.toColorInt
+import jb.openware.app.ui.items.UserItem
 
 @SuppressLint("ViewConstructor")
 class UsersCell(context: Activity) : FrameLayout(context) {
@@ -32,28 +32,24 @@ class UsersCell(context: Activity) : FrameLayout(context) {
     }
 
     fun setData(
-        avatar: String,
-        name: String,
-        color: String,
-        badgeValue: String?,
-        verifiedValue: String?
+        userItem: UserItem
     ) {
-        handleBadge(badgeValue, verifiedValue)
+        handleBadge(userItem.badge, userItem.verified)
 
-        nameText.text = name
+        nameText.text = userItem.name
 
-        if (avatar == "none") {
+        if (userItem.avatar == "none") {
             avatarView.gone()
             wordLayout.visible()
-            wordText.text = name.firstOrNull()?.uppercase() ?: ""
+            wordText.text = userItem.name.firstOrNull()?.uppercase() ?: ""
             wordLayout.background = GradientDrawable().apply {
                 cornerRadius = 360f
-                setColor(color.toColorInt())
+                setColor(userItem.color.toColorInt())
             }
         } else {
             wordLayout.gone()
             avatarView.visible()
-            Glide.with(context).load(avatar).into(avatarView)
+            Glide.with(context).load(userItem.avatar).into(avatarView)
         }
     }
 

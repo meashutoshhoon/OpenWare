@@ -1,6 +1,6 @@
 package in.afi.codekosh.tools;
 
-import static in.afi.codekosh.tools.StringUtilsKt.email;
+import static jb.openware.app.util.StringUtilsKt.email;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

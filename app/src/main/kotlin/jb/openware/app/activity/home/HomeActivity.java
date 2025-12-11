@@ -1,7 +1,7 @@
 package in.afi.codekosh.activity.home;
 
-import static in.afi.codekosh.tools.StringUtilsKt.defaultReason;
-import static in.afi.codekosh.tools.StringUtilsKt.websiteUrl;
+import static jb.openware.app.util.StringUtilsKt.defaultReason;
+import static jb.openware.app.util.StringUtilsKt.websiteUrl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

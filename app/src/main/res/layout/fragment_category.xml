@@ -27,7 +27,7 @@
                 android:paddingEnd="8dp">
 
                 <TextView
-                    android:id="@+id/tool_text"
+                    android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -35,19 +35,19 @@
                     android:fontFamily="@font/en_light"
                     android:padding="8dp"
                     android:text="Category"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
                     android:textSize="29sp" />
             </LinearLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
 
         <LinearLayout
-            android:id="@+id/layout1"
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingEnd="5dp"
             tools:ignore="RtlSymmetry" />
-
 
     </LinearLayout>
 </FrameLayout>

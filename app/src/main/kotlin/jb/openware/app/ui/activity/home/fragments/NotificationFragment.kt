@@ -19,7 +19,7 @@ import jb.openware.app.databinding.NotificationCellBinding
 import jb.openware.app.ui.items.NotificationItem
 import jb.openware.app.util.ConnectionManager
 import androidx.core.graphics.drawable.toDrawable
-import `in`.afi.codekosh.tools.notificationUrl
+import jb.openware.app.util.notificationUrl
 import jb.openware.app.R
 import jb.openware.app.ui.components.TextFormatter
 import jb.openware.imageviewer.ImageViewer
@@ -91,7 +91,7 @@ class NotificationFragment : Fragment() {
                     val type = object : TypeToken<List<NotificationItem>>() {}.type
                     val items: List<NotificationItem> = gson.fromJson(response, type)
 
-                    listView.adapter = VideoListAdapter(items)
+                    listView.adapter = NotificationAdapter(items)
                     refreshLayoutUser.isRefreshing = false
                 }
 
@@ -109,9 +109,9 @@ class NotificationFragment : Fragment() {
     }
 
     // Adapter using viewbinding for cell
-    private inner class VideoListAdapter(
+    private inner class NotificationAdapter(
         private val data: List<NotificationItem>
-    ) : RecyclerView.Adapter<VideoListAdapter.ViewHolder>() {
+    ) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = NotificationCellBinding.inflate(

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/refer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -15,41 +14,13 @@
         android:layout_height="wrap_content"
         android:theme="@style/Widget.Material3.AppBarLayout">
 
-        <LinearLayout
-            android:id="@+id/tools"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:layout_gravity="left"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="RtlHardcoded,UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="5dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:padding="2dp"
-                android:src="@drawable/back" />
-
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/opensans_semibold"
-                android:text="Likes"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:title="Likes" />
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,30 +32,32 @@
         android:gravity="center"
         android:transitionGroup="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview1"
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="2dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/cell_users"
             android:layout_weight="1" />
 
         <LinearLayout
-            android:id="@+id/progressbar1"
+            android:id="@+id/loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="5dp">
 
-            <LinearLayout
-                android:id="@+id/layout_progress"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:orientation="horizontal" />
+            <com.google.android.material.loadingindicator.LoadingIndicator
+                style="@style/Widget.Material3.LoadingIndicator.Contained"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/text"
+            android:id="@+id/noLikeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|center_vertical"
@@ -97,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/en_light"
                 android:text="No user have liked this project yet."
-                android:textSize="19sp"/>
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
         </LinearLayout>
 

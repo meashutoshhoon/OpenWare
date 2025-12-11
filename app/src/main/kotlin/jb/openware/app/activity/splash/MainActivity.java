@@ -2,8 +2,8 @@ package in.afi.codekosh.activity.splash;
 
 import static in.afi.codekosh.pages.components.LayoutHelper.MATCH_PARENT;
 import static in.afi.codekosh.pages.components.LayoutHelper.WRAP_CONTENT;
-import static in.afi.codekosh.tools.StringUtilsKt.serverUrl;
-import static in.afi.codekosh.tools.StringUtilsKt.versionCode;
+import static jb.openware.app.util.StringUtilsKt.serverUrl;
+import static jb.openware.app.util.StringUtilsKt.versionCode;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
