@@ -52,6 +52,7 @@
     <string name="about">About</string>
     <string name="des_about">Version &amp; Credits</string>
     <string name="company_name">©JB</string>
+    <string name="codekosh_features">OpenWare Features</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -111,7 +112,6 @@
     <string name="apply">Apply</string>
     <string name="not_interested">Not interested</string>
     <string name="email_feed">codekosh.afi@gmail.com</string>
-    <string name="codekosh_features">CodeKosh Features</string>
     <string name="upload_project">Upload Project</string>
     <string name="request_verification">Request Verification</string>
     <string name="verification_msg">Dear User,\n\n We would like to inform you that you have the opportunity to apply for a verification badge for your account at no cost, provided you meet the basic eligibility criteria. Our team will carefully review your past activities and account details during the verification process. If everything aligns with our standards, you will be granted the verification badge.\n\nThe eligibility criteria for the verification badge are as follows:\n\n*b•*bMinimum of 10 projects completed successfully.\n*b•*bPresence of more than 200 likes on your account.\n*b•*bAbsence of any negative past activities associated with your account.\n*b•*bNo history of account suspension or bans.\n*b•*bConsistent adherence to our user policies and guidelines.\n\nWe appreciate your understanding and cooperation.\n\n Thank you for your attention.\n\n Sincerely,\n\n CodeKosh\'s Team</string>

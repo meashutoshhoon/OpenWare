@@ -111,7 +111,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.home.HomeActivity"
+            android:name=".ui.activity.home.HomeActivity"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustPan" />

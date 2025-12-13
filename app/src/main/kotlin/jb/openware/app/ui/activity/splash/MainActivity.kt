@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import `in`.afi.codekosh.activity.home.HomeActivity
 import jb.openware.app.databinding.ActivityMainBinding
+import jb.openware.app.ui.activity.home.HomeActivity
 import jb.openware.app.ui.activity.login.LoginActivity
 import jb.openware.app.ui.activity.splash.fragments.MaintenanceFragment
 import jb.openware.app.ui.activity.splash.fragments.NoInternetFragment
@@ -79,7 +80,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private fun goNext() {
         val intent = Intent(
-            this, if (userConfig.isLoggedIn()) {
+            this, if (userConfig.isLoggedIn) {
                 HomeActivity::class.java
             } else {
                 LoginActivity::class.java

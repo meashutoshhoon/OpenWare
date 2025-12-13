@@ -10,28 +10,10 @@
             android:title="@string/profile"
             app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/rotation_item"
-            android:checkable="true"
-            android:icon="@drawable/ic_file"
-            android:title="@string/sketchware_projects"
-            app:showAsAction="ifRoom" />
-        <item
-            android:id="@+id/accelerator_item"
-            android:checkable="true"
-            android:icon="@drawable/code"
-            android:title="@string/java_codes"
-            app:showAsAction="ifRoom" />
-        <item
             android:id="@+id/dashboard_item"
             android:checkable="true"
             android:icon="@drawable/add_circle"
             android:title="@string/upload_a_project"
-            app:showAsAction="ifRoom" />
-        <item
-            android:id="@+id/dashboard_query"
-            android:checkable="true"
-            android:icon="@drawable/request_f"
-            android:title="@string/request_verification"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/dashboard_item_two"

@@ -61,8 +61,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.math.roundToInt
 import androidx.core.content.edit
 
@@ -83,7 +81,7 @@ abstract class BaseActivity<VB : ViewBinding>(
 
     private lateinit var vibrator: Vibrator
 
-    private val PREFS_NAME = "app_prefs"
+    private val NAME = "app_prefs"
 
     protected lateinit var binding: VB
         private set
@@ -503,8 +501,8 @@ abstract class BaseActivity<VB : ViewBinding>(
         }
     }
 
-    fun Context.putPrefString(key: String, value: String) {
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+    fun Context.putPrefString(name: String = NAME, key: String, value: String) {
+        getSharedPreferences(name, MODE_PRIVATE)
             .edit {
                 putString(key, value)
             }
@@ -514,7 +512,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         key: String,
         default: String
     ): String {
-        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        return getSharedPreferences(NAME, MODE_PRIVATE)
             .getString(key, default) ?: default
     }
 

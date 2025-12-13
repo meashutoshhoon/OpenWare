@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="8dp">
@@ -11,68 +11,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie1"
+            android:layout_width="200dp"
+            android:layout_height="170dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="block.json"
+            app:lottie_loop="false" />
+
+        <TextView
+            android:id="@+id/h1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:fontFamily="@font/en_light"
+            android:padding="8dp"
+            android:text="Blocked"
+            android:textAppearance="?attr/textAppearanceHeadline5" />
+
+        <TextView
+            android:id="@+id/t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:focusable="false"
+            android:fontFamily="@font/opensans_regular"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:text="If the project contains abusive, inappropriate, or harmful content or if you think that this project violates OpenWare's User Policy."
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/b1"
+            style="@style/Widget.Material3Expressive.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="vertical">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie1"
-                android:layout_width="200dp"
-                android:layout_height="170dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter"
-                app:lottie_autoPlay="true"
-                app:lottie_fileName="block.json"
-                app:lottie_loop="false" />
-
-            <TextView
-                android:id="@+id/h1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:fontFamily="@font/en_light"
-                android:padding="8dp"
-                android:text="Blocked"
-                android:textColor="#000"
-                android:textSize="22.5sp" />
-
-            <TextView
-                android:id="@+id/t1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:focusable="false"
-                android:fontFamily="@font/opensans_regular"
-                android:gravity="center_horizontal|center_vertical"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:text="If the project contains abusive, inappropriate, or harmful content or if you think that this project violates CodeKosh's User Policy."
-                android:textColor="#424242"
-                android:textSize="14sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/b1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/en_light"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="Exit"
-                android:textSize="16sp"
-                android:theme="@style/ThemeOverlay.Material3.Button" />
-        </LinearLayout>
-    </ScrollView>
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/en_light"
+            android:gravity="center"
+            android:text="Exit"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </LinearLayout>
