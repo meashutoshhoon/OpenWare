@@ -1,352 +1,248 @@
-package jb.openware.app.ui.codeview;
+package jb.openware.app.ui.codeview
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Html;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.text.Html
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import jb.openware.app.R
+import java.util.regex.Pattern
 
-import androidx.annotation.NonNull;
+@SuppressLint("SetJavaScriptEnabled")
+class CodeView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : WebView(context, attrs, defStyleAttr) {
 
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+    var code: String = ""
+        private set
 
-import jb.openware.app.R;
+    private var escapedCode: String = ""
 
-public class CodeView extends WebView {
+    var theme: Theme? = null
+    var language: Language? = null
 
-    private String code = "";
-    private String escapeCode;
-    private Theme theme;
-    private Language language;
-    private float fontSize = 16;
-    private boolean wrapLine = false;
-    private OnHighlightListener onHighlightListener;
-    private ScaleGestureDetector pinchDetector;
-    private boolean zoomEnabled = false;
-    private boolean showLineNumber = false;
-    private int startLineNumber = 1;
-    private int lineCount = 0;
-    private int highlightLineNumber = -1;
+    var fontSize: Float = 16f
+        set(value) {
+            field = value.coerceAtLeast(8f)
+            onHighlightListener?.onFontSizeChanged(field.toInt())
+        }
 
-    public CodeView(Context context) {
-        this(context, null);
-    }
+    var wrapLine: Boolean = false
+    var zoomEnabled: Boolean = false
+    var showLineNumber: Boolean = false
+    var startLineNumber: Int = 1
+        set(value) {
+            field = value.coerceAtLeast(1)
+        }
 
-    public CodeView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+    private var lineCount = 0
+    private var highlightLineNumber = -1
 
-    public CodeView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
+    private var onHighlightListener: OnHighlightListener? = null
+    private val pinchDetector = ScaleGestureDetector(context, PinchListener())
+
+    init {
+        initView(attrs)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (isZoomEnabled()) {
-            pinchDetector.onTouchEvent(event);
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (zoomEnabled) pinchDetector.onTouchEvent(event)
+        return super.onTouchEvent(event)
+    }
+
+    private fun initView(attrs: AttributeSet?) {
+        context.obtainStyledAttributes(attrs, R.styleable.CodeView).apply {
+            wrapLine = getBoolean(R.styleable.CodeView_cv_wrap_line, false)
+            fontSize = getInt(R.styleable.CodeView_cv_font_size, 14).toFloat()
+            zoomEnabled = getBoolean(R.styleable.CodeView_cv_zoom_enable, false)
+            showLineNumber = getBoolean(R.styleable.CodeView_cv_show_line_number, false)
+            startLineNumber = getInt(R.styleable.CodeView_cv_start_line_number, 1)
+            highlightLineNumber = getInt(R.styleable.CodeView_cv_highlight_line_number, -1)
+            recycle()
         }
-        return super.onTouchEvent(event);
+
+        webChromeClient = WebChromeClient()
+
+        settings.apply {
+            javaScriptEnabled = true
+            cacheMode = WebSettings.LOAD_NO_CACHE
+            loadWithOverviewMode = true
+        }
+
+        setWebContentsDebuggingEnabled(true)
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private void init(Context context, AttributeSet attrs) {
-        TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CodeView, 0, 0);
-        setWrapLine(attributes.getBoolean(R.styleable.CodeView_cv_wrap_line, false));
-        setFontSize(attributes.getInt(R.styleable.CodeView_cv_font_size, 14));
-        setZoomEnabled(attributes.getBoolean(R.styleable.CodeView_cv_zoom_enable, false));
-        setShowLineNumber(attributes.getBoolean(R.styleable.CodeView_cv_show_line_number, false));
-        setStartLineNumber(attributes.getInt(R.styleable.CodeView_cv_start_line_number, 1));
-        highlightLineNumber = attributes.getInt(R.styleable.CodeView_cv_highlight_line_number, -1);
-        attributes.recycle();
-
-        pinchDetector = new ScaleGestureDetector(context, new PinchListener());
-
-        setWebChromeClient(new WebChromeClient());
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        getSettings().setLoadWithOverviewMode(true);
-
-        WebView.setWebContentsDebuggingEnabled(true);
+    fun setCode(code: String?): CodeView {
+        this.code = code.orEmpty()
+        this.escapedCode = Html.escapeHtml(this.code)
+        return this
     }
 
-    public void setOnHighlightListener(OnHighlightListener listener) {
-        if (listener != null) {
-            if (onHighlightListener != listener) {
-                onHighlightListener = listener;
-                addJavascriptInterface(new Object() {
-                    @JavascriptInterface
-                    public void onStartCodeHighlight() {
-                        if (onHighlightListener != null) {
-                            onHighlightListener.onStartCodeHighlight();
-                        }
-                    }
+    fun apply() {
+        loadDataWithBaseURL(
+            "", toHtml(), "text/html", "UTF-8", null
+        )
+    }
 
-                    @JavascriptInterface
-                    public void onFinishCodeHighlight() {
-                        if (onHighlightListener != null) {
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                fillLineNumbers();
-                                showHideLineNumber(isShowLineNumber());
-                                highlightLineNumber(getHighlightLineNumber());
-                            });
-                            onHighlightListener.onFinishCodeHighlight();
-                        }
-                    }
+    fun toggleLineNumber() {
+        showLineNumber = !showLineNumber
+        showHideLineNumber(showLineNumber)
+    }
 
-                    @JavascriptInterface
-                    public void onLanguageDetected(String name, int relevance) {
-                        if (onHighlightListener != null) {
-                            onHighlightListener.onLanguageDetected(Language.getLanguageByName(name), relevance);
-                        }
-                    }
+    fun setOnHighlightListener(listener: OnHighlightListener?) {
+        onHighlightListener = listener
 
-                    @JavascriptInterface
-                    public void onLineClicked(int lineNumber, String content) {
-                        if (onHighlightListener != null) {
-                            onHighlightListener.onLineClicked(lineNumber, content);
-                        }
-                    }
-                }, "android");
+        if (listener == null) {
+            removeJavascriptInterface("android")
+            return
+        }
+
+        addJavascriptInterface(object {
+
+            @JavascriptInterface
+            fun onStartCodeHighlight() {
+                listener.onStartCodeHighlight()
             }
-        }
-        //Remover o listener.
-        else {
-            removeJavascriptInterface("android");
-        }
-    }
 
-    public float getFontSize() {
-        return fontSize;
-    }
-
-    public void setFontSize(float fontSize) {
-        if (fontSize < 8) fontSize = 8;
-        this.fontSize = fontSize;
-        if (onHighlightListener != null) {
-            onHighlightListener.onFontSizeChanged((int) fontSize);
-        }
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public CodeView setCode(String code) {
-        if (code == null) code = "";
-        this.code = code;
-        this.escapeCode = Html.escapeHtml(code);
-        return this;
-    }
-
-    public Theme getTheme() {
-        return theme;
-    }
-
-    public CodeView setTheme(Theme theme) {
-        this.theme = theme;
-        return this;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public CodeView setLanguage(Language language) {
-        this.language = language;
-        return this;
-    }
-
-    public boolean isWrapLine() {
-        return wrapLine;
-    }
-
-    public void setWrapLine(boolean wrapLine) {
-        this.wrapLine = wrapLine;
-    }
-
-    public boolean isZoomEnabled() {
-        return zoomEnabled;
-    }
-
-    public void setZoomEnabled(boolean zoomEnabled) {
-        this.zoomEnabled = zoomEnabled;
-    }
-
-    public boolean isShowLineNumber() {
-        return showLineNumber;
-    }
-
-    public void setShowLineNumber(boolean showLineNumber) {
-        this.showLineNumber = showLineNumber;
-    }
-
-    public int getStartLineNumber() {
-        return startLineNumber;
-    }
-
-    public void setStartLineNumber(int startLineNumber) {
-        if (startLineNumber < 0) startLineNumber = 1;
-        this.startLineNumber = startLineNumber;
-    }
-
-    public int getLineCount() {
-        return lineCount;
-    }
-
-    public void toggleLineNumber() {
-        showLineNumber = !showLineNumber;
-        showHideLineNumber(showLineNumber);
-    }
-
-    public void apply() {
-        loadDataWithBaseURL("", toHtml(), "text/html", "UTF-8", "");
-    }
-
-    @SuppressLint("DefaultLocale")
-    private String toHtml() {
-        StringBuilder sb = new StringBuilder();
-        //html
-        sb.append("<!DOCTYPE html>\n").append("<html>\n").append("<head>\n");
-        //style
-        sb.append("<link rel='stylesheet' href='").append(getTheme().getPath()).append("' />\n");
-        sb.append("<style>\n");
-        //body
-        sb.append("body {");
-        sb.append("font-size:").append(String.format("%dpx;", (int) getFontSize()));
-        sb.append("margin: 0px; line-height: 1.2;");
-        sb.append("}\n");
-        //.hljs
-        sb.append(".hljs {");
-        sb.append("}\n");
-        //pre
-        sb.append("pre {");
-        sb.append("margin: 0px; position: relative;");
-        sb.append("}\n");
-        //line
-        if (isWrapLine()) {
-            sb.append("td.line {");
-            sb.append("word-wrap: break-word; white-space: pre-wrap; word-break: break-all;");
-            sb.append("}\n");
-        }
-        //Outros
-        sb.append("table, td, tr {");
-        sb.append("margin: 0px; padding: 0px;");
-        sb.append("}\n");
-        sb.append("code > span { display: none; }");
-        sb.append("td.ln { text-align: right; padding-right: 2px; }");
-        sb.append("td.line:hover span {background: #661d76; color: #fff;}");
-        sb.append("td.line:hover {background: #661d76; color: #fff; border-radius: 2px;}");
-        sb.append("td.destacado {background: #ffda11; color: #000; border-radius: 2px;}");
-        sb.append("td.destacado span {background: #ffda11; color: #000;}");
-        sb.append("</style>");
-        //scripts
-        sb.append("<script src='file:///android_asset/highlightjs/highlight.js'></script>");
-        sb.append("<script>hljs.initHighlightingOnLoad();</script>");
-        sb.append("</head>");
-        //code
-        sb.append("<body>");
-        sb.append("<pre><code class='").append(language.getLanguageName()).append("'>").append(insertLineNumber(escapeCode)).append("</code></pre>\n");
-        return sb.toString();
-    }
-
-    private void executeJavaScript(String js) {
-        evaluateJavascript("javascript:" + js, null);
-    }
-
-    private void changeFontSize(int sizeInPx) {
-        executeJavaScript("document.body.style.fontSize = '" + sizeInPx + "px'");
-    }
-
-    private void fillLineNumbers() {
-        executeJavaScript("var i; var x = document.querySelectorAll('td.ln'); for(i = 0; i < x.length; i++) {x[i].innerHTML = x[i].getAttribute('line');}");
-    }
-
-    private void showHideLineNumber(boolean show) {
-        executeJavaScript(String.format(Locale.ENGLISH, "var i; var x = document.querySelectorAll('td.ln'); for(i = 0; i < x.length; i++) {x[i].style.display = %s;}", show ? "''" : "'none'"));
-    }
-
-    public int getHighlightLineNumber() {
-        return highlightLineNumber;
-    }
-
-    public void highlightLineNumber(int lineNumber) {
-        this.highlightLineNumber = lineNumber;
-        executeJavaScript("var x = document.querySelectorAll('.destacado'); if(x && x.length == 1) x[0].classList.remove('destacado');");
-        if (lineNumber >= 0) {
-            executeJavaScript(String.format(Locale.ENGLISH, "var x = document.querySelectorAll(\"td.line[line='%d']\"); if(x && x.length == 1) x[0].classList.add('destacado');", lineNumber));
-        }
-    }
-
-    private String insertLineNumber(String code) {
-        Matcher m = Pattern.compile("(.*?)&#10;").matcher(code);
-        StringBuffer sb = new StringBuffer();
-        int pos = getStartLineNumber();
-        lineCount = 0;
-        while (m.find()) {
-            m.appendReplacement(sb, String.format(Locale.ENGLISH, "<tr><td line='%d' class='hljs-number ln'></td><td line='%d' onclick='android.onLineClicked(%d, this.textContent);' class='line'>$1 </td></tr>&#10;", pos, pos, pos));
-            pos++;
-            lineCount++;
-        }
-
-        return "<table>\n" + sb.toString().trim() + "</table>\n";
-    }
-
-    public interface OnHighlightListener {
-        void onStartCodeHighlight();
-
-        void onFinishCodeHighlight();
-
-        void onLanguageDetected(Language language, int relevance);
-
-        void onFontSizeChanged(int sizeInPx);
-
-        void onLineClicked(int lineNumber, String content);
-    }
-
-    private class PinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
-        private float fontSize;
-        private int oldFontSize;
-
-        @Override
-        public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
-            fontSize = getFontSize();
-            oldFontSize = (int) fontSize;
-            return super.onScaleBegin(detector);
-        }
-
-        @Override
-        public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
-            CodeView.this.fontSize = fontSize;
-            super.onScaleEnd(detector);
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            fontSize = getFontSize() * detector.getScaleFactor();
-            if (fontSize >= 8) {
-                changeFontSize((int) fontSize);
-                if (onHighlightListener != null && oldFontSize != (int) fontSize) {
-                    onHighlightListener.onFontSizeChanged((int) fontSize);
+            @JavascriptInterface
+            fun onFinishCodeHighlight() {
+                Handler(Looper.getMainLooper()).post {
+                    fillLineNumbers()
+                    showHideLineNumber(showLineNumber)
+                    highlightLine(highlightLineNumber)
+                    listener.onFinishCodeHighlight()
                 }
-                oldFontSize = (int) fontSize;
-            } else {
-                fontSize = 8;
             }
-            return false;
+
+            @JavascriptInterface
+            fun onLanguageDetected(name: String, relevance: Int) {
+                listener.onLanguageDetected(
+                    Language.getLanguageByName(name), relevance
+                )
+            }
+
+            @JavascriptInterface
+            fun onLineClicked(lineNumber: Int, content: String) {
+                listener.onLineClicked(lineNumber, content)
+            }
+
+        }, "android")
+    }
+
+    private fun toHtml(): String = buildString {
+        append(
+            """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <link rel="stylesheet" href="${theme?.path}" />
+                <style>
+                    body {
+                        font-size:${fontSize.toInt()}px;
+                        margin:0;
+                        line-height:1.2;
+                    }
+                    pre { margin:0; position:relative; }
+                    table, td, tr { margin:0; padding:0; }
+                    td.ln { text-align:right; padding-right:2px; }
+                    td.line:hover { background:#661d76; color:#fff; border-radius:2px; }
+                    td.destacado { background:#ffda11; color:#000; border-radius:2px; }
+                </style>
+                <script src="file:///android_asset/highlightjs/highlight.js"></script>
+                <script>hljs.initHighlightingOnLoad();</script>
+            </head>
+            <body>
+                <pre><code class="${language?.languageName}">
+                    ${insertLineNumbers(escapedCode)}
+                </code></pre>
+            </body>
+            </html>
+            """.trimIndent()
+        )
+    }
+
+    private fun executeJs(js: String) {
+        evaluateJavascript("javascript:$js", null)
+    }
+
+    private fun fillLineNumbers() {
+        executeJs(
+            """
+            var x=document.querySelectorAll('td.ln');
+            for(var i=0;i<x.length;i++){
+                x[i].innerHTML=x[i].getAttribute('line');
+            }
+            """
+        )
+    }
+
+    private fun showHideLineNumber(show: Boolean) {
+        executeJs(
+            """
+            var x=document.querySelectorAll('td.ln');
+            for(var i=0;i<x.length;i++){
+                x[i].style.display=${if (show) "''" else "'none'"};
+            }
+            """
+        )
+    }
+
+    fun highlightLine(line: Int) {
+        highlightLineNumber = line
+        executeJs("var x=document.querySelectorAll('.destacado'); if(x[0]) x[0].classList.remove('destacado');")
+        if (line >= 0) {
+            executeJs("var x=document.querySelector(\"td.line[line='$line']\"); if(x) x.classList.add('destacado');")
+        }
+    }
+
+    private fun insertLineNumbers(code: String): String {
+        val matcher = Pattern.compile("(.*?)&#10;").matcher(code)
+        val sb = StringBuffer()
+        var line = startLineNumber
+        lineCount = 0
+
+        while (matcher.find()) {
+            matcher.appendReplacement(
+                sb,
+                "<tr><td line='$line' class='hljs-number ln'></td><td line='$line' onclick='android.onLineClicked($line, this.textContent);' class='line'>$1</td></tr>&#10;"
+            )
+            line++
+            lineCount++
+        }
+
+        return "<table>$sb</table>"
+    }
+
+    interface OnHighlightListener {
+        fun onStartCodeHighlight()
+        fun onFinishCodeHighlight()
+        fun onLanguageDetected(language: Language, relevance: Int)
+        fun onFontSizeChanged(sizeInPx: Int)
+        fun onLineClicked(lineNumber: Int, content: String)
+    }
+
+    private inner class PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+        private var oldSize = fontSize
+
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            fontSize *= detector.scaleFactor
+            fontSize = fontSize.coerceAtLeast(8f)
+
+            if (oldSize.toInt() != fontSize.toInt()) {
+                executeJs("document.body.style.fontSize='${fontSize.toInt()}px'")
+                onHighlightListener?.onFontSizeChanged(fontSize.toInt())
+                oldSize = fontSize
+            }
+            return true
         }
     }
 }

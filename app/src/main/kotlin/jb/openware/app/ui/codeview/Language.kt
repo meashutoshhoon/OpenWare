@@ -191,8 +191,8 @@ enum class Language(val languageName: String) {
         }
 
         @JvmStatic
-        fun getLanguageByName(name: String): Language? {
-            return LANGUAGES[name]
+        fun getLanguageByName(name: String): Language {
+            return LANGUAGES[name]!!
         }
     }
 }
