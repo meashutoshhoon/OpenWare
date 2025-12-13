@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import jb.openware.app.databinding.ProjectCellBinding
-import jb.openware.app.ui.items.ProjectCategory
 import androidx.core.graphics.drawable.toDrawable
+import jb.openware.app.ui.items.Project
 
 @SuppressLint("ViewConstructor")
 class ProjectCell(context: Context) : FrameLayout(context) {
@@ -41,14 +41,14 @@ class ProjectCell(context: Context) : FrameLayout(context) {
         }
     }
 
-    fun setData(item: ProjectCategory) {
+    fun setData(item: Project) {
         Glide.with(context)
             .load(item.icon)
             .placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(iconUser)
 
         projectName.text = item.title
-        category.text = item.categoryName
+        category.text = item.category
         size.text = formatNumber(item.size)
     }
 }

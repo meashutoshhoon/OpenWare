@@ -14,14 +14,6 @@ data class ProjectItem(
     val userName: String
 )
 
-
-data class ProjectCategory(
-    val icon: String,
-    val title: String,
-    val categoryName: String,
-    val size: String
-)
-
 @Parcelize
 data class Project(
     val icon: String?,
@@ -45,6 +37,7 @@ data class Project(
     val editorsChoice: Boolean,
     val commentsVisible: Boolean,
     val visible: Boolean,
+    val key: String,
     val name: String?
 ) :  Parcelable {
     companion object {
@@ -77,7 +70,8 @@ data class Project(
                 editorsChoice = map["editorsChoice"]?.toString() == "true",
                 commentsVisible = map["commentsVisibility"]?.toString() == "true",
                 visible = map["visibility"]?.toString() == "true",
-                name = map["name"]?.toString()
+                name = map["name"]?.toString(),
+                key = map["key"]?.toString() ?: ""
             )
         }
     }

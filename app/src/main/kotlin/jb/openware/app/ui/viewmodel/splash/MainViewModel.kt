@@ -17,10 +17,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _updateEvent = MutableLiveData<ServerConfig>()
     val updateEvent: LiveData<ServerConfig> = _updateEvent
 
+    private val _serverConfig = MutableLiveData<ServerConfig>()
+    val serverConfig: LiveData<ServerConfig> = _serverConfig
+
     fun handleServerConfig(
         config: ServerConfig,
         appVersion: Int
     ) {
+        _serverConfig.value = config
+
         when {
             appVersion < config.necessaryUpdateVersion -> {
                 _updateEvent.value = config
@@ -34,6 +39,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _navigation.value = MainNavigation.GoNext
             }
         }
+    }
+
+    fun retry() {
+        _uiState.value = MainUiState.SPLASH
     }
 
     fun onNoInternet() {

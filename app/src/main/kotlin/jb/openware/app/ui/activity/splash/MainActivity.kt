@@ -18,8 +18,7 @@ import jb.openware.app.ui.viewmodel.splash.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainActivity :
-    BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -48,8 +47,7 @@ class MainActivity :
         lifecycleScope.launch {
             delay(500)
             UpdateBottomSheetDialog(
-                config = config,
-                appVersion = BuildConfig.VERSION_CODE
+                config = config, appVersion = BuildConfig.VERSION_CODE
             ) {
                 goNext()
             }.show(supportFragmentManager, "UpdateDialog")
@@ -59,14 +57,11 @@ class MainActivity :
     private fun observeState() {
         viewModel.uiState.observe(this) { state ->
             when (state) {
-                MainUiState.SPLASH ->
-                    showFragment(SplashFragment())
+                MainUiState.SPLASH -> showFragment(SplashFragment())
 
-                MainUiState.NO_INTERNET ->
-                    showFragment(NoInternetFragment())
+                MainUiState.NO_INTERNET -> showFragment(NoInternetFragment())
 
-                MainUiState.MAINTENANCE ->
-                    showFragment(MaintenanceFragment())
+                MainUiState.MAINTENANCE -> showFragment(MaintenanceFragment())
             }
         }
     }
@@ -78,15 +73,13 @@ class MainActivity :
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentContainer.id, fragment)
+        supportFragmentManager.beginTransaction().replace(binding.fragmentContainer.id, fragment)
             .commitAllowingStateLoss()
     }
 
     private fun goNext() {
         val intent = Intent(
-            this,
-            if (userConfig.isLoggedIn()) {
+            this, if (userConfig.isLoggedIn()) {
                 HomeActivity::class.java
             } else {
                 LoginActivity::class.java

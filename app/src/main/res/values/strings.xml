@@ -51,8 +51,8 @@
     <string name="des_smooth_scroll">Enables smooth scrolling in the shell output when top or bottom arrow is clicked</string>
     <string name="about">About</string>
     <string name="des_about">Version &amp; Credits</string>
+    <string name="company_name">©JB</string>
 
-    <string name="company_name">© AFI Studio Productions</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">Username</string>

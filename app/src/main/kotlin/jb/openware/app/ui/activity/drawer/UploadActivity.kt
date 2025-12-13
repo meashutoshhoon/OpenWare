@@ -472,7 +472,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     editorsChoice = false,
                     commentsVisible = binding.comments.isChecked,
                     visible = binding.visibility.isChecked,
-
+                    key = key,
                     name = if (newProject) userConfig.name
                     else receivedHashMap?.get("name")?.toString()
                 )
@@ -483,7 +483,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     receivedHashMap?.get("id").toString()
                 }
 
-                val dataMap = baseProject.toFirebaseMap(key, id)
+                val dataMap = baseProject.toFirebaseMap(id)
 
                 val targetRef = if (isPremium) premiumServer else project
 
@@ -540,13 +540,11 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
     private fun handleScreenshotsAndFile() {
 
-        // 3️⃣ New screenshots upload (if any)
         if (screenshots2.isNotEmpty()) {
             uploadScreenshotAtIndex(0)
             return
         }
 
-        // 4️⃣ No new screenshots → upload project/file directly
         upload()
     }
 
@@ -585,7 +583,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
 
     fun Project.toFirebaseMap(
-        key: String, id: String
+        id: String
     ): Map<String, Any> = mapOf(
         "icon" to (icon ?: "none"),
         "title" to (title ?: ""),
@@ -594,7 +592,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
         "downloadUrl" to (downloadUrl ?: "none"),
         "size" to (size ?: "0"),
         "uid" to (uid ?: ""),
-        "key" to key,
+        "key" to (key ?: ""),
 
         // counters (preserved correctly)
         "likes" to (likes ?: "0"),

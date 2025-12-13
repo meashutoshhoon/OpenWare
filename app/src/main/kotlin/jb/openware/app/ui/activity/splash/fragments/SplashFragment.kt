@@ -37,9 +37,7 @@ class SplashFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
@@ -61,7 +59,7 @@ class SplashFragment : Fragment() {
         }
     }
 
-    private fun fetchServerConfig() {
+    fun fetchServerConfig() {
         val manager = ConnectionManager()
 
         manager.startRequest(
@@ -70,12 +68,10 @@ class SplashFragment : Fragment() {
                     tag: String, response: String, responseHeaders: HashMap<String, Any>
                 ) {
                     try {
-                        val config =
-                            Gson().fromJson(response, ServerConfig::class.java)
+                        val config = Gson().fromJson(response, ServerConfig::class.java)
 
                         viewModel.handleServerConfig(
-                            config,
-                            appVersion = BuildConfig.VERSION_CODE
+                            config, appVersion = BuildConfig.VERSION_CODE
                         )
 
                     } catch (_: Exception) {
