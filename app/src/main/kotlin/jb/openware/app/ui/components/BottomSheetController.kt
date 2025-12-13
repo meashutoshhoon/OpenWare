@@ -39,6 +39,5 @@ class BottomSheetController(private val context: Context) {
             ?: error("View ID $viewId not found in BottomSheet layout")
     }
 
-    fun isShowing(): Boolean =
-        ::dialog.isInitialized && dialog.isShowing
+    fun isShowing(): Boolean = ::dialog.isInitialized && dialog.isShowing
 }

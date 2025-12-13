@@ -27,9 +27,7 @@ class BadgeDrawable(private val context: Context) {
 
     private fun getBadgeColor(): Int {
         val mask = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return if (mask == Configuration.UI_MODE_NIGHT_YES)
-            0xFF8DCDFF.toInt()
-        else
-            0xFF006493.toInt()
+        return if (mask == Configuration.UI_MODE_NIGHT_YES) 0xFF8DCDFF.toInt()
+        else 0xFF006493.toInt()
     }
 }

@@ -8,16 +8,13 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.util.StateSet
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import jb.openware.app.R
 import kotlin.math.ceil
 
 class LinkSpan @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val textView1: TextView
@@ -76,8 +73,7 @@ class LinkSpan @JvmOverloads constructor(
             val radius = dp(15f)
             val maskDrawable = createRoundRectDrawable(radius, 0xFFFFFFFF.toInt())
             val colorStateList = ColorStateList(
-                arrayOf(StateSet.WILD_CARD),
-                intArrayOf((color and 0x00FFFFFF) or 0x19000000)
+                arrayOf(StateSet.WILD_CARD), intArrayOf((color and 0x00FFFFFF) or 0x19000000)
             )
             return RippleDrawable(colorStateList, null, maskDrawable)
         }

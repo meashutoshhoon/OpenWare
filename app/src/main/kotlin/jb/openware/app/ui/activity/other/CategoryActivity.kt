@@ -4,7 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import jb.openware.app.databinding.ActivityCategoryBinding
 import jb.openware.app.ui.adapter.ListProjectAdapter
 import jb.openware.app.ui.common.BaseActivity
@@ -87,7 +94,9 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(ActivityCategoryB
                 binding.recyclerview.adapter = ListProjectAdapter(projects, this, userNames, 1)
                 val title = intent?.getStringExtra("title") ?: ""
                 // original used startAt(...).endAt(...); consider equalTo(...) if you want strict equality
-                setQuery(normalRef.limitToLast(limit.toInt()).orderByChild(k).startAt(title).endAt(title))
+                setQuery(
+                    normalRef.limitToLast(limit.toInt()).orderByChild(k).startAt(title).endAt(title)
+                )
             }
         }
     }
@@ -129,7 +138,10 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(ActivityCategoryB
                             setQuery(premiumRef.limitToLast(limit.toInt()))
                         } else {
                             val title = intent?.getStringExtra("title") ?: ""
-                            setQuery(normalRef.limitToLast(limit.toInt()).orderByChild(k).startAt(title).endAt(title))
+                            setQuery(
+                                normalRef.limitToLast(limit.toInt()).orderByChild(k).startAt(title)
+                                    .endAt(title)
+                            )
                         }
                     }
                     binding.loading.visibility = View.VISIBLE
@@ -142,7 +154,8 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(ActivityCategoryB
         // remove previous listener if any
         try {
             query1?.removeEventListener(valueEventListener1)
-        } catch (_: Exception) { /* ignore if not attached */ }
+        } catch (_: Exception) { /* ignore if not attached */
+        }
 
         query1 = newQuery
         query1?.addValueEventListener(valueEventListener1)

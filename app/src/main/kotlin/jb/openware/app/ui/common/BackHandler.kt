@@ -1,7 +1,7 @@
 package jb.openware.app.ui.common
 
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 
 class BackHandler(
     private val activity: ComponentActivity,

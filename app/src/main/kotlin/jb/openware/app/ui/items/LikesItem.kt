@@ -4,9 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LikeItem(
-    val uid: String = "",
-    val key: String = "",
-    val value: Boolean = false
+    val uid: String = "", val key: String = "", val value: Boolean = false
 )
 
 @Serializable

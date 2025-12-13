@@ -28,9 +28,7 @@ class SettingsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSettingsBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return ViewHolder(binding)
     }
@@ -79,7 +77,8 @@ class SettingsAdapter(
         }
 
         private fun setupItemMargin(isLastItem: Boolean) {
-            val bottom = if (isLastItem) Utils.convertDpToPixel(30f, itemView.context).toInt() else 0
+            val bottom =
+                if (isLastItem) Utils.convertDpToPixel(30f, itemView.context).toInt() else 0
             val lp = itemView.layoutParams as? ViewGroup.MarginLayoutParams ?: return
             lp.bottomMargin = bottom
             itemView.layoutParams = lp

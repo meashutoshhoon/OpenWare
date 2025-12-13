@@ -21,8 +21,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val serverConfig: LiveData<ServerConfig> = _serverConfig
 
     fun handleServerConfig(
-        config: ServerConfig,
-        appVersion: Int
+        config: ServerConfig, appVersion: Int
     ) {
         _serverConfig.value = config
 

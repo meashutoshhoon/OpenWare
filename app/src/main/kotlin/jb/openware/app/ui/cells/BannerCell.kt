@@ -5,9 +5,9 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import jb.openware.app.databinding.ProjectBannerBinding
-import androidx.core.graphics.drawable.toDrawable
 
 @SuppressLint("ViewConstructor")
 class BannerCell(context: Context) : FrameLayout(context) {
@@ -39,18 +39,14 @@ class BannerCell(context: Context) : FrameLayout(context) {
         sizeText: String,
         screenshotUrl: String
     ) {
-        Glide.with(context)
-            .load(iconUserUrl)
-            .placeholder(0xFFE0E0E0.toInt().toDrawable())
+        Glide.with(context).load(iconUserUrl).placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(iconUser)
 
         projectName.text = title
         category.text = categoryText
         size.text = sizeText
 
-        Glide.with(context)
-            .load(screenshotUrl)
-            .placeholder(0xFFE0E0E0.toInt().toDrawable())
+        Glide.with(context).load(screenshotUrl).placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(iconProject)
     }
 }

@@ -1,6 +1,5 @@
 package jb.openware.app.util
 
-import android.content.Context
 import android.os.Build
 import `in`.afi.codekosh.BuildConfig
 import java.text.SimpleDateFormat

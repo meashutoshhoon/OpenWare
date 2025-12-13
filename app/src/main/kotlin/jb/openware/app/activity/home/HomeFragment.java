@@ -38,7 +38,6 @@ import java.util.concurrent.Executors;
 
 import in.afi.codekosh.R;
 import in.afi.codekosh.adapter.BannerProjectAdapter;
-import in.afi.codekosh.adapter.BaseProjectAdapter;
 import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.nativeAds.MobileAdsLoader;
 import in.afi.codekosh.nativeAds.TemplateView;

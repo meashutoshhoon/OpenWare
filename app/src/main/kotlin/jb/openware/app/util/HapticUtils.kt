@@ -9,8 +9,7 @@ object HapticUtils {
 
     /** Types of vibration. */
     enum class VibrationType {
-        Weak,
-        Strong
+        Weak, Strong
     }
 
     fun vibrate(view: View, type: VibrationType) {

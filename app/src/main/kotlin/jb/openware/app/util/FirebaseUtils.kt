@@ -2,7 +2,11 @@ package jb.openware.app.util
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
 class FirebaseUtils {
@@ -22,14 +26,12 @@ class FirebaseUtils {
     ) {
         val fileRef = storage.getReference(reference).child(child)
 
-        fileRef.putFile(fileUri)
-            .continueWithTask { task ->
+        fileRef.putFile(fileUri).continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let { throw it }
                 }
                 fileRef.downloadUrl
-            }
-            .addOnSuccessListener { uri -> onSuccess(uri.toString()) }
+            }.addOnSuccessListener { uri -> onSuccess(uri.toString()) }
             .addOnFailureListener(onFailure)
     }
 
@@ -44,12 +46,9 @@ class FirebaseUtils {
     /* -------------------------------- Database -------------------------------- */
 
     fun getData(
-        reference: String,
-        child: String,
-        callback: (Map<String, Any>?) -> Unit
+        reference: String, child: String, callback: (Map<String, Any>?) -> Unit
     ) {
-        database.getReference(reference)
-            .child(child)
+        database.getReference(reference).child(child)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -58,9 +57,8 @@ class FirebaseUtils {
                         return
                     }
 
-                    val data = snapshot.getValue(
-                        object : GenericTypeIndicator<Map<String, Any>>() {}
-                    )
+                    val data =
+                        snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
                     callback(data)
                 }
 
@@ -77,11 +75,8 @@ class FirebaseUtils {
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        database.getReference(reference)
-            .child(child)
-            .updateChildren(data)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener(onFailure)
+        database.getReference(reference).child(child).updateChildren(data)
+            .addOnSuccessListener { onSuccess() }.addOnFailureListener(onFailure)
     }
 
     /* ---------------------------- User counters ---------------------------- */
@@ -104,13 +99,11 @@ class FirebaseUtils {
                 "Users",
                 uid,
                 onSuccess = {},
-                onFailure = {}
-            )
+                onFailure = {})
         }
     }
 
     /* -------------------------------- Auth -------------------------------- */
 
-    fun getUid(): String =
-        auth.currentUser?.uid ?: error("User not authenticated")
+    fun getUid(): String = auth.currentUser?.uid ?: error("User not authenticated")
 }

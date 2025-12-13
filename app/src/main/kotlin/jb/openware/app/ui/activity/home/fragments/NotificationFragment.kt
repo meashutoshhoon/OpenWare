@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,14 +15,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import jb.openware.app.R
 import jb.openware.app.databinding.FragmentNotificationBinding
 import jb.openware.app.databinding.NotificationCellBinding
+import jb.openware.app.ui.components.TextFormatter
 import jb.openware.app.ui.items.NotificationItem
 import jb.openware.app.util.ConnectionManager
-import androidx.core.graphics.drawable.toDrawable
 import jb.openware.app.util.notificationUrl
-import jb.openware.app.R
-import jb.openware.app.ui.components.TextFormatter
 import jb.openware.imageviewer.ImageViewer
 
 class NotificationFragment : Fragment() {
@@ -36,9 +36,7 @@ class NotificationFragment : Fragment() {
     private val gson = Gson()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotificationBinding.inflate(inflater, container, false)
         return binding.root
@@ -63,10 +61,8 @@ class NotificationFragment : Fragment() {
 
         // layout1 is from fragment_notification.xml, via viewbinding
         binding.layout.addView(
-            refreshLayoutUser,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+            refreshLayoutUser, ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
         )
 
@@ -78,15 +74,10 @@ class NotificationFragment : Fragment() {
         refreshLayoutUser.isRefreshing = true
 
         connectionManager.startRequest(
-            "GET",
-            notificationUrl,
-            "A",
-            object : ConnectionManager.RequestListener {
+            "GET", notificationUrl, "A", object : ConnectionManager.RequestListener {
 
                 override fun onResponse(
-                    tag: String,
-                    response: String,
-                    responseHeaders: HashMap<String, Any>
+                    tag: String, response: String, responseHeaders: HashMap<String, Any>
                 ) {
                     val type = object : TypeToken<List<NotificationItem>>() {}.type
                     val items: List<NotificationItem> = gson.fromJson(response, type)
@@ -96,16 +87,12 @@ class NotificationFragment : Fragment() {
                 }
 
                 override fun onErrorResponse(tag: String, message: String) {
-                    MaterialAlertDialogBuilder(requireActivity())
-                        .setTitle("Alert")
-                        .setMessage(message)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show()
+                    MaterialAlertDialogBuilder(requireActivity()).setTitle("Alert")
+                        .setMessage(message).setPositiveButton(android.R.string.ok, null).show()
 
                     refreshLayoutUser.isRefreshing = false
                 }
-            }
-        )
+            })
     }
 
     // Adapter using viewbinding for cell
@@ -115,9 +102,7 @@ class NotificationFragment : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = NotificationCellBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
             return ViewHolder(binding)
         }
@@ -143,32 +128,20 @@ class NotificationFragment : Fragment() {
 
                 holder.binding.image.setOnClickListener { imageView ->
                     ImageViewer.Builder(
-                        imageView.context,
-                        images
+                        imageView.context, images
                     ) { imageViewInner, image ->
-                        Glide.with(imageViewInner.context)
-                            .load(image)
+                        Glide.with(imageViewInner.context).load(image)
                             .transition(DrawableTransitionOptions.withCrossFade())
-                            .placeholder(0xFFD3D3D3.toInt().toDrawable())
-                            .into(imageViewInner)
-                    }
-                        .withStartPosition(0)
-                        .withHiddenStatusBar(true)
-                        .allowZooming(true)
-                        .allowSwipeToDismiss(true)
-                        .withTransitionFrom(holder.binding.image)
+                            .placeholder(0xFFD3D3D3.toInt().toDrawable()).into(imageViewInner)
+                    }.withStartPosition(0).withHiddenStatusBar(true).allowZooming(true)
+                        .allowSwipeToDismiss(true).withTransitionFrom(holder.binding.image)
                         .withDismissListener {
                             holder.binding.image.visibility = View.VISIBLE
-                        }
-                        .show()
+                        }.show()
                 }
 
-                Glide.with(ctx)
-                    .load(item.url)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .placeholder(R.color.grey)
-                    .centerCrop()
-                    .into(holder.binding.image)
+                Glide.with(ctx).load(item.url).transition(DrawableTransitionOptions.withCrossFade())
+                    .placeholder(R.color.grey).centerCrop().into(holder.binding.image)
             }
         }
 

@@ -64,6 +64,7 @@ import java.nio.charset.StandardCharsets
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.roundToInt
+import androidx.core.content.edit
 
 abstract class BaseActivity<VB : ViewBinding>(
     private val bindingInflater: (LayoutInflater) -> VB
@@ -81,6 +82,8 @@ abstract class BaseActivity<VB : ViewBinding>(
     private var vibrationDuration: Long = 0L
 
     private lateinit var vibrator: Vibrator
+
+    private val PREFS_NAME = "app_prefs"
 
     protected lateinit var binding: VB
         private set
@@ -499,6 +502,22 @@ abstract class BaseActivity<VB : ViewBinding>(
             startActivity(intent)
         }
     }
+
+    fun Context.putPrefString(key: String, value: String) {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            .edit {
+                putString(key, value)
+            }
+    }
+
+    fun Context.getPrefString(
+        key: String,
+        default: String
+    ): String {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            .getString(key, default) ?: default
+    }
+
 
     fun isAndroid13OrAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 

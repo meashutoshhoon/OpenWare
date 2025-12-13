@@ -4,23 +4,40 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.graphics.*
-import androidx.exifinterface.media.ExifInterface
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.LightingColorFilter
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import java.io.*
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
+import androidx.exifinterface.media.ExifInterface
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
+import java.io.RandomAccessFile
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.math.ceil
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.scale
-import androidx.core.net.toUri
 
 object FileUtil {
 
@@ -143,9 +160,7 @@ object FileUtil {
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             val bytes = "codekoshafisecur".toByteArray()
             cipher.init(
-                Cipher.DECRYPT_MODE,
-                SecretKeySpec(bytes, "AES"),
-                IvParameterSpec(bytes)
+                Cipher.DECRYPT_MODE, SecretKeySpec(bytes, "AES"), IvParameterSpec(bytes)
             )
             RandomAccessFile(path, "r").use { raf ->
                 val data = ByteArray(raf.length().toInt())
@@ -163,9 +178,7 @@ object FileUtil {
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             val bytes = "codekoshafisecur".toByteArray()
             cipher.init(
-                Cipher.ENCRYPT_MODE,
-                SecretKeySpec(bytes, "AES"),
-                IvParameterSpec(bytes)
+                Cipher.ENCRYPT_MODE, SecretKeySpec(bytes, "AES"), IvParameterSpec(bytes)
             )
             RandomAccessFile(path, "rw").use { raf ->
                 raf.write(cipher.doFinal(text.toByteArray()))
@@ -246,20 +259,16 @@ object FileUtil {
     }
 
     @JvmStatic
-    fun isDirectory(path: String): Boolean =
-        isExistFile(path) && File(path).isDirectory
+    fun isDirectory(path: String): Boolean = isExistFile(path) && File(path).isDirectory
 
     @JvmStatic
-    fun isFile(path: String): Boolean =
-        isExistFile(path) && File(path).isFile
+    fun isFile(path: String): Boolean = isExistFile(path) && File(path).isFile
 
     @JvmStatic
-    fun getFileLength(path: String): Long =
-        if (!isExistFile(path)) 0 else File(path).length()
+    fun getFileLength(path: String): Long = if (!isExistFile(path)) 0 else File(path).length()
 
     @JvmStatic
-    fun getExternalStorageDir(): String =
-        Environment.getExternalStorageDirectory().absolutePath
+    fun getExternalStorageDir(): String = Environment.getExternalStorageDirectory().absolutePath
 
     @JvmStatic
     fun getPackageDataDir(context: Context): String =
@@ -313,8 +322,7 @@ object FileUtil {
                     }
 
                     val contentUri = ContentUris.withAppendedId(
-                        "content://downloads/public_downloads".toUri(),
-                        id.toLong()
+                        "content://downloads/public_downloads".toUri(), id.toLong()
                     )
 
                     path = getDataColumn(context, contentUri, null, null)
@@ -324,9 +332,7 @@ object FileUtil {
                     val docId = DocumentsContract.getDocumentId(uri)
                     val split = docId.split(":")
                     val type = split[0]
-
-                    var contentUri: Uri? = null
-                    contentUri = when (type) {
+                    val contentUri: Uri? = when (type) {
                         "image" -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         "video" -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                         "audio" -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -356,10 +362,7 @@ object FileUtil {
     }
 
     private fun getDataColumn(
-        context: Context,
-        uri: Uri?,
-        selection: String?,
-        selectionArgs: Array<String>?
+        context: Context, uri: Uri?, selection: String?, selectionArgs: Array<String>?
     ): String? {
         if (uri == null) return null
         val column = MediaStore.Images.Media.DATA
@@ -430,9 +433,7 @@ object FileUtil {
             val halfHeight = height / 2
             val halfWidth = width / 2
 
-            while ((halfHeight / inSampleSize) >= reqHeight &&
-                (halfWidth / inSampleSize) >= reqWidth
-            ) {
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
                 inSampleSize *= 2
             }
         }
@@ -592,10 +593,26 @@ object FileUtil {
         val src = BitmapFactory.decodeFile(fromPath)
         val cm = ColorMatrix(
             floatArrayOf(
-                1f, 0f, 0f, 0f, brightness,
-                0f, 1f, 0f, 0f, brightness,
-                0f, 0f, 1f, 0f, brightness,
-                0f, 0f, 0f, 1f, 0f
+                1f,
+                0f,
+                0f,
+                0f,
+                brightness,
+                0f,
+                1f,
+                0f,
+                0f,
+                brightness,
+                0f,
+                0f,
+                1f,
+                0f,
+                brightness,
+                0f,
+                0f,
+                0f,
+                1f,
+                0f
             )
         )
 
@@ -614,10 +631,26 @@ object FileUtil {
         val src = BitmapFactory.decodeFile(fromPath)
         val cm = ColorMatrix(
             floatArrayOf(
-                contrast, 0f, 0f, 0f, 0f,
-                0f, contrast, 0f, 0f, 0f,
-                0f, 0f, contrast, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
+                contrast,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                contrast,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                contrast,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                1f,
+                0f
             )
         )
 
@@ -634,7 +667,7 @@ object FileUtil {
 
     @JvmStatic
     fun getJpegRotate(filePath: String): Int {
-        var rotate = 0
+        var rotate: Int
         try {
             val exif = ExifInterface(filePath)
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)

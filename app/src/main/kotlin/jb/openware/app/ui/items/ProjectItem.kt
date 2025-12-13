@@ -1,8 +1,8 @@
 package jb.openware.app.ui.items
 
+import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 data class ProjectItem(
@@ -39,7 +39,7 @@ data class Project(
     val visible: Boolean,
     val key: String,
     val name: String?
-) :  Parcelable {
+) : Parcelable {
     companion object {
 
         fun fromMap(map: Map<String, Any>): Project {

@@ -1,21 +1,21 @@
 package jb.openware.app.ui.activity.other
 
-import android.app.Activity
 import android.content.SharedPreferences
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import jb.openware.app.databinding.ActivityLikesCountBinding
 import jb.openware.app.ui.cells.UsersCell
 import jb.openware.app.ui.common.BaseActivity
-import androidx.core.content.edit
-import androidx.recyclerview.widget.LinearLayoutManager
 import jb.openware.app.ui.items.LikeItem
 import jb.openware.app.ui.items.UserItem
 import jb.openware.app.util.Utils
 
-class LikesCountActivity : BaseActivity<ActivityLikesCountBinding>(ActivityLikesCountBinding::inflate) {
+class LikesCountActivity :
+    BaseActivity<ActivityLikesCountBinding>(ActivityLikesCountBinding::inflate) {
 
     private val firebase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val usersRef: DatabaseReference = firebase.getReference("Users")
@@ -23,8 +23,10 @@ class LikesCountActivity : BaseActivity<ActivityLikesCountBinding>(ActivityLikes
 
     // Caches
     private val users = HashMap<String, UserItem>()              // uid -> UserItem
-    private val likes = HashMap<String, LikeItem>()              // firebaseKey -> LikeItem (or use snapshot key)
-    private val activeLikedUids = LinkedHashSet<String>()        // maintain order, unique uids for adapter
+    private val likes =
+        HashMap<String, LikeItem>()              // firebaseKey -> LikeItem (or use snapshot key)
+    private val activeLikedUids =
+        LinkedHashSet<String>()        // maintain order, unique uids for adapter
 
     // Adapter
     private val adapter = UsersAdapter()
@@ -109,8 +111,7 @@ class LikesCountActivity : BaseActivity<ActivityLikesCountBinding>(ActivityLikes
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val usersCell = UsersCell(this@LikesCountActivity).apply {
                 layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 )
             }
             return ViewHolder(usersCell)
@@ -120,12 +121,9 @@ class LikesCountActivity : BaseActivity<ActivityLikesCountBinding>(ActivityLikes
             val item = items[position]
             val uid = item.uid
 
-            if (uid != null &&
-                userNames.containsKey(uid) &&
-                userDp.containsKey(uid) &&
-                userColor.containsKey(uid) &&
-                userBadge.containsKey(uid) &&
-                userVerified.containsKey(uid)
+            if (uid != null && userNames.containsKey(uid) && userDp.containsKey(uid) && userColor.containsKey(
+                    uid
+                ) && userBadge.containsKey(uid) && userVerified.containsKey(uid)
             ) {
                 val name = userNames[uid].orEmpty()
                 val avatar = userDp[uid].orEmpty()
@@ -136,7 +134,8 @@ class LikesCountActivity : BaseActivity<ActivityLikesCountBinding>(ActivityLikes
             }
 
             holder.itemView.setOnClickListener {
-                val prefs: SharedPreferences = getSharedPreferences("developer", Activity.MODE_PRIVATE)
+                val prefs: SharedPreferences =
+                    getSharedPreferences("developer", MODE_PRIVATE)
                 prefs.edit { putString("uid", item["uid"]?.toString()) }
                 startActivity(ProfileActivity::class.java)
             }

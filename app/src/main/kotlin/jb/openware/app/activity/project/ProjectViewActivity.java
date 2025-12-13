@@ -75,7 +75,6 @@ import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.model.Project;
 import in.afi.codekosh.nativeAds.MobileAdsLoader;
 import jb.openware.app.util.net.DownloadCallback;
-import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
 
 public class ProjectViewActivity extends BaseFragment {

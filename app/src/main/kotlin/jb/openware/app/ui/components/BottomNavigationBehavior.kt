@@ -9,20 +9,16 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 
 class BottomNavigationBehavior(
-    context: Context,
-    attrs: AttributeSet
+    context: Context, attrs: AttributeSet
 ) : CoordinatorLayout.Behavior<View>(context, attrs) {
 
     override fun onLayoutChild(
-        parent: CoordinatorLayout,
-        child: View,
-        layoutDirection: Int
+        parent: CoordinatorLayout, child: View, layoutDirection: Int
     ): Boolean {
         parent.onLayoutChild(child, layoutDirection)
 
         // Clamp translation between 0 and -child.height
-        child.translationY = child.translationY
-            .coerceIn(-child.height.toFloat(), 0f)
+        child.translationY = child.translationY.coerceIn(-child.height.toFloat(), 0f)
 
         return true
     }
@@ -54,16 +50,11 @@ class BottomNavigationBehavior(
     }
 
     private fun hide(v: View) {
-        v.animate()
-            .translationY(v.height.toFloat())
-            .setInterpolator(AccelerateInterpolator(2f))
+        v.animate().translationY(v.height.toFloat()).setInterpolator(AccelerateInterpolator(2f))
             .start()
     }
 
     private fun show(v: View) {
-        v.animate()
-            .translationY(0f)
-            .setInterpolator(DecelerateInterpolator(2f))
-            .start()
+        v.animate().translationY(0f).setInterpolator(DecelerateInterpolator(2f)).start()
     }
 }

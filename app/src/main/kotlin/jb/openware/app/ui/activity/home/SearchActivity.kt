@@ -55,8 +55,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
     override fun initLogic() {
         adapter = SearchAdapter(projects) { project ->
             getSharedPreferences("developer", MODE_PRIVATE).edit {
-                    putString("type", "Free")
-                }
+                putString("type", "Free")
+            }
 
             startActivity(
                 Intent(this, ProjectViewActivity::class.java).apply {
@@ -91,9 +91,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
                     }.getOrNull() ?: return@forEach
 
                     if (project.visible && project.title?.contains(
-                                query,
-                                ignoreCase = true
-                            ) == true
+                            query, ignoreCase = true
+                        ) == true
                     ) {
                         projects.add(project)
                     }

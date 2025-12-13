@@ -45,10 +45,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.afi.codekosh.R;
 import in.afi.codekosh.activity.login.LoginActivity;
 import in.afi.codekosh.adapter.BannerProjectAdapter;
-import in.afi.codekosh.adapter.BaseProjectAdapter;
 import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.nativeAds.MobileAdsLoader;
-import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
 
 public class ProfileActivity extends BaseFragment {

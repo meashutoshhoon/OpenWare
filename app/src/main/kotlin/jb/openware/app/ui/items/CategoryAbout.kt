@@ -8,9 +8,7 @@ data class CategoryAbout(
 ) {
 
     data class LeadDeveloperItem(
-        val title: String,
-        val description: String,
-        @DrawableRes val imageRes: Int
+        val title: String, val description: String, @DrawableRes val imageRes: Int
     )
 
     data class ContributorsItem(
@@ -21,9 +19,6 @@ data class CategoryAbout(
     )
 
     data class AppItem(
-        val id: String,
-        val title: String,
-        val description: String,
-        @DrawableRes val imageRes: Int
+        val id: String, val title: String, val description: String, @DrawableRes val imageRes: Int
     )
 }

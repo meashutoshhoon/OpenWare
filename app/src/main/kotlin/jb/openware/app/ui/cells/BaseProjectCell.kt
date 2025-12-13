@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import jb.openware.app.databinding.ProjectBinding
-import androidx.core.graphics.drawable.toDrawable
+import jb.openware.app.ui.items.Project
 
 class BaseProjectCell(context: Context) : FrameLayout(context) {
 
-    private val binding =
-        ProjectBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = ProjectBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val icon = binding.icon
     private val title = binding.title
@@ -37,13 +37,13 @@ class BaseProjectCell(context: Context) : FrameLayout(context) {
         }
     }
 
-    fun setData(iconUrl: String, titleText: String, likes: String, comments: String) {
-        Glide.with(context)
-            .load(iconUrl)
-            .placeholder(0xFFE0E0E0.toInt().toDrawable())
+    fun setData(project: Project) {
+        Glide.with(context).load(project.icon).placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(icon)
 
-        title.text = titleText
+        title.text = project.title
+        val comments = project.comments?.takeIf { it.isNotBlank() } ?: "0"
+        val likes = project.likes?.takeIf { it.isNotBlank() } ?: "0"
         commentsText.text = formatNumber(comments)
         likesText.text = formatNumber(likes)
     }

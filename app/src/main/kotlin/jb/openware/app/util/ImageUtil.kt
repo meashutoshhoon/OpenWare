@@ -10,17 +10,14 @@ import java.io.File
 object ImageUtil {
 
     fun compressImage(
-        context: Context,
-        uri: Uri,
-        quality: Int
+        context: Context, uri: Uri, quality: Int
     ): File? {
         return try {
             // Create temp file
             val file = File.createTempFile("compressed_", ".jpg", context.cacheDir)
 
             context.contentResolver.openInputStream(uri)?.use { input ->
-                val bitmap = BitmapFactory.decodeStream(input)
-                    ?: return null
+                val bitmap = BitmapFactory.decodeStream(input) ?: return null
 
                 file.outputStream().use { output ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, quality, output)

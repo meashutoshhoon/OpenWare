@@ -30,8 +30,7 @@ class ChangeLogActivity : AppCompatActivity() {
         binding.viewPager.setAdapter(adapter)
 
         val tabTitles = listOf(
-            "ChangeLog",
-            "UpdateLog"
+            "ChangeLog", "UpdateLog"
         )
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->

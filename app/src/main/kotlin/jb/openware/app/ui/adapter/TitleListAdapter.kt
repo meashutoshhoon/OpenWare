@@ -6,8 +6,7 @@ import jb.openware.app.ui.cells.TitleListCell
 import jb.openware.app.ui.items.TitleListItem
 
 class TitleListAdapter(
-    private val items: List<TitleListItem>,
-    private val onClick: (TitleListItem) -> Unit
+    private val items: List<TitleListItem>, private val onClick: (TitleListItem) -> Unit
 ) : RecyclerView.Adapter<TitleListAdapter.VH>() {
 
     class VH(val cell: TitleListCell) : RecyclerView.ViewHolder(cell)

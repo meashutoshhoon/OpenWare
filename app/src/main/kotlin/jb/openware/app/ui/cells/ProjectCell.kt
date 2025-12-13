@@ -5,9 +5,9 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import jb.openware.app.databinding.ProjectCellBinding
-import androidx.core.graphics.drawable.toDrawable
 import jb.openware.app.ui.items.Project
 
 @SuppressLint("ViewConstructor")
@@ -30,6 +30,7 @@ class ProjectCell(context: Context) : FrameLayout(context) {
             isSelected = true
         }
     }
+
     @SuppressLint("DefaultLocale")
     private fun formatNumber(value: String?): String {
         val num = value?.toLongOrNull() ?: return value ?: ""
@@ -42,9 +43,7 @@ class ProjectCell(context: Context) : FrameLayout(context) {
     }
 
     fun setData(item: Project) {
-        Glide.with(context)
-            .load(item.icon)
-            .placeholder(0xFFE0E0E0.toInt().toDrawable())
+        Glide.with(context).load(item.icon).placeholder(0xFFE0E0E0.toInt().toDrawable())
             .into(iconUser)
 
         projectName.text = item.title

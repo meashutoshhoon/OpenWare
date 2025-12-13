@@ -27,16 +27,14 @@ class CaptchaActivity : AppCompatActivity() {
     }
 
     private fun verifyCaptcha() {
-        SafetyNet.getClient(this)
-            .verifyWithRecaptcha("6Lcbp_4lAAAAAI7M5BmjuOk3RF-ujzBC6at-zMV8")
+        SafetyNet.getClient(this).verifyWithRecaptcha("6Lcbp_4lAAAAAI7M5BmjuOk3RF-ujzBC6at-zMV8")
             .addOnSuccessListener {
                 lifecycleScope.launch {
                     delay(150)
                     setResult(RESULT_OK)
                     finish()
                 }
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Toast.makeText(this, e.message ?: "Error", Toast.LENGTH_SHORT).show()
             }
     }

@@ -34,9 +34,7 @@ class ChangeLogFragment : Fragment() {
         get() = LogsData.logsList
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChangeLogBinding.inflate(inflater, container, false)
         return binding.root
@@ -61,15 +59,12 @@ class ChangeLogFragment : Fragment() {
     // ---------------- Adapter ----------------
 
     private class ChangeLogAdapter(
-        private val data: List<LogEntry>,
-        private val parentLayout: ViewGroup
+        private val data: List<LogEntry>, private val parentLayout: ViewGroup
     ) : RecyclerView.Adapter<ChangeLogAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = LogsListBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
             return ViewHolder(binding, parentLayout)
         }
@@ -81,8 +76,7 @@ class ChangeLogFragment : Fragment() {
         override fun getItemCount(): Int = data.size
 
         class ViewHolder(
-            private val binding: LogsListBinding,
-            private val parentLayout: ViewGroup
+            private val binding: LogsListBinding, private val parentLayout: ViewGroup
         ) : RecyclerView.ViewHolder(binding.root) {
 
             @SuppressLint("SetTextI18n")
@@ -106,10 +100,7 @@ class ChangeLogFragment : Fragment() {
 
             private fun expandView(view: View, arrowImage: ImageView) {
                 val rotation = ObjectAnimator.ofFloat(
-                    arrowImage,
-                    View.ROTATION,
-                    0f,
-                    180f
+                    arrowImage, View.ROTATION, 0f, 180f
                 ).apply {
                     duration = 300L
                 }
@@ -125,10 +116,7 @@ class ChangeLogFragment : Fragment() {
 
             private fun collapseView(view: View, arrowImage: ImageView) {
                 val rotation = ObjectAnimator.ofFloat(
-                    arrowImage,
-                    View.ROTATION,
-                    180f,
-                    0f
+                    arrowImage, View.ROTATION, 180f, 0f
                 ).apply {
                     duration = 300L
                 }

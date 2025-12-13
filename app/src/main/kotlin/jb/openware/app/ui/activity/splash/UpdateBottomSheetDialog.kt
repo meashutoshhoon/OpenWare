@@ -6,24 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import jb.openware.app.databinding.UpdateCusBinding
 import jb.openware.app.ui.items.ServerConfig
-import androidx.core.net.toUri
 
 class UpdateBottomSheetDialog(
-    private val config: ServerConfig,
-    private val appVersion: Int,
-    private val onLater: () -> Unit
+    private val config: ServerConfig, private val appVersion: Int, private val onLater: () -> Unit
 ) : BottomSheetDialogFragment() {
 
     private var _binding: UpdateCusBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = UpdateCusBinding.inflate(inflater, container, false)
         return binding.root

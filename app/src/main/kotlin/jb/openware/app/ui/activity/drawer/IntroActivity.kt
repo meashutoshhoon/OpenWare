@@ -39,18 +39,15 @@ class IntroActivity : AppCompatActivity() {
                 image = R.drawable.demo_icon,
                 title = "OpenWare",
                 description = "An application has been developed to facilitate the free sharing of exceptional creations with a global audience, while also enabling connectivity to developers worldwide."
-            ),
-            OnBoardingItem(
+            ), OnBoardingItem(
                 image = R.drawable.projects,
                 title = "Projects",
                 description = "I offer an open-source Android app (APK) for users and developers."
-            ),
-            OnBoardingItem(
+            ), OnBoardingItem(
                 image = R.drawable.simple,
                 title = "Simple & Fast",
                 description = "OpenWare is user-friendly and highly comprehensible, featuring Material Design 3. Additionally, it is network-efficient, enabling swift and seamless app utilization."
-            ),
-            OnBoardingItem(
+            ), OnBoardingItem(
                 image = R.drawable.friendly,
                 title = "User Friendly",
                 description = "OpenWare is a user-friendly application, which can be comprehended and utilized with ease."
@@ -89,8 +86,7 @@ class IntroActivity : AppCompatActivity() {
         val indicators = Array(count) { ImageView(this@IntroActivity) }
 
         val params = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         ).apply {
             val margin = (8 * resources.displayMetrics.density).toInt()
             setMargins(margin, 0, margin, 0)
@@ -101,8 +97,7 @@ class IntroActivity : AppCompatActivity() {
         indicators.forEach { imageView ->
             imageView.setImageDrawable(
                 ContextCompat.getDrawable(
-                    this@IntroActivity,
-                    R.drawable.onboarding_indicator_inactive
+                    this@IntroActivity, R.drawable.onboarding_indicator_inactive
                 )
             )
             imageView.layoutParams = params

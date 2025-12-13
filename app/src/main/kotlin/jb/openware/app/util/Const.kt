@@ -21,29 +21,25 @@ object Const {
     const val FEEDBACK_MODE_FEATURE = "feature"
 
 
+    const val URL_EMAIL_BUG = "mailto:sketchwarechannel@gmail.com?subject=Bug%20Report"
 
-    const val URL_EMAIL_BUG =
-        "mailto:sketchwarechannel@gmail.com?subject=Bug%20Report"
-
-    const val URL_EMAIL_FEATURE =
-        "mailto:sketchwarechannel@gmail.com?subject=Feature%20Suggestion"
-    const val URL_GITHUB_REPOSITORY =
-        "https://github.com/meashutoshhoon/OpenWare"
-    const val URL_TELEGRAM =
-        "https://t.me/meashutoshhoon"
-    const val URL_APP_LICENSE =
-        "https://github.com/meashutoshhoon/OpenWare/blob/master/LICENSE.md"
-
+    const val URL_EMAIL_FEATURE = "mailto:sketchwarechannel@gmail.com?subject=Feature%20Suggestion"
+    const val URL_GITHUB_REPOSITORY = "https://github.com/meashutoshhoon/OpenWare"
+    const val URL_TELEGRAM = "https://t.me/meashutoshhoon"
+    const val URL_APP_LICENSE = "https://github.com/meashutoshhoon/OpenWare/blob/master/LICENSE.md"
 
 
     enum class Contributors(
-        val displayName: String,
-        val githubUrl: String
+        val displayName: String, val githubUrl: String
     ) {
-        ASHUTOSH("Ashutosh Gupta", "https://github.com/meashutoshhoon"),
-        ANKIT("Ankit Goyal", "https://github.com/Ankit-Goyal012"),
-        ANUSHKA("Anushka Shrivastava", "https://github.com/MeAnushkaHoon"),
-        ATHARV("Atharv Puranik", "https://github.com/MeAnushkaHoon"),
+        ASHUTOSH("Ashutosh Gupta", "https://github.com/meashutoshhoon"), ANKIT(
+            "Ankit Goyal",
+            "https://github.com/Ankit-Goyal012"
+        ),
+        ANUSHKA("Anushka Shrivastava", "https://github.com/MeAnushkaHoon"), ATHARV(
+            "Atharv Puranik",
+            "https://github.com/MeAnushkaHoon"
+        ),
     }
 
 }

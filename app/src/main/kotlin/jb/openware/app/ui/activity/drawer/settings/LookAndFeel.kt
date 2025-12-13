@@ -66,8 +66,7 @@ class LookAndFeelActivity : AppCompatActivity() {
         if (savedScrollPosition != null) {
             binding.nestedScrollView.viewTreeObserver.addOnGlobalLayoutListener {
                 binding.nestedScrollView.scrollTo(
-                    savedScrollPosition.first,
-                    savedScrollPosition.second
+                    savedScrollPosition.first, savedScrollPosition.second
                 )
             }
         }

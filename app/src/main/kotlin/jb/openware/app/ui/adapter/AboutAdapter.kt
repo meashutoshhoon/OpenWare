@@ -13,22 +13,21 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import jb.openware.app.R
+import jb.openware.app.ui.activity.drawer.logs.ChangeLogActivity
 import jb.openware.app.ui.items.CategoryAbout
 import jb.openware.app.util.Const
+import jb.openware.app.util.DeviceUtils
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.Utils
-import androidx.core.view.isGone
-import jb.openware.app.ui.activity.drawer.logs.ChangeLogActivity
-import jb.openware.app.util.DeviceUtils
 
 class AboutAdapter(
-    private val items: List<Any>,
-    private val activity: Activity
+    private val items: List<Any>, private val activity: Activity
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface AdapterListener {
@@ -52,17 +51,25 @@ class AboutAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            CATEGORY ->
-                CategoryViewHolder(inflater.inflate(R.layout.category_about, parent, false))
+            CATEGORY -> CategoryViewHolder(inflater.inflate(R.layout.category_about, parent, false))
 
-            CATEGORY_LEAD_DEV_ITEM ->
-                LeadDeveloperItemViewHolder(inflater.inflate(R.layout.category_lead_dev, parent, false))
+            CATEGORY_LEAD_DEV_ITEM -> LeadDeveloperItemViewHolder(
+                inflater.inflate(
+                    R.layout.category_lead_dev, parent, false
+                )
+            )
 
-            CATEGORY_CONTRIBUTORS_ITEM ->
-                ContributorsItemViewHolder(inflater.inflate(R.layout.category_contributors, parent, false))
+            CATEGORY_CONTRIBUTORS_ITEM -> ContributorsItemViewHolder(
+                inflater.inflate(
+                    R.layout.category_contributors, parent, false
+                )
+            )
 
-            CATEGORY_APP_ITEM ->
-                AppItemViewHolder(inflater.inflate(R.layout.category_app, parent, false), listener)
+            CATEGORY_APP_ITEM -> AppItemViewHolder(
+                inflater.inflate(
+                    R.layout.category_app, parent, false
+                ), listener
+            )
 
             else -> error("Invalid view type: $viewType")
         }
@@ -71,17 +78,15 @@ class AboutAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
         when (holder) {
-            is CategoryViewHolder ->
-                holder.bind(item as CategoryAbout)
+            is CategoryViewHolder -> holder.bind(item as CategoryAbout)
 
-            is LeadDeveloperItemViewHolder ->
-                holder.bind(item as CategoryAbout.LeadDeveloperItem)
+            is LeadDeveloperItemViewHolder -> holder.bind(item as CategoryAbout.LeadDeveloperItem)
 
-            is ContributorsItemViewHolder ->
-                holder.bind(item as CategoryAbout.ContributorsItem)
+            is ContributorsItemViewHolder -> holder.bind(item as CategoryAbout.ContributorsItem)
 
-            is AppItemViewHolder ->
-                holder.bind(item as CategoryAbout.AppItem, position == items.lastIndex, activity)
+            is AppItemViewHolder -> holder.bind(
+                item as CategoryAbout.AppItem, position == items.lastIndex, activity
+            )
         }
     }
 
@@ -98,7 +103,8 @@ class AboutAdapter(
     private class LeadDeveloperItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
         private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
-        private val descriptionTextView: TextView = itemView.findViewById(R.id.description_text_view)
+        private val descriptionTextView: TextView =
+            itemView.findViewById(R.id.description_text_view)
         private val mailButton: MaterialButton = itemView.findViewById(R.id.mail)
         private val githubButton: MaterialButton = itemView.findViewById(R.id.github)
         private val telegramButton: MaterialButton = itemView.findViewById(R.id.telegram)
@@ -129,7 +135,8 @@ class AboutAdapter(
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
         private val expandButton: ImageView = itemView.findViewById(R.id.expand_button)
         private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
-        private val descriptionTextView: TextView = itemView.findViewById(R.id.description_text_view)
+        private val descriptionTextView: TextView =
+            itemView.findViewById(R.id.description_text_view)
         private val githubButton: Button = itemView.findViewById(R.id.github_handle)
         private val expandableLayout: LinearLayout =
             itemView.findViewById(R.id.contrib_expanded_layout)
@@ -166,26 +173,21 @@ class AboutAdapter(
                 expandableLayout.visibility = View.VISIBLE
                 expandableLayout.measure(
                     View.MeasureSpec.makeMeasureSpec(
-                        categoryContributorsLayout.width,
-                        View.MeasureSpec.EXACTLY
-                    ),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        categoryContributorsLayout.width, View.MeasureSpec.EXACTLY
+                    ), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
                 val targetHeight = expandableLayout.measuredHeight
-                animateLayoutHeight(expandableLayout, 0, targetHeight, duration)
+                animateLayoutHeight(expandableLayout, 0, targetHeight)
                 expandButton.animate().rotation(180f).setDuration(duration).start()
             } else {
                 val initialHeight = expandableLayout.height
-                animateLayoutHeight(expandableLayout, initialHeight, 0, duration)
+                animateLayoutHeight(expandableLayout, initialHeight, 0)
                 expandButton.animate().rotation(0f).setDuration(duration).start()
             }
         }
 
         private fun animateLayoutHeight(
-            view: View,
-            startHeight: Int,
-            endHeight: Int,
-            duration: Long
+            view: View, startHeight: Int, endHeight: Int
         ) {
             val animator = ValueAnimator.ofInt(startHeight, endHeight)
             animator.addUpdateListener { animation ->
@@ -203,23 +205,23 @@ class AboutAdapter(
                     }
                 }
             })
-            animator.duration = duration
+            animator.duration = 250L
             animator.start()
         }
     }
 
     private class AppItemViewHolder(
-        itemView: View,
-        private val listener: AdapterListener?
+        itemView: View, private val listener: AdapterListener?
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
         private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
-        private val descriptionTextView: TextView = itemView.findViewById(R.id.description_text_view)
-        private val categoryAppLayout: LinearLayout = itemView.findViewById(R.id.category_app_layout)
+        private val descriptionTextView: TextView =
+            itemView.findViewById(R.id.description_text_view)
+        private val categoryAppLayout: LinearLayout =
+            itemView.findViewById(R.id.category_app_layout)
         private val button: Button = itemView.findViewById(R.id.check_update_button)
-        private val loadingDots: LottieAnimationView =
-            itemView.findViewById(R.id.loading_animation)
+        private val loadingDots: LottieAnimationView = itemView.findViewById(R.id.loading_animation)
 
         fun bind(item: CategoryAbout.AppItem, isLastItem: Boolean, activity: Activity) {
             imageView.setImageResource(item.imageRes)
@@ -266,8 +268,7 @@ class AboutAdapter(
 
             categoryAppLayout.setOnClickListener(clickListener)
 
-            val paddingInPixels =
-                Utils.convertDpToPixel(30f, itemView.context).toInt()
+            val paddingInPixels = Utils.convertDpToPixel(30f, itemView.context).toInt()
             val lp = itemView.layoutParams as? ViewGroup.MarginLayoutParams
             lp?.let {
                 it.bottomMargin = if (isLastItem) paddingInPixels else 0

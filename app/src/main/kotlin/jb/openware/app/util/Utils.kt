@@ -33,8 +33,7 @@ object Utils {
     }
 
     fun isConnected(context: Context): Boolean {
-        val cm =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val network = cm.activeNetwork ?: return false
         val capabilities = cm.getNetworkCapabilities(network) ?: return false
@@ -83,6 +82,22 @@ object Utils {
         return size // bytes
     }
 
+    fun Context.copyText(text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(
+            ClipData.newPlainText("text", text)
+        )
+    }
+
+    fun Context.shareText(text: String, title: String = "Share via") {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        startActivity(Intent.createChooser(intent, title))
+    }
+
+
     @SuppressLint("DefaultLocale")
     fun formatFileSize(bytes: Long): String {
         if (bytes <= 0) return "0 B"
@@ -96,10 +111,8 @@ object Utils {
             unitIndex++
         }
 
-        return if (unitIndex == 0)
-            "${size.toInt()} ${units[unitIndex]}"
-        else
-            String.format("%.2f %s", size, units[unitIndex])
+        return if (unitIndex == 0) "${size.toInt()} ${units[unitIndex]}"
+        else String.format("%.2f %s", size, units[unitIndex])
     }
 
     fun hideKeyboard(view: View?) {
@@ -132,9 +145,7 @@ object Utils {
             }
 
             val fileUri = FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                file
+                context, "${context.packageName}.fileprovider", file
             )
 
             val shareIntent = Intent(Intent.ACTION_SEND).apply {

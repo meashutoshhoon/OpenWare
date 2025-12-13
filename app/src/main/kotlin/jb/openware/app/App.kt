@@ -28,12 +28,13 @@ class App : Application() {
 
         context = applicationContext
         applicationHandler = Handler(context.mainLooper)
-        packageInfo =
-            packageManager.run {
-                if (Build.VERSION.SDK_INT >= 33)
-                    getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-                else getPackageInfo(packageName, 0)
-            }
+        packageInfo = packageManager.run {
+            if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
+                packageName,
+                PackageManager.PackageInfoFlags.of(0)
+            )
+            else getPackageInfo(packageName, 0)
+        }
         applicationScope = CoroutineScope(SupervisorJob())
         connectivityManager = getSystemService()!!
 
@@ -49,16 +50,15 @@ class App : Application() {
 
         Thread.setDefaultUncaughtExceptionHandler { _, e -> startCrashReportActivity(e) }
     }
+
     private fun startCrashReportActivity(th: Throwable) {
         th.printStackTrace()
         startActivity(
-            Intent(this, CrashReportActivity::class.java)
-                .setAction("$packageName.error_report")
+            Intent(this, CrashReportActivity::class.java).setAction("$packageName.error_report")
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("error_report", getVersionReport() + "\n" + th.stackTraceToString())
-                }
-        )
+                })
     }
 
     companion object {
@@ -69,24 +69,20 @@ class App : Application() {
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
-            val versionCode =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    packageInfo.longVersionCode
-                } else {
-                    packageInfo.versionCode.toLong()
-                }
-            val release =
-                if (Build.VERSION.SDK_INT >= 30) {
-                    Build.VERSION.RELEASE_OR_CODENAME
-                } else {
-                    Build.VERSION.RELEASE
-                }
+            val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode
+            } else {
+                packageInfo.versionCode.toLong()
+            }
+            val release = if (Build.VERSION.SDK_INT >= 30) {
+                Build.VERSION.RELEASE_OR_CODENAME
+            } else {
+                Build.VERSION.RELEASE
+            }
 
-            return StringBuilder()
-                .append("App version: $versionName ($versionCode)\n")
+            return StringBuilder().append("App version: $versionName ($versionCode)\n")
                 .append("Device information: Android $release (API ${Build.VERSION.SDK_INT})\n")
-                .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
-                .toString()
+                .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n").toString()
         }
 
         @SuppressLint("StaticFieldLeak")

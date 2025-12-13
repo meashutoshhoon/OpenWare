@@ -2,16 +2,16 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_item"
+    android:id="@+id/background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:fitsSystemWindows="false"
         android:stateListAnimator="@null"
         app:liftOnScroll="false">
 
@@ -24,7 +24,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/search_bar_background"
-            android:theme="@style/ThemeOverlay.CodeKosh.MainToolbar"
+            android:theme="@style/ThemeOverlay.OW.MainToolbar"
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -38,9 +38,9 @@
                 app:menu="@menu/profile_menu"
                 app:navigationIcon="@drawable/back_2">
 
-                <in.afi.codekosh.components.SearchEditText
+                <jb.openware.app.ui.components.SearchEditText
                     android:id="@+id/search_view"
-                    style="@style/Widget.CodeKosh.SearchView"
+                    style="@style/Widget.OW.SearchView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
@@ -54,8 +54,9 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/loading"
+        style="@style/Widget.Material3.LoadingIndicator.Contained"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -68,34 +69,27 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:fillViewport="true"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="5dp"
-        android:gravity="center"
         android:transitionGroup="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview1"
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="2dp"
-            android:nestedScrollingEnabled="false"
             android:layout_marginTop="2dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:listitem="@layout/project" />
 
-        <LinearLayout
-            android:id="@+id/progressbar1"
+        <com.google.android.material.loadingindicator.LoadingIndicator
+            android:id="@+id/progressbar"
             android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <LinearLayout
-                android:id="@+id/layout_progress"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:orientation="horizontal" />
-        </LinearLayout>
+            android:layout_height="90dp" />
 
     </LinearLayout>
 

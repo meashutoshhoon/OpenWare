@@ -11,13 +11,13 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
-import com.google.android.material.textview.MaterialTextView
-import jb.openware.app.ui.items.TitleListItem
-import kotlin.math.roundToInt
 import androidx.core.graphics.toColorInt
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.textview.MaterialTextView
 import jb.openware.app.R
+import jb.openware.app.ui.items.TitleListItem
+import kotlin.math.roundToInt
 
 @SuppressLint("ViewConstructor")
 class TitleListCell(context: Context) : LinearLayout(context) {
@@ -32,8 +32,7 @@ class TitleListCell(context: Context) : LinearLayout(context) {
 
         val margin = dp(3)
         layoutParams = MarginLayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.WRAP_CONTENT
+            LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
         ).apply {
             setMargins(0, margin, 0, margin)
         }
@@ -63,12 +62,16 @@ class TitleListCell(context: Context) : LinearLayout(context) {
             typeface = ResourcesCompat.getFont(context, R.font.en_light)
             setLineSpacing(dp(2).toFloat(), 1f)
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge)
-            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface))
+            setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface
+                )
+            )
         }
 
         textLayout.addView(
-            titleView,
-            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            titleView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         )
 
         // SUBTITLE
@@ -77,28 +80,32 @@ class TitleListCell(context: Context) : LinearLayout(context) {
             ellipsize = TextUtils.TruncateAt.END
             typeface = ResourcesCompat.getFont(context, R.font.opensans_regular)
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
-            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant))
+            setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurfaceVariant
+                )
+            )
             setLineSpacing(dp(2).toFloat(), 1f)
         }
 
         textLayout.addView(
-            subtitleView,
-            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            subtitleView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         )
 
         addView(
-            textLayout,
-            LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f).apply {
+            textLayout, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f).apply {
                 marginStart = dp(5)
                 marginEnd = dp(5)
-            }
-        )
+            })
 
         // Tint icon according to theme
         ImageViewCompat.setImageTintList(
-            icon,
-            ColorStateList.valueOf(
-                MaterialColors.getColor(icon, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            icon, ColorStateList.valueOf(
+                MaterialColors.getColor(
+                    icon,
+                    com.google.android.material.R.attr.colorOnSurfaceVariant
+                )
             )
         )
     }
@@ -109,8 +116,7 @@ class TitleListCell(context: Context) : LinearLayout(context) {
         subtitleView.text = item.description
     }
 
-    private fun dp(value: Int): Int =
-        (resources.displayMetrics.density * value).roundToInt()
+    private fun dp(value: Int): Int = (resources.displayMetrics.density * value).roundToInt()
 
     private fun rippleDrawable(radius: Int): Drawable {
         val mask = GradientDrawable().apply {

@@ -21,20 +21,18 @@ private val StringPreferenceDefaults = mapOf(
     APP_THEME to "system",
 )
 
-private val BooleanPreferenceDefaults =
-    mapOf(
-        HAPTICS_VIBRATION to true,
-        AMOLED_THEME to true,
-        DYNAMIC_THEME to true,
-        SMOOTH_SCROLLING to true,
-    )
+private val BooleanPreferenceDefaults = mapOf(
+    HAPTICS_VIBRATION to true,
+    AMOLED_THEME to true,
+    DYNAMIC_THEME to true,
+    SMOOTH_SCROLLING to true,
+)
 
 
-private val IntPreferenceDefaults =
-    mapOf(
-        TEST to 0,
-        THEME_MODE to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-    )
+private val IntPreferenceDefaults = mapOf(
+    TEST to 0,
+    THEME_MODE to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+)
 
 private val kv: MMKV = MMKV.defaultMMKV()
 
@@ -49,8 +47,7 @@ object PreferenceUtil {
     fun String.getBoolean(default: Boolean = BooleanPreferenceDefaults.getOrElse(this) { false }): Boolean =
         kv.decodeBool(this, default)
 
-    fun String.getLong(default: Long) =
-        kv.decodeLong(this, default)
+    fun String.getLong(default: Long) = kv.decodeLong(this, default)
 
     fun String.updateString(newString: String) = kv.encode(this, newString)
 

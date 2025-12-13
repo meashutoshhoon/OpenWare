@@ -24,9 +24,7 @@ object TextFormatter {
     }
 
     private fun apply(
-        builder: SpannableStringBuilder,
-        tag: String,
-        spanFactory: () -> Any
+        builder: SpannableStringBuilder, tag: String, spanFactory: () -> Any
     ) {
         var text = builder.toString()
         var start = text.indexOf(tag)
@@ -41,10 +39,7 @@ object TextFormatter {
 
             // apply span to updated builder
             builder.setSpan(
-                spanFactory(),
-                start,
-                end - tag.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                spanFactory(), start, end - tag.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             text = builder.toString()

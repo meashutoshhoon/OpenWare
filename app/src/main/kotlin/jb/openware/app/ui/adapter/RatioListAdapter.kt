@@ -5,12 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import jb.openware.app.ui.cells.RatioListCell
 
 class RatioListAdapter(
-    private val items: List<String>,
-    private var selected: Int,
-    private val onSelect: (Int) -> Unit
+    private val items: List<String>, private var selected: Int, private val onSelect: (Int) -> Unit
 ) : RecyclerView.Adapter<RatioListAdapter.VH>() {
 
-    inner class VH(val cell: RatioListCell) : RecyclerView.ViewHolder(cell)
+    class VH(val cell: RatioListCell) : RecyclerView.ViewHolder(cell)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(RatioListCell(parent.context))

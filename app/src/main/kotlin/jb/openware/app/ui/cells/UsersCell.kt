@@ -8,11 +8,11 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.graphics.toColorInt
 import com.bumptech.glide.Glide
 import jb.openware.app.R
 import jb.openware.app.databinding.CellUsersBinding
 import jb.openware.app.ui.components.BadgeDrawable
-import androidx.core.graphics.toColorInt
 import jb.openware.app.ui.items.UserItem
 
 @SuppressLint("ViewConstructor")
@@ -69,9 +69,11 @@ class UsersCell(context: Activity) : FrameLayout(context) {
                 badgeView.setColorFilter(0xFF00C853.toInt(), PorterDuff.Mode.SRC_IN)
                 nameText.setTextColor(0xFF00C853.toInt())
             }
+
             0 -> {
                 badgeView.gone()
             }
+
             else -> {
                 badgeView.visible()
                 BadgeDrawable(context).setBadge(badgeInt.toString(), badgeView)
@@ -83,6 +85,11 @@ class UsersCell(context: Activity) : FrameLayout(context) {
         }
     }
 
-    private fun View.gone() { visibility = GONE }
-    private fun View.visible() { visibility = VISIBLE }
+    private fun View.gone() {
+        visibility = GONE
+    }
+
+    private fun View.visible() {
+        visibility = VISIBLE
+    }
 }

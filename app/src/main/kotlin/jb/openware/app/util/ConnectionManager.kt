@@ -40,8 +40,7 @@ class ConnectionManager {
     fun startRequest(
         method: String, url: String, tag: String, requestListener: SingleRequestListener
     ) {
-        RequestNetworkController.instance
-            .execute(this, method, url, tag, object : RequestListener {
+        RequestNetworkController.instance.execute(this, method, url, tag, object : RequestListener {
                 override fun onResponse(
                     tag: String, response: String, responseHeaders: HashMap<String, Any>
                 ) {

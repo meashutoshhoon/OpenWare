@@ -27,8 +27,7 @@ class RatioListCell(context: Context) : LinearLayout(context) {
         orientation = HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.WRAP_CONTENT
+            LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
         )
         isClickable = true
 
@@ -45,16 +44,19 @@ class RatioListCell(context: Context) : LinearLayout(context) {
             typeface = ResourcesCompat.getFont(context, R.font.en_light)
             setLineSpacing(dp(2).toFloat(), 1f)
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge)
-            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface))
+            setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface
+                )
+            )
         }
 
         container.addView(
-            textView,
-            LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f).apply {
+            textView, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f).apply {
                 marginStart = dp(10)
                 marginEnd = dp(5)
-            }
-        )
+            })
 
         // RadioButton
         button = RadioButton(context).apply {
@@ -62,19 +64,15 @@ class RatioListCell(context: Context) : LinearLayout(context) {
         }
 
         container.addView(
-            button,
-            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+            button, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                 marginStart = dp(5)
                 marginEnd = dp(10)
-            }
-        )
+            })
 
         addView(
-            container,
-            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+            container, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
                 setMargins(dp(5), dp(15), dp(5), dp(5))
-            }
-        )
+            })
 
         // Click on container → toggle radio
         container.setOnClickListener {
@@ -87,8 +85,7 @@ class RatioListCell(context: Context) : LinearLayout(context) {
         button.isChecked = (position == checkedPosition)
     }
 
-    private fun dp(value: Int): Int =
-        (resources.displayMetrics.density * value).roundToInt()
+    private fun dp(value: Int): Int = (resources.displayMetrics.density * value).roundToInt()
 
     private fun rippleDrawable(radius: Int): Drawable {
         val mask = GradientDrawable().apply {

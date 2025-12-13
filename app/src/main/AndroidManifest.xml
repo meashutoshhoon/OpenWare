@@ -42,9 +42,8 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.home.MoreProjectsActivity"
+            android:name=".ui.activity.home.MoreProjectsActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.other.LikesCountActivity"
@@ -118,10 +117,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.splash.MainActivity"
-            android:exported="true"
             android:configChanges="keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:hardwareAccelerated="true">
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

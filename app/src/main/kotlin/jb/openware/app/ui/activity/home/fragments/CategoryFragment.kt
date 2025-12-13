@@ -33,9 +33,7 @@ class CategoryFragment : Fragment() {
     private lateinit var listView: RecyclerView
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
@@ -54,10 +52,8 @@ class CategoryFragment : Fragment() {
 
         // Add RecyclerView into container from binding (layout1)
         binding.layout.addView(
-            listView,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+            listView, ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
         )
 
@@ -66,30 +62,36 @@ class CategoryFragment : Fragment() {
     }
 
     private fun setData() {
-        connectionManager.startRequest("GET", categoryUrl, "A", object : ConnectionManager.RequestListener {
-            override fun onResponse(tag: String, response: String, responseHeaders: HashMap<String, Any>) {
+        connectionManager.startRequest(
+            "GET",
+            categoryUrl,
+            "A",
+            object : ConnectionManager.RequestListener {
+                override fun onResponse(
+                    tag: String,
+                    response: String,
+                    responseHeaders: HashMap<String, Any>
+                ) {
 
-                val type = object : TypeToken<List<CategoryItem>>() {}.type
-                val items: List<CategoryItem> = gson.fromJson(response, type)
+                    val type = object : TypeToken<List<CategoryItem>>() {}.type
+                    val items: List<CategoryItem> = gson.fromJson(response, type)
 
-                listView.adapter = CategoryAdapter(items)
-            }
+                    listView.adapter = CategoryAdapter(items)
+                }
 
-            override fun onErrorResponse(tag: String, message: String) {
-                MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle("Alert")
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
-            }
-        })
+                override fun onErrorResponse(tag: String, message: String) {
+                    MaterialAlertDialogBuilder(requireActivity()).setTitle("Alert")
+                        .setMessage(message).setPositiveButton(android.R.string.ok, null).show()
+                }
+            })
     }
 
     private inner class CategoryAdapter(private val data: List<CategoryItem>) :
         RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val cellBinding = CategoryCellBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val cellBinding =
+                CategoryCellBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return ViewHolder(cellBinding)
         }
 
@@ -98,20 +100,22 @@ class CategoryFragment : Fragment() {
 
             holder.binding.t2.text = item.name
 
-            holder.binding.i1.setColorFilter(holder.binding.root.context.getColorOnSurfaceVariant(), PorterDuff.Mode.SRC_IN)
+            holder.binding.i1.setColorFilter(
+                holder.binding.root.context.getColorOnSurfaceVariant(),
+                PorterDuff.Mode.SRC_IN
+            )
 
             holder.binding.root.setOnClickListener {
-                val intent = Intent(holder.binding.root.context, CategoryActivity::class.java).apply {
-                    putExtra("code", "category")
-                    putExtra("title", item.name)
-                }
+                val intent =
+                    Intent(holder.binding.root.context, CategoryActivity::class.java).apply {
+                        putExtra("code", "category")
+                        putExtra("title", item.name)
+                    }
                 startActivity(intent)
             }
 
-            Glide.with(holder.binding.root.context)
-                .load(item.url)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
+            Glide.with(holder.binding.root.context).load(item.url)
+                .transition(DrawableTransitionOptions.withCrossFade()).centerCrop()
                 .into(holder.binding.i1)
         }
 
@@ -119,11 +123,16 @@ class CategoryFragment : Fragment() {
 
         private fun Context.getColorOnSurfaceVariant(): Int {
             val typedValue = TypedValue()
-            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+            theme.resolveAttribute(
+                com.google.android.material.R.attr.colorOnSurfaceVariant,
+                typedValue,
+                true
+            )
             return typedValue.data
         }
 
-        inner class ViewHolder(val binding: CategoryCellBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: CategoryCellBinding) :
+            RecyclerView.ViewHolder(binding.root)
     }
 
     override fun onDestroyView() {

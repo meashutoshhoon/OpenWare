@@ -56,7 +56,6 @@ import java.util.regex.Pattern;
 import in.afi.codekosh.R;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.dialogs.ReportDialog;
-import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
 
 public class CommentsActivity extends BaseFragment {

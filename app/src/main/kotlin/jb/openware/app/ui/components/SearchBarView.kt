@@ -1,15 +1,15 @@
 package jb.openware.app.ui.components
 
 import android.app.Activity
+import android.text.TextWatcher
+import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.view.View
-import android.text.TextWatcher
-import com.google.android.material.appbar.MaterialToolbar
-import jb.openware.app.R
-import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.getSystemService
+import com.google.android.material.appbar.MaterialToolbar
+import jb.openware.app.R
 
 class SearchBarView(
     private val activity: Activity,

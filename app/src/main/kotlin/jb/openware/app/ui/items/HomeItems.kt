@@ -12,6 +12,5 @@ data class NotificationItem(
 
 @Serializable
 data class CategoryItem(
-    val url: String = "",
-    val name: String = ""
+    val url: String = "", val name: String = ""
 )

@@ -12,9 +12,7 @@ class OnBoardingAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingViewHolder {
         val binding = ItemContainerOnboardingBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return OnboardingViewHolder(binding)
     }

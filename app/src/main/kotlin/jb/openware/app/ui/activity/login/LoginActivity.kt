@@ -2,9 +2,6 @@ package jb.openware.app.ui.activity.login
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.Settings
@@ -70,8 +67,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
     }
 
     override fun onRestoreInstanceState(
-        savedInstanceState: Bundle?,
-        persistentState: PersistableBundle?
+        savedInstanceState: Bundle?, persistentState: PersistableBundle?
     ) {
         super.onRestoreInstanceState(savedInstanceState, persistentState)
         isNameEditTextVisible = savedInstanceState?.getBoolean("isNameEditTextVisible") ?: false
@@ -88,7 +84,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
     override fun init() {
         progressView = RadialProgressView(this).apply {
-            setProgressColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnPrimary))
+            setProgressColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnPrimary
+                )
+            )
             setSize(dp(25))
         }
         binding.scroll1.disableScrollbars()
@@ -100,14 +101,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
 
         binding.linearGo.addView(
-            progressView,
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+            progressView, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 weight = 17f
-            }
-        )
+            })
 
     }
 
@@ -118,8 +116,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         }
 
         id = Settings.Secure.getString(
-            applicationContext.contentResolver,
-            Settings.Secure.ANDROID_ID
+            applicationContext.contentResolver, Settings.Secure.ANDROID_ID
         )
 
         binding.forgot.setOnClickListener { openActivity<ResetActivity>() }
@@ -132,18 +129,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             if (login && !validateLogin()) return@setOnClickListener
             if (!login && !validateRegister()) return@setOnClickListener
 
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Disclaimer")
-                .setMessage(
-                    "By proceeding, you are certifying that you have perused and consented to our terms and conditions.\n" +
-                            "Further information can be found on our terms and conditions page."
-                )
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Continue") { _, _ ->
+            MaterialAlertDialogBuilder(this).setTitle("Disclaimer").setMessage(
+                    "By proceeding, you are certifying that you have perused and consented to our terms and conditions.\n" + "Further information can be found on our terms and conditions page."
+                ).setNegativeButton("Cancel", null).setPositiveButton("Continue") { _, _ ->
                     val intent = Intent(this, CaptchaActivity::class.java)
                     startActivityForResult(intent, REQUEST_CODE_ACTIVITY_B)
-                }
-                .show()
+                }.show()
         }
 
         binding.textview8.setOnClickListener {
@@ -254,8 +245,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         val emailTxt = binding.email.textString().trim()
         val passwordTxt = binding.password.textString()
 
-        auth.signInWithEmailAndPassword(emailTxt, passwordTxt)
-            .addOnCompleteListener { task ->
+        auth.signInWithEmailAndPassword(emailTxt, passwordTxt).addOnCompleteListener { task ->
                 setLoading(false)
 
                 if (task.isSuccessful) {
@@ -271,8 +261,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
                             val intent = Intent().apply {
                                 setClass(
-                                    this@LoginActivity,
-                                    HomeActivity::class.java
+                                    this@LoginActivity, HomeActivity::class.java
                                 )
                                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             }
@@ -281,50 +270,55 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                             finish()
                         } else {
                             // email not verified
-                            MaterialAlertDialogBuilder(this)
-                                .setTitle("Notice")
-                                .setMessage(
-                                    "To proceed, account verification is necessary. " +
-                                            "Please check your email for the verification process."
-                                )
-                                .setPositiveButton("RESEND") { _, _ ->
+                            MaterialAlertDialogBuilder(this).setTitle("Notice").setMessage(
+                                    "To proceed, account verification is necessary. " + "Please check your email for the verification process."
+                                ).setPositiveButton("RESEND") { _, _ ->
                                     user.sendEmailVerification()
                                         .addOnCompleteListener { taskResend ->
                                             if (taskResend.isSuccessful) {
-                                                MaterialAlertDialogBuilder(this)
-                                                    .setTitle("Alert")
+                                                MaterialAlertDialogBuilder(this).setTitle("Alert")
                                                     .setMessage("A verification link has been dispatched to your email.")
-                                                    .setPositiveButton("OK", null)
-                                                    .show()
+                                                    .setPositiveButton("OK", null).show()
                                             } else {
-                                                alertCreator(taskResend.exception?.message ?: "Failed to resend email.")
+                                                alertCreator(
+                                                    taskResend.exception?.message
+                                                        ?: "Failed to resend email."
+                                                )
                                             }
                                         }
-                                }
-                                .show()
+                                }.show()
                         }
                     }
                 } else {
                     val errorMessage = task.exception?.message ?: "Authentication failed."
 
                     when {
-                        errorMessage.contains("invalid or the user does not have a password", ignoreCase = true) ->
-                            alertCreator("Authentication failed due to an incorrect password entry or a recent password modification.")
+                        errorMessage.contains(
+                            "invalid or the user does not have a password",
+                            ignoreCase = true
+                        ) -> alertCreator("Authentication failed due to an incorrect password entry or a recent password modification.")
 
-                        errorMessage.contains("There is no user record corresponding to this identifier", ignoreCase = true) ->
-                            alertCreator("No user exists with the provided email address on our servers, possibly due to deletion of the account.")
+                        errorMessage.contains(
+                            "There is no user record corresponding to this identifier",
+                            ignoreCase = true
+                        ) -> alertCreator("No user exists with the provided email address on our servers, possibly due to deletion of the account.")
 
-                        errorMessage.contains("The email address is already in use by another account", ignoreCase = true) ->
-                            alertCreator("The account is already registered on our servers. Please use a different email or sign in using the registered email.")
+                        errorMessage.contains(
+                            "The email address is already in use by another account",
+                            ignoreCase = true
+                        ) -> alertCreator("The account is already registered on our servers. Please use a different email or sign in using the registered email.")
 
-                        errorMessage.contains("The user account has been disabled by an administrator", ignoreCase = true) ->
-                            alertCreator("The user account has been banned by the administrator for violating our terms and conditions.")
+                        errorMessage.contains(
+                            "The user account has been disabled by an administrator",
+                            ignoreCase = true
+                        ) -> alertCreator("The user account has been banned by the administrator for violating our terms and conditions.")
 
-                        errorMessage.contains("The email address is badly formatted", ignoreCase = true) ->
-                            alertCreator("We regret to inform you that the email address provided is not in a proper format.")
+                        errorMessage.contains(
+                            "The email address is badly formatted",
+                            ignoreCase = true
+                        ) -> alertCreator("We regret to inform you that the email address provided is not in a proper format.")
 
-                        else ->
-                            alertCreator(errorMessage)
+                        else -> alertCreator(errorMessage)
                     }
                 }
             }
@@ -343,8 +337,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             return
         }
 
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     setLoading(false)
                     alertCreator(task.exception?.message ?: "Registration failed.")
@@ -373,12 +366,13 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                     token = token
                 )
 
-                users.child(uid)
-                    .updateChildren(profile.toMap())
+                users.child(uid).updateChildren(profile.toMap())
                     .addOnCompleteListener { profileTask ->
                         if (!profileTask.isSuccessful) {
                             setLoading(false)
-                            alertCreator(profileTask.exception?.message ?: "Failed to save user profile.")
+                            alertCreator(
+                                profileTask.exception?.message ?: "Failed to save user profile."
+                            )
                             return@addOnCompleteListener
                         }
 
@@ -386,31 +380,30 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                             displayName = username
                         }
 
-                        user.updateProfile(profileUpdates)
-                            .addOnCompleteListener { updateTask ->
+                        user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
                                 if (!updateTask.isSuccessful) {
                                     setLoading(false)
-                                    alertCreator(updateTask.exception?.message ?: "Failed to update profile.")
+                                    alertCreator(
+                                        updateTask.exception?.message ?: "Failed to update profile."
+                                    )
                                     return@addOnCompleteListener
                                 }
 
-                                user.sendEmailVerification()
-                                    .addOnCompleteListener { emailTask ->
+                                user.sendEmailVerification().addOnCompleteListener { emailTask ->
                                         setLoading(false)
                                         if (emailTask.isSuccessful) {
                                             toggle(true)
-                                            MaterialAlertDialogBuilder(this)
-                                                .setTitle("Message")
+                                            MaterialAlertDialogBuilder(this).setTitle("Message")
                                                 .setMessage(
-                                                    "A verification link has been dispatched to your email address.\n" +
-                                                            "*Check spam folder also."
-                                                )
-                                                .setPositiveButton("OK", null)
-                                                .show()
+                                                    "A verification link has been dispatched to your email address.\n" + "*Check spam folder also."
+                                                ).setPositiveButton("OK", null).show()
 
                                             FirebaseAuth.getInstance().signOut()
                                         } else {
-                                            alertCreator(emailTask.exception?.message ?: "Failed to send verification email.")
+                                            alertCreator(
+                                                emailTask.exception?.message
+                                                    ?: "Failed to send verification email."
+                                            )
                                         }
                                     }
                             }
@@ -420,9 +413,21 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
 
     private fun pickRandomColor(): String = listOf(
-        "#65A9E0", "#E56555", "#5FBED5", "#F2739A", "#76C84C",
-        "#8D84EE", "#50A6E6", "#F28C48", "#009688", "#00FE5E",
-        "#000000", "#795548", "#E64A19", "#FFC107", "#E91E63",
+        "#65A9E0",
+        "#E56555",
+        "#5FBED5",
+        "#F2739A",
+        "#76C84C",
+        "#8D84EE",
+        "#50A6E6",
+        "#F28C48",
+        "#009688",
+        "#00FE5E",
+        "#000000",
+        "#795548",
+        "#E64A19",
+        "#FFC107",
+        "#E91E63",
         "#00BCD4"
     ).random()
 

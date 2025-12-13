@@ -30,7 +30,12 @@ class ProgressButtonCell(context: Context, attrs: AttributeSet? = null) :
             isAllCaps = false
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
             typeface = ResourcesCompat.getFont(context, R.font.opensans_regular)
-            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnPrimary))
+            setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnPrimary
+                )
+            )
         }
 
         addView(text)

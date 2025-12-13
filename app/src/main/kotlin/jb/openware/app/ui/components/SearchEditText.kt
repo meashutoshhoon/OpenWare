@@ -28,8 +28,7 @@ class SearchEditText @JvmOverloads constructor(
         private const val DRAWABLE_END = 2
     }
 
-    private val clearIcon: Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.ic_clear)
+    private val clearIcon: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_clear)
 
     init {
         hint = wrapHint(hint)
@@ -52,12 +51,7 @@ class SearchEditText @JvmOverloads constructor(
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return if (
-            event.source == InputDevice.SOURCE_KEYBOARD &&
-            (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) &&
-            event.modifiers == 0 &&
-            !isEmpty
-        ) {
+        return if (event.source == InputDevice.SOURCE_KEYBOARD && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) && event.modifiers == 0 && !isEmpty) {
             cancelLongPress()
             clearFocus()
             true
@@ -73,7 +67,12 @@ class SearchEditText @JvmOverloads constructor(
         }
     }
 
-    override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int, lengthAfter: Int) {
+    override fun onTextChanged(
+        text: CharSequence?,
+        start: Int,
+        lengthBefore: Int,
+        lengthAfter: Int
+    ) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         updateActionIcon()
     }

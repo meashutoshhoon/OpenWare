@@ -8,14 +8,11 @@ import androidx.core.widget.NestedScrollView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class ExtendedFabBehavior(
-    context: Context,
-    attrs: AttributeSet
+    context: Context, attrs: AttributeSet
 ) : CoordinatorLayout.Behavior<ExtendedFloatingActionButton>(context, attrs) {
 
     override fun layoutDependsOn(
-        parent: CoordinatorLayout,
-        child: ExtendedFloatingActionButton,
-        dependency: View
+        parent: CoordinatorLayout, child: ExtendedFloatingActionButton, dependency: View
     ): Boolean {
         return dependency is NestedScrollView
     }

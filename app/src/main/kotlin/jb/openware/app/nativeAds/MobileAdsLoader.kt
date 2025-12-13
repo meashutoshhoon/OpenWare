@@ -24,9 +24,8 @@ class MobileAdsLoader(
     fun buildConfig(): MobileAdsLoader = apply {
         MobileAds.initialize(activity) { }
 
-        val configuration = RequestConfiguration.Builder()
-            .setTestDeviceIds(listOf(testDeviceId))
-            .build()
+        val configuration =
+            RequestConfiguration.Builder().setTestDeviceIds(listOf(testDeviceId)).build()
 
         MobileAds.setRequestConfiguration(configuration)
     }
@@ -35,24 +34,20 @@ class MobileAdsLoader(
         loadNativeAd(templateView, container, test = false)
 
     fun loadNativeAd(
-        templateView: TemplateView,
-        container: View,
-        test: Boolean
+        templateView: TemplateView, container: View, test: Boolean
     ): MobileAdsLoader = apply {
         val adUnitId = if (test) testNativeAdId else nativeAdId
 
         // Badge 0 => show ads, otherwise hide
         if (UserConfig(activity).badge == 0) {
-            val adLoader = AdLoader.Builder(activity, adUnitId)
-                .forNativeAd { nativeAd ->
+            val adLoader = AdLoader.Builder(activity, adUnitId).forNativeAd { nativeAd ->
                     val styles = NativeTemplateStyle.Builder().build()
                     templateView.setStyles(styles)
                     templateView.setNativeAd(nativeAd)
 
                     runTransition(container)
                     templateView.visibility = View.VISIBLE
-                }
-                .build()
+                }.build()
 
             adLoader.loadAd(AdRequest.Builder().build())
         } else {

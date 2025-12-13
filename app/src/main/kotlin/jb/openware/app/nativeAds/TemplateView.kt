@@ -17,9 +17,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import jb.openware.app.R
 
 class TemplateView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     companion object {
@@ -207,16 +205,12 @@ class TemplateView @JvmOverloads constructor(
 
     private fun initView(context: Context, attrs: AttributeSet?) {
         val attributes: TypedArray = context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.TemplateView,
-            0,
-            0
+            attrs, R.styleable.TemplateView, 0, 0
         )
 
         try {
             templateType = attributes.getResourceId(
-                R.styleable.TemplateView_gnt_template_type,
-                R.layout.admob
+                R.styleable.TemplateView_gnt_template_type, R.layout.admob
             )
         } finally {
             attributes.recycle()

@@ -50,12 +50,10 @@ class ResetActivity : AppCompatActivity() {
             Utils.hideKeyboard(binding.email)
             showLoadingDialog()
 
-            auth.sendPasswordResetEmail(email)
-                .addOnSuccessListener {
+            auth.sendPasswordResetEmail(email).addOnSuccessListener {
                     dismissLoadingDialog()
                     showSuccessDialog()
-                }
-                .addOnFailureListener { e ->
+                }.addOnFailureListener { e ->
                     dismissLoadingDialog()
                     showErrorDialog(e)
                 }
@@ -63,8 +61,7 @@ class ResetActivity : AppCompatActivity() {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        return email.isNotEmpty() &&
-                Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun disableScrollbars() {
@@ -75,19 +72,14 @@ class ResetActivity : AppCompatActivity() {
     }
 
     private fun showSuccessDialog() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Success")
+        MaterialAlertDialogBuilder(this).setTitle("Success")
             .setMessage("A password reset link has been sent to your registered email.")
-            .setPositiveButton("OK", null)
-            .show()
+            .setPositiveButton("OK", null).show()
     }
 
     private fun showErrorDialog(e: Exception) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Error")
-            .setMessage(e.message ?: "Unknown error occurred.")
-            .setPositiveButton("OK", null)
-            .show()
+        MaterialAlertDialogBuilder(this).setTitle("Error")
+            .setMessage(e.message ?: "Unknown error occurred.").setPositiveButton("OK", null).show()
     }
 
     private fun showLoadingDialog() {

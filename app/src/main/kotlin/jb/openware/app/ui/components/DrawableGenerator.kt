@@ -6,16 +6,14 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
-import jb.openware.app.databinding.ProfileMenuBinding
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
+import jb.openware.app.databinding.ProfileMenuBinding
 
 object DrawableGenerator {
 
     fun generateDrawable(
-        context: Context,
-        color: Int,
-        text: String
+        context: Context, color: Int, text: String
     ): Drawable {
 
         val binding = ProfileMenuBinding.inflate(LayoutInflater.from(context))

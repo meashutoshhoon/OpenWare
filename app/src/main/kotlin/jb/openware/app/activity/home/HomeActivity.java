@@ -64,7 +64,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.afi.codekosh.R;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.components.SharedPreferencesManager;
-import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
 
 public class HomeActivity extends BaseFragment {

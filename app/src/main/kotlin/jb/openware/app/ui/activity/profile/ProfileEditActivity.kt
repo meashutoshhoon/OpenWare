@@ -8,7 +8,13 @@ import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import jb.openware.app.R
@@ -19,7 +25,8 @@ import jb.openware.app.util.ImageUtil
 import jb.openware.app.util.Utils
 import java.io.File
 
-class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityProfileEditBinding::inflate) {
+class ProfileEditActivity :
+    BaseActivity<ActivityProfileEditBinding>(ActivityProfileEditBinding::inflate) {
 
     private val firebase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val usersRef: DatabaseReference = firebase.getReference("Users")
@@ -64,6 +71,7 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                     upload()
                     true
                 }
+
                 else -> false
             }
         }
@@ -78,15 +86,14 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
             if (url == "none") {
                 pickSinglePhoto(listener = object : ImagePickedListener {
                     override fun onImagePicked(
-                        profilePath: String,
-                        imageFileName: String,
-                        imageUri: Uri
+                        profilePath: String, imageFileName: String, imageUri: Uri
                     ) {
                         aBoolean = true
                         avatar = ImageUtil.compressImage(this@ProfileEditActivity, imageUri, 40)
                         hideViews(binding.linearWord)
                         showViews(binding.circleimageview)
-                        Glide.with(this@ProfileEditActivity).load(Uri.fromFile(avatar)).into(binding.circleimageview)
+                        Glide.with(this@ProfileEditActivity).load(Uri.fromFile(avatar))
+                            .into(binding.circleimageview)
                     }
 
                 })
@@ -99,14 +106,14 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                 bt1.setOnClickListener {
                     pickSinglePhoto(object : ImagePickedListener {
                         override fun onImagePicked(
-                            profilePath: String,
-                            imageFileName: String,
-                            imageUri: Uri) {
+                            profilePath: String, imageFileName: String, imageUri: Uri
+                        ) {
                             aBoolean = true
                             avatar = ImageUtil.compressImage(this@ProfileEditActivity, imageUri, 40)
                             hideViews(binding.linearWord)
                             showViews(binding.circleimageview)
-                            Glide.with(this@ProfileEditActivity).load(Uri.fromFile(avatar)).into(binding.circleimageview)
+                            Glide.with(this@ProfileEditActivity).load(Uri.fromFile(avatar))
+                                .into(binding.circleimageview)
                             bottomSheet.dismiss()
                         }
                     })
@@ -125,7 +132,8 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                     val avatarName = userData["avatar_name"]?.toString()
                                     if (!avatarName.isNullOrBlank()) {
                                         val storageRef: StorageReference =
-                                            FirebaseStorage.getInstance().getReference("avatar").child(avatarName)
+                                            FirebaseStorage.getInstance().getReference("avatar")
+                                                .child(avatarName)
 
                                         storageRef.delete().addOnSuccessListener {
                                             val hashMap = HashMap<String, Any>()
@@ -136,9 +144,14 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                                 aBoolean = false
                                                 hideViews(binding.circleimageview)
                                                 showViews(binding.linearWord)
-                                                binding.linearWord.background = createRoundedDrawable(
-                                                    color.toColorInt())
-                                                name?.let { if (it.isNotEmpty()) binding.txWord.text = it.substring(0, 1) }
+                                                binding.linearWord.background =
+                                                    createRoundedDrawable(
+                                                        color.toColorInt()
+                                                    )
+                                                name?.let {
+                                                    if (it.isNotEmpty()) binding.txWord.text =
+                                                        it.substring(0, 1)
+                                                }
                                                 toast("Profile picture removed")
                                                 dismissProgressDialog()
                                             }, { e ->
@@ -160,8 +173,12 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                             hideViews(binding.circleimageview)
                                             showViews(binding.linearWord)
                                             binding.linearWord.background = createRoundedDrawable(
-                                                color.toColorInt())
-                                            name?.let { if (it.isNotEmpty()) binding.txWord.text = it.substring(0, 1) }
+                                                color.toColorInt()
+                                            )
+                                            name?.let {
+                                                if (it.isNotEmpty()) binding.txWord.text =
+                                                    it.substring(0, 1)
+                                            }
                                             toast("Profile picture removed")
                                             dismissProgressDialog()
                                         }, { e ->
@@ -182,7 +199,8 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                             alertCreator("An error has occurred. Please try again later.")
                         }
                     }
-                    usersDatabaseRef.child(currentUserId).addListenerForSingleValueEvent(valueEventListener)
+                    usersDatabaseRef.child(currentUserId)
+                        .addListenerForSingleValueEvent(valueEventListener)
                     bottomSheet.dismiss()
                 }
                 bottomSheet.show()
@@ -232,18 +250,18 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                 toast("Name empty")
                 dismissProgressDialog()
             }
+
             TextUtils.isEmpty(bio) -> {
                 toast("Bio is empty")
                 dismissProgressDialog()
             }
+
             namePre != name && usernames.contains(name) -> {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Alert")
-                    .setMessage("Username already taken.")
-                    .setPositiveButton("Ok", null)
-                    .show()
+                MaterialAlertDialogBuilder(this).setTitle("Alert")
+                    .setMessage("Username already taken.").setPositiveButton("Ok", null).show()
                 dismissProgressDialog()
             }
+
             else -> {
                 if (aBoolean) {
                     if (url != "none") {
@@ -253,7 +271,9 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                     val userData = dataSnapshot.getValue(userMapType)
                                     val value = userData?.get("avatar_name")?.toString()
                                     if (!value.isNullOrBlank()) {
-                                        val storageRef = FirebaseStorage.getInstance().getReference("avatar").child(value)
+                                        val storageRef =
+                                            FirebaseStorage.getInstance().getReference("avatar")
+                                                .child(value)
                                         storageRef.delete().addOnSuccessListener {
                                             push()
                                         }.addOnFailureListener {
@@ -271,7 +291,8 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                 alertCreator("An error has occurred. Please try again later.")
                             }
                         }
-                        usersDatabaseRef.child(currentUserId).addListenerForSingleValueEvent(valueEventListener)
+                        usersDatabaseRef.child(currentUserId)
+                            .addListenerForSingleValueEvent(valueEventListener)
                     } else {
                         push()
                     }

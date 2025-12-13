@@ -13,14 +13,12 @@ import jb.openware.app.R
 import jb.openware.app.databinding.ActivityAboutUsBinding
 import jb.openware.app.ui.adapter.AboutAdapter
 import jb.openware.app.ui.items.CategoryAbout
-import jb.openware.app.util.Const.Contributors
 import jb.openware.app.util.Const
+import jb.openware.app.util.Const.Contributors
 import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
-class AboutUsActivity :
-    AppCompatActivity(),
-    AboutAdapter.AdapterListener {
+class AboutUsActivity : AppCompatActivity(), AboutAdapter.AdapterListener {
     private lateinit var binding: ActivityAboutUsBinding
 
     private var rvPositionAndOffset: Pair<Int, Int>? = null
@@ -153,8 +151,7 @@ class AboutUsActivity :
     }
 
     override fun onCheckUpdate(
-        button: Button,
-        loadingDots: LottieAnimationView
+        button: Button, loadingDots: LottieAnimationView
     ) {
     }
 }

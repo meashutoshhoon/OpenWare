@@ -2,14 +2,10 @@ package jb.openware.app.ui.components
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
 import android.view.Window
 import android.widget.LinearLayout
 import androidx.core.graphics.drawable.toDrawable
-import androidx.core.graphics.toColorInt
 import jb.openware.app.R
 
 class MaterialProgressDialog(private val activity: Activity) {
