@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Widget.Material3.AppBarLayout">
@@ -65,13 +64,12 @@
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_color" />
-    </com.google.android.material.appbar.AppBarLayout>
 
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
@@ -86,8 +84,7 @@
             android:id="@+id/linear1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="1">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/linear9"
@@ -109,7 +106,7 @@
                         android:layout_height="match_parent"
                         android:contentDescription="@null"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/demo_icon" />
+                        android:src="@drawable/abt_dev_img" />
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
@@ -129,8 +126,7 @@
                         android:paddingEnd="8dp"
                         android:paddingBottom="2dp"
                         android:text="CodeKosh"
-                        android:textColor="#000000"
-                        android:textSize="23sp" />
+                        android:textAppearance="?attr/textAppearanceHeadline5" />
 
                     <TextView
                         android:id="@+id/username"
@@ -141,8 +137,8 @@
                         android:paddingTop="2dp"
                         android:paddingBottom="5dp"
                         android:text="CodeKosh"
-                        android:textColor="#006685"
-                        android:textSize="14sp"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textColor="?attr/colorPrimaryVariant"
                         tools:ignore="RtlSymmetry" />
                 </LinearLayout>
             </LinearLayout>
@@ -331,28 +327,6 @@
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/project_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:id="@+id/project_Type_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginEnd="2dp"
-                            android:fontFamily="@font/opensans_regular"
-                            android:padding="2dp"
-                            android:text="Sketchware Project"
-                            android:textColor="#757575"
-                            android:textSize="12sp" />
-                    </LinearLayout>
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -376,9 +350,9 @@
                         android:id="@+id/download_btn"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:background="#006493"
-                        android:orientation="horizontal"/>
+                        android:background="?attr/colorPrimary"
+                        android:gravity="center"
+                        android:orientation="horizontal" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -405,38 +379,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/opensans_bold"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:text="What's new"
-                        android:textColor="#000000"
-                        android:textSize="14sp" />
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <TextView
                         android:id="@+id/content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/opensans_medium"
-                        android:paddingLeft="8dp"
+                        android:paddingStart="8dp"
                         android:paddingTop="4dp"
-                        android:paddingRight="8dp"
+                        android:paddingEnd="8dp"
                         android:text="Nothing"
-                        android:textColor="#181818"
-                        android:textSize="12sp" />
+                        android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
-
 
 
                 <LinearLayout
                     android:id="@+id/read_more"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="?android:attr/selectableItemBackground"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="8dp">
+                    android:padding="8dp">
 
                     <TextView
                         android:id="@+id/read_more_text"
@@ -445,8 +417,7 @@
                         android:fontFamily="@font/opensans_bold"
                         android:padding="8dp"
                         android:text="Read more"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <LinearLayout
                         android:id="@+id/linear11"
@@ -488,8 +459,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                ads:adSize="BANNER"
                 android:visibility="gone"
+                ads:adSize="BANNER"
                 ads:adUnitId="ca-app-pub-8844795823361502/5820958881" />
 
             <LinearLayout
@@ -517,8 +488,7 @@
                         android:fontFamily="@font/opensans_medium"
                         android:padding="8dp"
                         android:text="Comments •"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <TextView
                         android:id="@+id/comments"
@@ -531,8 +501,7 @@
                         android:paddingBottom="8dp"
                         android:singleLine="true"
                         android:text="120"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <ImageView
                         android:id="@+id/imageview7"
