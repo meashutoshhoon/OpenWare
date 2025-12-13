@@ -26,7 +26,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.transition.MaterialSharedAxis;
 
 import in.afi.codekosh.R;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public abstract class Page extends Fragment {
 

@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import in.afi.codekosh.R;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class AboutActivity extends BaseFragment {
     private final DatabaseReference Users = FirebaseDatabase.getInstance().getReference("Users");

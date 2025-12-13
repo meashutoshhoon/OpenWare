@@ -37,7 +37,6 @@ import in.afi.codekosh.pages.components.SlideContainer;
 import jb.openware.app.pages.components.SlideView;
 import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class MainActivity extends BaseFragment {
     private final String get_link = "null";

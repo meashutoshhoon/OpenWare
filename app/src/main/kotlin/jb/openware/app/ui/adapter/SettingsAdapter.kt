@@ -8,12 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textview.MaterialTextView
 import jb.openware.app.databinding.ItemSettingsBinding
 import jb.openware.app.ui.activity.drawer.AboutUsActivity
 import jb.openware.app.ui.activity.drawer.settings.LookAndFeelActivity
 import jb.openware.app.ui.items.SettingsItem
-import jb.openware.app.ui.viewmodel.SettingsItemViewModel
+import jb.openware.app.ui.viewmodel.settings.SettingsItemViewModel
 import jb.openware.app.util.Const
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.Utils

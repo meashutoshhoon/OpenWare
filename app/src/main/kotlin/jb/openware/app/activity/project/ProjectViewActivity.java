@@ -68,10 +68,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import in.afi.codekosh.R;
-import in.afi.codekosh.activity.drawer.UploadActivity;
 import in.afi.codekosh.activity.other.LikesCountActivity;
 import in.afi.codekosh.activity.profile.ProfileActivity;
-import in.afi.codekosh.components.FirebaseUtils;
 import in.afi.codekosh.components.MenuCreator;
 import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.model.Project;
@@ -79,7 +77,6 @@ import in.afi.codekosh.nativeAds.MobileAdsLoader;
 import jb.openware.app.util.net.DownloadCallback;
 import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class ProjectViewActivity extends BaseFragment {
     private final FirebaseDatabase firebase = FirebaseDatabase.getInstance();

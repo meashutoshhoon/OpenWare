@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import jb.openware.app.databinding.SettingsLookAndFeelBinding
 import jb.openware.app.ui.common.booleanState
 import jb.openware.app.ui.common.intState
-import jb.openware.app.ui.viewmodel.SettingsItemViewModel
+import jb.openware.app.ui.viewmodel.settings.SettingsItemViewModel
 import jb.openware.app.util.AMOLED_THEME
 import jb.openware.app.util.DYNAMIC_THEME
 import jb.openware.app.util.DeviceUtils

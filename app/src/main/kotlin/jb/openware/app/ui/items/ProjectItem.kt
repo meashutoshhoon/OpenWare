@@ -56,8 +56,8 @@ data class Project(
                 icon = map["icon"]?.toString(),
                 title = map["title"]?.toString(),
                 description = map["description"]?.toString(),
-                whatsNew = map["whats_new"]?.toString(),
-                downloadUrl = map["download_url"]?.toString(),
+                whatsNew = map["whatsNew"]?.toString(),
+                downloadUrl = map["downloadUrl"]?.toString(),
                 size = map["size"]?.toString(),
                 uid = map["uid"]?.toString(),
                 likes = map["likes"]?.toString(),
@@ -71,11 +71,11 @@ data class Project(
                     object : TypeToken<List<String>>() {}.type
                 ),
                 time = map["time"]?.toString(),
-                updateTime = map["update_time"]?.toString(),
-                unlockCode = map["unlock_code"]?.toString(),
+                updateTime = map["updateTime"]?.toString(),
+                unlockCode = map["unlockCode"]?.toString(),
                 verified = map["verify"]?.toString() == "true",
-                editorsChoice = map["editors_choice"]?.toString() == "true",
-                commentsVisible = map["comments_visibility"]?.toString() == "true",
+                editorsChoice = map["editorsChoice"]?.toString() == "true",
+                commentsVisible = map["commentsVisibility"]?.toString() == "true",
                 visible = map["visibility"]?.toString() == "true",
                 name = map["name"]?.toString()
             )

@@ -25,7 +25,6 @@ import in.afi.codekosh.R;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.cells.UsersCell;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class LikesCountActivity extends BaseFragment {
     private final FirebaseDatabase _firebase = FirebaseDatabase.getInstance();

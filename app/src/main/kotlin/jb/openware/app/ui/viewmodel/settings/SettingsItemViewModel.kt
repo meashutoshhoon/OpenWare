@@ -1,4 +1,4 @@
-package jb.openware.app.ui.viewmodel
+package jb.openware.app.ui.viewmodel.settings
 
 import android.util.Pair
 import androidx.lifecycle.ViewModel

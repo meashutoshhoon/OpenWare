@@ -30,7 +30,6 @@ import in.afi.codekosh.R;
 import in.afi.codekosh.activity.project.ProjectViewActivity;
 import in.afi.codekosh.cells.ProjectCell;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class SearchActivity extends BaseFragment {
     private final DatabaseReference normal = FirebaseDatabase.getInstance().getReference("projects/normal");

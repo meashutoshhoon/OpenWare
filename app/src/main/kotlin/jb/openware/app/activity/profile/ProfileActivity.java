@@ -50,7 +50,6 @@ import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.nativeAds.MobileAdsLoader;
 import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class ProfileActivity extends BaseFragment {
     // Firebase Database

@@ -13,8 +13,8 @@ import jb.openware.app.databinding.ActivitySettingsBinding
 import jb.openware.app.ui.adapter.SettingsAdapter
 import jb.openware.app.ui.common.booleanState
 import jb.openware.app.ui.items.SettingsItem
-import jb.openware.app.ui.viewmodel.SettingsItemViewModel
-import jb.openware.app.ui.viewmodel.SettingsViewModel
+import jb.openware.app.ui.viewmodel.settings.SettingsItemViewModel
+import jb.openware.app.ui.viewmodel.settings.SettingsViewModel
 import jb.openware.app.util.Const
 import jb.openware.app.util.SMOOTH_SCROLLING
 import jb.openware.app.util.ThemeUtil

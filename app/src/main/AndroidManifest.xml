@@ -74,7 +74,7 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.drawer.UploadActivity"
+            android:name=".ui.activity.drawer.UploadActivity"
             android:exported="false"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />

@@ -38,7 +38,6 @@ import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.adapter.BaseProjectAdapter;
 import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class MoreProjectsActivity extends BaseFragment {
 

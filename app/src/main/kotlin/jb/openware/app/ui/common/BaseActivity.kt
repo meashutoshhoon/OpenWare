@@ -19,6 +19,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -40,9 +41,14 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
 import jb.openware.app.ui.components.LinkSpan
 import jb.openware.app.ui.components.MaterialProgressDialog
+import jb.openware.app.ui.items.ScreenshotItem
 import jb.openware.app.util.ConnectionManager
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.ThemeUtil
@@ -112,22 +118,23 @@ abstract class BaseActivity<VB : ViewBinding>(
         }
 
     private val pickMultipleImagesLauncher =
-        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
-            if (uris.isNotEmpty()) {
-                val list = ArrayList<MutableMap<String, Any>>()
+        registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(5)
+        ) { uris ->
 
-                for (uri in uris) {
-                    val (path, name) = resolveImageMeta(uri)
+            if (uris.isEmpty()) return@registerForActivityResult
 
-                    val item = mutableMapOf<String, Any>(
-                        "path" to path, "name" to name
-                    )
-                    list.add(item)
-                }
+            val screenshots = uris.map { uri ->
+                val (path, name) = resolveImageMeta(uri)
+                ScreenshotItem(
+                    path = path,
+                    name = name
+                )
+            }.toMutableList()
 
-                multipleImagePickedListener?.onImagePicked(list)
-            }
+            multipleImagePickedListener?.onImagePicked(screenshots)
         }
+
 
     fun convertUriToFilePath(context: Context, uri: Uri): String? {
         var path: String? = null
@@ -426,7 +433,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     fun getBaseUrl(id: String): String = "https://ashutoshgupta01.github.io/vid/$id.json"
 
     fun alertCreator(
-        message: String, onPositive: (() -> Unit)? = null
+        message: String?, onPositive: (() -> Unit)? = null
     ) {
         MaterialAlertDialogBuilder(this).setTitle("Alert").setMessage(message)
             .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -474,7 +481,10 @@ abstract class BaseActivity<VB : ViewBinding>(
         HapticUtils.weakVibrate(this)
     }
 
-    fun getUid(): String? = FirebaseAuth.getInstance().currentUser?.uid
+    fun getUid(): String =
+        FirebaseAuth.getInstance().currentUser?.uid
+            ?: error("User not authenticated")
+
 
     inline fun <reified T : Activity> openActivity(
         clearTaskAndFinish: Boolean = false
@@ -621,8 +631,178 @@ abstract class BaseActivity<VB : ViewBinding>(
         }
     }
 
+    fun uploadFileToFirebaseStorage(
+        storagePath: String,
+        child: String,
+        fileUri: Uri,
+        onSuccess: (Uri) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val fileRef = FirebaseStorage
+            .getInstance()
+            .getReference(storagePath)
+            .child(child)
+
+        fileRef.putFile(fileUri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
+                }
+                fileRef.downloadUrl
+            }
+            .addOnSuccessListener(onSuccess)
+            .addOnFailureListener(onFailure)
+    }
 
 
+    fun pushToDatabase(
+        dataMap: Map<String, Any>,
+        reference: String,
+        child: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        FirebaseDatabase.getInstance()
+            .getReference(reference)
+            .child(child)
+            .updateChildren(dataMap)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Data pushed successfully")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Failed to push data", e)
+                onFailure(e)
+            }
+    }
+
+    fun getProjectId(
+        key: String,
+        premium: Boolean,
+        callback: (String) -> Unit
+    ) {
+        val databasePath = if (premium) "projects/premium" else "projects/normal"
+
+        FirebaseDatabase.getInstance()
+            .getReference(databasePath)
+            .child(key)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        callback("error")
+                        return
+                    }
+
+                    val data = snapshot.getValue(
+                        object : GenericTypeIndicator<Map<String, Any>>() {}
+                    ) ?: run {
+                        callback("error")
+                        return
+                    }
+
+                    val id = data["id"]?.toString()
+                    if (id != null) {
+                        callback(id)
+                    } else {
+                        callback("error")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callback("error")
+                }
+            })
+    }
+
+
+    fun getDataFromDatabase(
+        reference: String,
+        child: String,
+        callback: (Map<String, Any>?) -> Unit
+    ) {
+        FirebaseDatabase.getInstance()
+            .getReference(reference)
+            .child(child)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        callback(null)
+                        return
+                    }
+
+                    val data = snapshot.getValue(
+                        object : GenericTypeIndicator<Map<String, Any>>() {}
+                    )
+
+                    callback(data)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callback(null)
+                }
+            })
+    }
+
+    fun retrieveProjectsListFromFirebase(
+        callback: (String) -> Unit
+    ) {
+        val nodeKey = "pp_3"
+        val databaseRef = FirebaseDatabase.getInstance()
+            .getReference("pp")
+            .child(nodeKey)
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    callback("0")
+                    return
+                }
+
+                val data = snapshot.getValue(
+                    object : GenericTypeIndicator<Map<String, Any>>() {}
+                )
+
+                val points = data?.get("points")?.toString() ?: "0"
+                callback(points)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback("error")
+            }
+        })
+    }
+
+    fun updateProjectsListToFirebase(
+        onSuccess: () -> Unit
+    ) {
+        val nodeKey = "pp_3"
+        val databasePath = "pp"
+
+        retrieveProjectsListFromFirebase { value ->
+            if (value == "error") {
+                alertCreator("Failed to retrieve points")
+                return@retrieveProjectsListFromFirebase
+            }
+
+            val currentPoints = value.toIntOrNull() ?: 0
+            val updatedPoints = currentPoints + 1
+
+            val dataMap = mapOf(
+                "points" to updatedPoints.toString()
+            )
+
+            pushToDatabase(
+                dataMap = dataMap,
+                reference = databasePath,
+                child = nodeKey,
+                onSuccess = onSuccess,
+                onFailure = { e -> alertCreator(e.message) }
+            )
+        }
+    }
 
 
     interface UidTimestampListener {
@@ -653,7 +833,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     interface MultipleImagePickedListener {
-        fun onImagePicked(list: ArrayList<MutableMap<String, Any>>)
+        fun onImagePicked(list: MutableList<ScreenshotItem>)
     }
 
     interface FilePickedListener {

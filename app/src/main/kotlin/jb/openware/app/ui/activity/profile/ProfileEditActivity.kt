@@ -1,28 +1,20 @@
 package jb.openware.app.ui.activity.profile
 
-import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.text.TextUtils
-import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.annotation.NonNull
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
-import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityProfileEditBinding
 import jb.openware.app.ui.common.BaseActivity
+import jb.openware.app.ui.components.BottomSheetController
 import jb.openware.app.util.ImageUtil
 import jb.openware.app.util.Utils
 import java.io.File
@@ -38,11 +30,14 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
     private var avatar: File? = null
     private var aBoolean: Boolean = false
 
+    private var name: String? = ""
+    private lateinit var color: String
+
     private val userMapType = object : GenericTypeIndicator<HashMap<String, Any?>>() {}
 
     override fun init() {
-        val name = intent.getStringExtra("name")
-        val color = intent.getStringExtra("color") ?: "#000000"
+        name = intent.getStringExtra("name")
+        color = intent.getStringExtra("color") ?: "#000000"
         val bioT = intent.getStringExtra("bio") ?: ""
         url = intent.getStringExtra("url") ?: "none"
 
@@ -96,24 +91,30 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
 
                 })
             } else {
-                createBottomSheetDialog(R.layout.sheet_profile)
-                val bt1 = bsId<LinearLayout>(R.id.bt1)
-                val bt2 = bsId<LinearLayout>(R.id.bt2)
+                val bottomSheet = BottomSheetController(this)
+                bottomSheet.create(R.layout.sheet_profile)
+                val bt1 = bottomSheet.find<LinearLayout>(R.id.bt1)
+                val bt2 = bottomSheet.find<LinearLayout>(R.id.bt2)
 
                 bt1.setOnClickListener {
-                    pickSinglePhoto { profilePath, imageFileName, imageUri ->
-                        aBoolean = true
-                        avatar = ImageUtils.compressImage(this, imageUri, 40)
-                        hideViews(linearWord)
-                        showViews(circleImageView1)
-                        Glide.with(this).load(Uri.fromFile(avatar)).into(circleImageView1)
-                        dismissBottomSheetDialog()
-                    }
+                    pickSinglePhoto(object : ImagePickedListener {
+                        override fun onImagePicked(
+                            profilePath: String,
+                            imageFileName: String,
+                            imageUri: Uri) {
+                            aBoolean = true
+                            avatar = ImageUtil.compressImage(this@ProfileEditActivity, imageUri, 40)
+                            hideViews(binding.linearWord)
+                            showViews(binding.circleimageview)
+                            Glide.with(this@ProfileEditActivity).load(Uri.fromFile(avatar)).into(binding.circleimageview)
+                            bottomSheet.dismiss()
+                        }
+                    })
                 }
 
                 bt2.setOnClickListener {
                     showProgressDialog()
-                    val currentUserId = getUID()
+                    val currentUserId = getUid()
                     val usersDatabaseRef = FirebaseDatabase.getInstance().getReference("Users")
 
                     val valueEventListener = object : ValueEventListener {
@@ -130,14 +131,15 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                             val hashMap = HashMap<String, Any>()
                                             hashMap["avatar"] = "none"
                                             hashMap["avatar_name"] = "none"
-                                            pushToDatabase(hashMap, "Users", getUID(), { _ ->
+                                            pushToDatabase(hashMap, "Users", getUid(), {
                                                 url = "none"
                                                 aBoolean = false
-                                                hideViews(circleImageView1)
-                                                showViews(linearWord)
-                                                linearWord.background = createRoundedDrawable(360, Color.parseColor(color))
-                                                name?.let { if (it.isNotEmpty()) txWord.text = it.substring(0, 1) }
-                                                showToast("Profile picture removed")
+                                                hideViews(binding.circleimageview)
+                                                showViews(binding.linearWord)
+                                                binding.linearWord.background = createRoundedDrawable(
+                                                    color.toColorInt())
+                                                name?.let { if (it.isNotEmpty()) binding.txWord.text = it.substring(0, 1) }
+                                                toast("Profile picture removed")
                                                 dismissProgressDialog()
                                             }, { e ->
                                                 dismissProgressDialog()
@@ -152,14 +154,15 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                         val hashMap = HashMap<String, Any>()
                                         hashMap["avatar"] = "none"
                                         hashMap["avatar_name"] = "none"
-                                        pushToDatabase(hashMap, "Users", getUID(), { _ ->
+                                        pushToDatabase(hashMap, "Users", getUid(), {
                                             url = "none"
                                             aBoolean = false
-                                            hideViews(circleImageView1)
-                                            showViews(linearWord)
-                                            linearWord.background = createRoundedDrawable(360, Color.parseColor(color))
-                                            name?.let { if (it.isNotEmpty()) txWord.text = it.substring(0, 1) }
-                                            showToast("Profile picture removed")
+                                            hideViews(binding.circleimageview)
+                                            showViews(binding.linearWord)
+                                            binding.linearWord.background = createRoundedDrawable(
+                                                color.toColorInt())
+                                            name?.let { if (it.isNotEmpty()) binding.txWord.text = it.substring(0, 1) }
+                                            toast("Profile picture removed")
                                             dismissProgressDialog()
                                         }, { e ->
                                             dismissProgressDialog()
@@ -180,9 +183,9 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                         }
                     }
                     usersDatabaseRef.child(currentUserId).addListenerForSingleValueEvent(valueEventListener)
-                    dismissBottomSheetDialog()
+                    bottomSheet.dismiss()
                 }
-                showBottomSheetDialog()
+                bottomSheet.show()
             }
         }
 
@@ -219,9 +222,9 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
         hideKeyboard()
         showProgressDialog()
 
-        val name = nameEditText.text?.toString() ?: ""
-        val bio = bioEditText.text?.toString() ?: ""
-        val currentUserId = getUID()
+        val name = binding.name.text.toString()
+        val bio = binding.bio.text.toString()
+        val currentUserId = getUid()
         val usersDatabaseRef = FirebaseDatabase.getInstance().getReference("Users")
 
         when {
@@ -254,7 +257,6 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                                         storageRef.delete().addOnSuccessListener {
                                             push()
                                         }.addOnFailureListener {
-                                            // even if delete fails, continue with push (original behavior)
                                             push()
                                         }
                                     } else {
@@ -278,8 +280,8 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
                     dataMap["name"] = name
                     dataMap["bio"] = bio
                     val databasePath = "Users"
-                    val child = getUserConfig().uid
-                    pushToDatabase(dataMap, databasePath, child, { _ ->
+                    val child = userConfig.uid
+                    pushToDatabase(dataMap, databasePath, child, {
                         dismissProgressDialog()
                         finish()
                     }, { e ->
@@ -298,15 +300,15 @@ class ProfileEditActivity : BaseActivity<ActivityProfileEditBinding>(ActivityPro
             return
         }
 
-        uploadFileToFirebaseStorage("avatar", s, Uri.fromFile(file), { uri ->
+        uploadFileToFirebaseStorage("avatar", s, file.toUri(), { uri ->
             val fileDownloadUrl = uri.toString()
             val dataMap = HashMap<String, Any>()
             dataMap["avatar"] = fileDownloadUrl
-            dataMap["name"] = nameEditText.text?.toString().orEmpty()
+            dataMap["name"] = binding.name.text.toString()
             dataMap["avatar_name"] = s
             val databasePath = "Users"
-            val child = getUserConfig().uid
-            pushToDatabase(dataMap, databasePath, child, { _ ->
+            val child = userConfig.uid
+            pushToDatabase(dataMap, databasePath, child, {
                 dismissProgressDialog()
                 finish()
             }, { e ->

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,6 +85,7 @@ class ChangeLogFragment : Fragment() {
             private val parentLayout: ViewGroup
         ) : RecyclerView.ViewHolder(binding.root) {
 
+            @SuppressLint("SetTextI18n")
             fun bind(entry: LogEntry) = with(binding) {
                 appVersion.text = entry.name
                 released.text = "Released on: ${entry.releasedOn}"

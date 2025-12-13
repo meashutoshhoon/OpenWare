@@ -62,13 +62,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.afi.codekosh.R;
-import in.afi.codekosh.activity.drawer.UploadActivity;
 import in.afi.codekosh.activity.profile.ProfileActivity;
 import in.afi.codekosh.components.FileLog;
 import in.afi.codekosh.components.SharedPreferencesManager;
 import in.afi.codekosh.tools.AndroidUtils;
 import in.afi.codekosh.tools.BaseFragment;
-import in.afi.codekosh.tools.ThemeBuilder;
 
 public class HomeActivity extends BaseFragment {
     private final DatabaseReference premium = FirebaseDatabase.getInstance().getReference("projects/premium");

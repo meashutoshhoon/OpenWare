@@ -1,11 +1,14 @@
 package jb.openware.app.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -17,7 +20,8 @@ import jb.openware.app.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.math.roundToInt
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 object Utils {
@@ -26,6 +30,16 @@ object Utils {
         return View.OnClickListener {
             activity.onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    fun isConnected(context: Context): Boolean {
+        val cm =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = cm.activeNetwork ?: return false
+        val capabilities = cm.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     fun convertDpToPixel(dp: Float, context: Context): Float {
@@ -54,6 +68,39 @@ object Utils {
         }
     }
 
+    fun getGithubApkSize(apkUrl: String): Long {
+        val connection = (URL(apkUrl).openConnection() as HttpURLConnection).apply {
+            requestMethod = "HEAD"
+            instanceFollowRedirects = true
+            connectTimeout = 10_000
+            readTimeout = 10_000
+        }
+
+        connection.connect()
+        val size = connection.contentLengthLong
+        connection.disconnect()
+
+        return size // bytes
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun formatFileSize(bytes: Long): String {
+        if (bytes <= 0) return "0 B"
+
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        var size = bytes.toDouble()
+        var unitIndex = 0
+
+        while (size >= 1024 && unitIndex < units.lastIndex) {
+            size /= 1024
+            unitIndex++
+        }
+
+        return if (unitIndex == 0)
+            "${size.toInt()} ${units[unitIndex]}"
+        else
+            String.format("%.2f %s", size, units[unitIndex])
+    }
 
     fun hideKeyboard(view: View?) {
         view?.let {
