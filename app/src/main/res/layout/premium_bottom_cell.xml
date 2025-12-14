@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal|center_vertical"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="8dp">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="vertical">
 
             <com.airbnb.lottie.LottieAnimationView
@@ -41,8 +41,7 @@
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="Download Key"
-                android:textColor="#000"
-                android:textSize="22.5sp" />
+                android:textAppearance="?attr/textAppearanceHeadline5" />
 
             <TextView
                 android:id="@+id/t1"
@@ -51,13 +50,12 @@
                 android:layout_marginBottom="5dp"
                 android:focusable="false"
                 android:fontFamily="@font/opensans_regular"
-                android:gravity="center_horizontal|center_vertical"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
                 android:text="To access this premium project and initiate the download, you need to obtain the premium key."
-                android:textColor="#424242"
-                android:textSize="14sp" />
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textinputlayout1"
@@ -67,10 +65,10 @@
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 android:padding="4dp"
-                app:boxCornerRadiusBottomEnd="10dp"
-                app:boxCornerRadiusBottomStart="10dp"
-                app:boxCornerRadiusTopEnd="10dp"
-                app:boxCornerRadiusTopStart="10dp">
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp">
 
                 <EditText
                     android:id="@+id/edittext1"
@@ -86,6 +84,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/b1"
+                style="@style/Widget.Material3Expressive.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -93,10 +92,9 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/en_light"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:text="Proceed"
-                android:textSize="16sp"
-                android:theme="@style/ThemeOverlay.Material3.Button" />
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
 

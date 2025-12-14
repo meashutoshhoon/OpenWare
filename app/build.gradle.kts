@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId = "jb.openware.app"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
 

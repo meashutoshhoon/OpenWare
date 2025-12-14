@@ -11,7 +11,7 @@ import jb.openware.app.databinding.PhotoCellBinding
 class ProjectScreenshotCell(context: Context) : FrameLayout(context) {
 
     private val binding = PhotoCellBinding.inflate(LayoutInflater.from(context), this, true)
-    private val image = binding.image
+    val image = binding.image
 
     fun setImage(url: String) {
         Glide.with(image.context).load(url).transition(DrawableTransitionOptions.withCrossFade())

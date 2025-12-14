@@ -22,34 +22,31 @@ object Downloader {
         destinationPath: String
     ): Flow<DownloadProgress> = flow {
 
-        emit(DownloadProgress(progress = 0))
+        emit(DownloadProgress(0))
 
         withContext(Dispatchers.IO) {
             try {
                 val url = URL(fileUrl)
-                val conn = (url.openConnection() as HttpURLConnection).apply {
-                    connectTimeout = 15000
-                    readTimeout = 15000
-                    requestMethod = "GET"
-                    connect()
-                }
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connectTimeout = 15000
+                connection.readTimeout = 15000
+                connection.connect()
 
-                val fileLength = conn.contentLength.takeIf { it > 0 }
-
-                val input = BufferedInputStream(conn.inputStream)
+                val length = connection.contentLength
+                val input = BufferedInputStream(connection.inputStream)
                 val output = FileOutputStream(destinationPath)
 
                 val buffer = ByteArray(8 * 1024)
-                var total = 0L
+                var downloaded = 0L
                 var count: Int
 
                 while (input.read(buffer).also { count = it } != -1) {
                     output.write(buffer, 0, count)
-                    total += count
+                    downloaded += count
 
-                    fileLength?.let {
-                        val progress = ((total * 100) / it).toInt()
-                        emit(DownloadProgress(progress = progress))
+                    if (length > 0) {
+                        val progress = ((downloaded * 100) / length).toInt()
+                        emit(DownloadProgress(progress))
                     }
                 }
 
@@ -57,10 +54,10 @@ object Downloader {
                 output.close()
                 input.close()
 
-                emit(DownloadProgress(progress = 100, done = true))
+                emit(DownloadProgress(100, done = true))
 
             } catch (e: Exception) {
-                emit(DownloadProgress(progress = 0, done = true, error = e))
+                emit(DownloadProgress(0, done = true, error = e))
             }
         }
     }

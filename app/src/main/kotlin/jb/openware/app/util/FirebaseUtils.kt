@@ -1,6 +1,7 @@
 package jb.openware.app.util
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -35,13 +36,21 @@ class FirebaseUtils {
             .addOnFailureListener(onFailure)
     }
 
-    fun deleteFileFromStorageByUrl(vararg urls: String) {
-        urls.forEach { url ->
-            runCatching {
-                storage.getReferenceFromUrl(url).delete()
+    fun deleteFileFromStorageByUrl(vararg urls: String?) {
+        val storage = FirebaseStorage.getInstance()
+
+        urls
+            .filterNotNull()
+            .filter { it.isNotBlank() && it != "none" }
+            .forEach { url ->
+                runCatching {
+                    storage.getReferenceFromUrl(url).delete()
+                }.onFailure {
+                     Log.e("FirebaseUtils", "Failed to delete file: $url", it)
+                }
             }
-        }
     }
+
 
     /* -------------------------------- Database -------------------------------- */
 

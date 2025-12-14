@@ -22,6 +22,7 @@ import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityHomeExtendBinding
+import jb.openware.app.ui.activity.project.ProjectViewActivity
 import jb.openware.app.ui.adapter.BaseProjectAdapter
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.DrawableGenerator
@@ -68,7 +69,7 @@ class MoreProjectsActivity :
 
         binding.recyclerview.adapter = adapter
 
-        key = getPrefString("id", "all")
+        key = getPrefString(key = "id", default = "all")
         loadProjects()
     }
 
@@ -98,7 +99,7 @@ class MoreProjectsActivity :
                     if (key == "like") {
                         projects.addAll(
                             list.sortedByDescending {
-                                it.likes?.toIntOrNull() ?: 0
+                                it.likes.toIntOrNull() ?: 0
                             })
                     } else {
                         projects.addAll(list.reversed())

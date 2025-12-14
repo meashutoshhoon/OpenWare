@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -63,6 +64,7 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import kotlin.math.roundToInt
 import androidx.core.content.edit
+import com.google.android.material.color.MaterialColors
 
 abstract class BaseActivity<VB : ViewBinding>(
     private val bindingInflater: (LayoutInflater) -> VB
@@ -391,8 +393,6 @@ abstract class BaseActivity<VB : ViewBinding>(
     suspend fun getMessagingToken(): String =
         FirebaseMessaging.getInstance().token.await()
 
-
-
     fun hideViews(vararg views: View) {
         views.forEach { it.visibility = View.GONE }
     }
@@ -509,13 +509,17 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun Context.getPrefString(
+        name: String = NAME,
         key: String,
         default: String
     ): String {
-        return getSharedPreferences(NAME, MODE_PRIVATE)
+        return getSharedPreferences(name, MODE_PRIVATE)
             .getString(key, default) ?: default
     }
 
+    fun Context.getThemeColor(attr: Int, fallback: Int = Color.TRANSPARENT): Int {
+        return MaterialColors.getColor(this, attr, fallback)
+    }
 
     fun isAndroid13OrAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 

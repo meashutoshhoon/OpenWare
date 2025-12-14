@@ -80,10 +80,6 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(ActivityCategoryB
                 "category" -> binding.toolbar.setTitle(intent?.getStringExtra("title"))
                 "editors_choice" -> binding.toolbar.setTitle("Editor's Choice Projects")
                 "verify" -> binding.toolbar.setTitle("Verified Projects")
-                "project_type" -> {
-                    val t = intent?.getStringExtra("title") ?: ""
-                    binding.toolbar.setTitle("$t Projects")
-                }
             }
 
             if (k == "premium") {

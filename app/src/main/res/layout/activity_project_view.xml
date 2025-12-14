@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -66,6 +65,7 @@
 
 
         <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -195,7 +195,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="#AA47BC"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -224,7 +224,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="#009688"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -253,7 +253,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="#2196F3"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -283,7 +283,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="#4CAF50"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -311,7 +311,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -324,7 +324,7 @@
                             android:fontFamily="@font/opensans_regular"
                             android:padding="2dp"
                             android:text="UI &amp; UX"
-                            android:textColor="#757575"
+                            android:textColor="?attr/colorSecondary"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -453,15 +453,6 @@
                         android:orientation="horizontal" />
                 </LinearLayout>
             </LinearLayout>
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                ads:adSize="BANNER"
-                ads:adUnitId="ca-app-pub-8844795823361502/5820958881" />
 
             <LinearLayout
                 android:id="@+id/linear13"
