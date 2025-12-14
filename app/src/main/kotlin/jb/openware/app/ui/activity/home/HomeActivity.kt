@@ -44,6 +44,7 @@ import jb.openware.app.ui.activity.drawer.UploadActivity
 import jb.openware.app.ui.activity.drawer.logs.ChangeLogActivity
 import jb.openware.app.ui.activity.drawer.settings.SettingsActivity
 import jb.openware.app.ui.activity.home.fragments.CategoryFragment
+import jb.openware.app.ui.activity.home.fragments.HomeFragment
 import jb.openware.app.ui.activity.home.fragments.NotificationFragment
 import jb.openware.app.ui.adapter.ListProjectAdapter
 import jb.openware.app.ui.common.BaseActivity

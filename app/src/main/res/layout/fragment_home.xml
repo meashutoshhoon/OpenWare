@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base"
     android:layout_width="match_parent"
@@ -10,7 +9,6 @@
     android:paddingStart="8dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    tools:context=".activity.home.HomeFragment"
     tools:ignore="RtlSymmetry">
 
 
@@ -36,20 +34,18 @@
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="Editor's Choice"
-                android:textColor="#000000"
-                android:textSize="21sp" />
+                android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <Button
                 android:id="@+id/editor_seemore"
+                style="@style/Widget.Material3Expressive.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="SEE MORE"
-                android:textColor="#2196F3"
-                android:textSize="13.5sp"
-                android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
+                android:textSize="13.5sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -64,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="8dp"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <com.facebook.shimmer.ShimmerFrameLayout
@@ -135,20 +131,18 @@
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="New &amp; Updated"
-                android:textColor="#000000"
-                android:textSize="21sp" />
+                android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <Button
                 android:id="@+id/textview7"
+                style="@style/Widget.Material3Expressive.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="SEE MORE"
-                android:textColor="#2196F3"
-                android:textSize="13.5sp"
-                android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
+                android:textSize="13.5sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -216,7 +210,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:background="#FFFFFF"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="4dp">
 
@@ -250,7 +244,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:background="#FFFFFF"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="4dp">
 
@@ -284,7 +278,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:background="#FFFFFF"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -318,7 +312,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:background="#FFFFFF"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -352,7 +346,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:background="#FFFFFF"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -387,14 +381,6 @@
             android:layout_marginBottom="3dp" />
     </LinearLayout>
 
-    <in.afi.codekosh.nativeAds.TemplateView
-        android:id="@+id/nativeTemplateView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:gnt_template_type="@layout/admob" />
-
-
     <LinearLayout
         android:id="@+id/linear_most_liked"
         android:layout_width="match_parent"
@@ -420,20 +406,18 @@
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="Most Liked"
-                android:textColor="#000000"
-                android:textSize="21sp" />
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <Button
                 android:id="@+id/textview11"
+                style="@style/Widget.Material3Expressive.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/en_light"
                 android:padding="8dp"
                 android:text="SEE MORE"
-                android:textColor="#2196F3"
-                android:textSize="13.5sp"
-                android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
+                android:textSize="13.5sp" />
 
         </LinearLayout>
 
