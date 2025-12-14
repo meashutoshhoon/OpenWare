@@ -47,9 +47,8 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.other.LikesCountActivity"
+            android:name=".ui.activity.other.LikesCountActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.other.CategoryActivity"
@@ -78,9 +77,8 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.profile.ProfileEditActivity"
+            android:name=".ui.activity.profile.ProfileEditActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.profile.ProfileActivity"

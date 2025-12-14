@@ -1,7 +1,7 @@
 package jb.openware.app.ui.cells
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
@@ -16,7 +16,7 @@ import jb.openware.app.ui.components.BadgeDrawable
 import jb.openware.app.ui.items.UserItem
 
 @SuppressLint("ViewConstructor")
-class UsersCell(context: Activity) : FrameLayout(context) {
+class UsersCell(context: Context) : FrameLayout(context) {
 
     private val binding = CellUsersBinding.inflate(LayoutInflater.from(context), this, true)
 
