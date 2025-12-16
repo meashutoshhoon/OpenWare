@@ -74,21 +74,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         isNameEditTextVisible = savedInstanceState?.getBoolean("isNameEditTextVisible") ?: false
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_ACTIVITY_B && resultCode == RESULT_OK) {
-            if (login) login() else register()
-        }
-
-    }
-
-
     override fun init() {
         progressView = RadialProgressView(this).apply {
             setProgressColor(
                 MaterialColors.getColor(
-                    this,
-                    com.google.android.material.R.attr.colorOnPrimary
+                    this, com.google.android.material.R.attr.colorOnPrimary
                 )
             )
             setSize(dp(25))
@@ -131,11 +121,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             if (!login && !validateRegister()) return@setOnClickListener
 
             MaterialAlertDialogBuilder(this).setTitle("Disclaimer").setMessage(
-                    "By proceeding, you are certifying that you have perused and consented to our terms and conditions.\n" + "Further information can be found on our terms and conditions page."
-                ).setNegativeButton("Cancel", null).setPositiveButton("Continue") { _, _ ->
-                    val intent = Intent(this, CaptchaActivity::class.java)
-                    startActivityForResult(intent, REQUEST_CODE_ACTIVITY_B)
-                }.show()
+                "By proceeding, you are certifying that you have perused and consented to our terms and conditions.\n" + "Further information can be found on our terms and conditions page."
+            ).setNegativeButton("Cancel", null).setPositiveButton("Continue") { _, _ ->
+                if (login) login() else register()
+            }.show()
         }
 
         binding.textview8.setOnClickListener {
@@ -160,9 +149,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             emailLayout.show()
             passwordLayout.show()
 
-            textview8.text = "Login"
-            textview9.text = "New user?"
-            textviewGo.text = "Register"
+            textview8.text = "Create account"
+            textview9.text = "Already have an account?"
+            textviewGo.text = "Login"
         } else {
             // REGISTER MODE
             usernameLayout.show()
@@ -171,9 +160,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             emailLayout.show()
             passwordLayout.show()
 
-            textview8.text = "Create account"
-            textview9.text = "Already have an account?"
-            textviewGo.text = "Login"
+            textview8.text = "Login"
+            textview9.text = "New user?"
+            textviewGo.text = "Register"
         }
 
         login = isLogin
@@ -247,82 +236,77 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         val passwordTxt = binding.password.textString()
 
         auth.signInWithEmailAndPassword(emailTxt, passwordTxt).addOnCompleteListener { task ->
-                setLoading(false)
+            setLoading(false)
 
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
+            if (task.isSuccessful) {
+                val user = auth.currentUser
 
-                    if (user != null) {
-                        if (user.isEmailVerified) {
-                            userMap["device_id"] = id
-                            users.child(user.uid).updateChildren(userMap)
-                            userMap.clear()
+                if (user != null) {
+                    if (user.isEmailVerified) {
+                        userMap["device_id"] = id
+                        users.child(user.uid).updateChildren(userMap)
+                        userMap.clear()
 
-                            userConfig.saveLoginDetails(emailTxt, passwordTxt, user.uid)
+                        userConfig.saveLoginDetails(emailTxt, passwordTxt, user.uid)
 
-                            val intent = Intent().apply {
-                                setClass(
-                                    this@LoginActivity, HomeActivity::class.java
-                                )
-                                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            // email not verified
-                            MaterialAlertDialogBuilder(this).setTitle("Notice").setMessage(
-                                    "To proceed, account verification is necessary. " + "Please check your email for the verification process."
-                                ).setPositiveButton("RESEND") { _, _ ->
-                                    user.sendEmailVerification()
-                                        .addOnCompleteListener { taskResend ->
-                                            if (taskResend.isSuccessful) {
-                                                MaterialAlertDialogBuilder(this).setTitle("Alert")
-                                                    .setMessage("A verification link has been dispatched to your email.")
-                                                    .setPositiveButton("OK", null).show()
-                                            } else {
-                                                alertCreator(
-                                                    taskResend.exception?.message
-                                                        ?: "Failed to resend email."
-                                                )
-                                            }
-                                        }
-                                }.show()
+                        val intent = Intent().apply {
+                            setClass(
+                                this@LoginActivity, HomeActivity::class.java
+                            )
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
-                    }
-                } else {
-                    val errorMessage = task.exception?.message ?: "Authentication failed."
 
-                    when {
-                        errorMessage.contains(
-                            "invalid or the user does not have a password",
-                            ignoreCase = true
-                        ) -> alertCreator("Authentication failed due to an incorrect password entry or a recent password modification.")
-
-                        errorMessage.contains(
-                            "There is no user record corresponding to this identifier",
-                            ignoreCase = true
-                        ) -> alertCreator("No user exists with the provided email address on our servers, possibly due to deletion of the account.")
-
-                        errorMessage.contains(
-                            "The email address is already in use by another account",
-                            ignoreCase = true
-                        ) -> alertCreator("The account is already registered on our servers. Please use a different email or sign in using the registered email.")
-
-                        errorMessage.contains(
-                            "The user account has been disabled by an administrator",
-                            ignoreCase = true
-                        ) -> alertCreator("The user account has been banned by the administrator for violating our terms and conditions.")
-
-                        errorMessage.contains(
-                            "The email address is badly formatted",
-                            ignoreCase = true
-                        ) -> alertCreator("We regret to inform you that the email address provided is not in a proper format.")
-
-                        else -> alertCreator(errorMessage)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // email not verified
+                        MaterialAlertDialogBuilder(this).setTitle("Notice").setMessage(
+                            "To proceed, account verification is necessary. " + "Please check your email for the verification process."
+                        ).setPositiveButton("RESEND") { _, _ ->
+                            user.sendEmailVerification().addOnCompleteListener { taskResend ->
+                                    if (taskResend.isSuccessful) {
+                                        MaterialAlertDialogBuilder(this).setTitle("Alert")
+                                            .setMessage("A verification link has been dispatched to your email.")
+                                            .setPositiveButton("OK", null).show()
+                                    } else {
+                                        alertCreator(
+                                            taskResend.exception?.message
+                                                ?: "Failed to resend email."
+                                        )
+                                    }
+                                }
+                        }.show()
                     }
                 }
+            } else {
+                val errorMessage = task.exception?.message ?: "Authentication failed."
+
+                when {
+                    errorMessage.contains(
+                        "invalid or the user does not have a password", ignoreCase = true
+                    ) -> alertCreator("Authentication failed due to an incorrect password entry or a recent password modification.")
+
+                    errorMessage.contains(
+                        "There is no user record corresponding to this identifier",
+                        ignoreCase = true
+                    ) -> alertCreator("No user exists with the provided email address on our servers, possibly due to deletion of the account.")
+
+                    errorMessage.contains(
+                        "The email address is already in use by another account", ignoreCase = true
+                    ) -> alertCreator("The account is already registered on our servers. Please use a different email or sign in using the registered email.")
+
+                    errorMessage.contains(
+                        "The user account has been disabled by an administrator", ignoreCase = true
+                    ) -> alertCreator("The user account has been banned by the administrator for violating our terms and conditions.")
+
+                    errorMessage.contains(
+                        "The email address is badly formatted", ignoreCase = true
+                    ) -> alertCreator("We regret to inform you that the email address provided is not in a proper format.")
+
+                    else -> alertCreator(errorMessage)
+                }
             }
+        }
     }
 
     private fun register() {
@@ -339,77 +323,75 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         }
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    setLoading(false)
-                    alertCreator(task.exception?.message ?: "Registration failed.")
-                    return@addOnCompleteListener
-                }
+            if (!task.isSuccessful) {
+                setLoading(false)
+                alertCreator(task.exception?.message ?: "Registration failed.")
+                return@addOnCompleteListener
+            }
 
-                val user = auth.currentUser
-                if (user == null) {
-                    setLoading(false)
-                    alertCreator("User not found after registration.")
-                    return@addOnCompleteListener
-                }
+            val user = auth.currentUser
+            if (user == null) {
+                setLoading(false)
+                alertCreator("User not found after registration.")
+                return@addOnCompleteListener
+            }
 
-                pickRandomColor()
-                val uid = user.uid
-                val registrationDate = System.currentTimeMillis().toString()
+            colorCode = pickRandomColor()
+            val uid = user.uid
+            val registrationDate = System.currentTimeMillis().toString()
 
-                val profile = UserProfile(
-                    name = username,
-                    email = email,
-                    uid = uid,
-                    color = colorCode,
-                    id = id,
-                    registrationDate = registrationDate,
-                    password = password,
-                    token = token
-                )
+            val profile = UserProfile(
+                name = username,
+                email = email,
+                uid = uid,
+                color = colorCode,
+                id = id,
+                registrationDate = registrationDate,
+                password = password,
+                token = token
+            )
 
-                users.child(uid).updateChildren(profile.toMap())
-                    .addOnCompleteListener { profileTask ->
-                        if (!profileTask.isSuccessful) {
+            users.child(uid).updateChildren(profile.toMap()).addOnCompleteListener { profileTask ->
+                    if (!profileTask.isSuccessful) {
+                        setLoading(false)
+                        alertCreator(
+                            profileTask.exception?.message ?: "Failed to save user profile."
+                        )
+                        return@addOnCompleteListener
+                    }
+
+                    val profileUpdates = userProfileChangeRequest {
+                        displayName = username
+                    }
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
+                        if (!updateTask.isSuccessful) {
                             setLoading(false)
                             alertCreator(
-                                profileTask.exception?.message ?: "Failed to save user profile."
+                                updateTask.exception?.message ?: "Failed to update profile."
                             )
                             return@addOnCompleteListener
                         }
 
-                        val profileUpdates = userProfileChangeRequest {
-                            displayName = username
-                        }
+                        user.sendEmailVerification().addOnCompleteListener { emailTask ->
+                            setLoading(false)
+                            if (emailTask.isSuccessful) {
+                                toggle(true)
+                                MaterialAlertDialogBuilder(this).setTitle("Message").setMessage(
+                                        "A verification link has been dispatched to your email address.\n" + "*Check spam folder also."
+                                    ).setPositiveButton("OK", null).show()
 
-                        user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
-                                if (!updateTask.isSuccessful) {
-                                    setLoading(false)
-                                    alertCreator(
-                                        updateTask.exception?.message ?: "Failed to update profile."
-                                    )
-                                    return@addOnCompleteListener
-                                }
-
-                                user.sendEmailVerification().addOnCompleteListener { emailTask ->
-                                        setLoading(false)
-                                        if (emailTask.isSuccessful) {
-                                            toggle(true)
-                                            MaterialAlertDialogBuilder(this).setTitle("Message")
-                                                .setMessage(
-                                                    "A verification link has been dispatched to your email address.\n" + "*Check spam folder also."
-                                                ).setPositiveButton("OK", null).show()
-
-                                            FirebaseAuth.getInstance().signOut()
-                                        } else {
-                                            alertCreator(
-                                                emailTask.exception?.message
-                                                    ?: "Failed to send verification email."
-                                            )
-                                        }
-                                    }
+                                FirebaseAuth.getInstance().signOut()
+                            } else {
+                                alertCreator(
+                                    emailTask.exception?.message
+                                        ?: "Failed to send verification email."
+                                )
                             }
+                        }
                     }
-            }
+                }
+        }
     }
 
 
@@ -440,9 +422,5 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
     fun TextInputEditText.textString(): String = text?.toString().orEmpty()
     fun TextInputLayout.clearError() {
         error = null
-    }
-
-    companion object {
-        private const val REQUEST_CODE_ACTIVITY_B = 1
     }
 }

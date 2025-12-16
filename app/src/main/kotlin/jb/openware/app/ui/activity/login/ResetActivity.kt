@@ -10,6 +10,7 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import jb.openware.app.databinding.ActivityResetBinding
 import jb.openware.app.util.ThemeUtil
@@ -28,6 +29,7 @@ class ResetActivity : AppCompatActivity() {
         binding = ActivityResetBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        FirebaseApp.initializeApp(this)
         progressBar = binding.progress
         progressBar.isIndeterminate = true
 

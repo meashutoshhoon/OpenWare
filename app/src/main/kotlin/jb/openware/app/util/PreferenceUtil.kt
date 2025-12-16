@@ -24,7 +24,7 @@ private val StringPreferenceDefaults = mapOf(
 
 private val BooleanPreferenceDefaults = mapOf(
     HAPTICS_VIBRATION to true,
-    AMOLED_THEME to true,
+    AMOLED_THEME to false,
     DYNAMIC_THEME to true,
     SMOOTH_SCROLLING to true,
     NEW_USER to true

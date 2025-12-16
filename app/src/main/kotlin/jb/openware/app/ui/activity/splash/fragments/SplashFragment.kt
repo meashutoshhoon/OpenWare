@@ -1,6 +1,7 @@
 package jb.openware.app.ui.activity.splash.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.gson.Gson
+import jb.openware.app.BuildConfig
 import jb.openware.app.databinding.FragmentSplashBinding
 import jb.openware.app.ui.items.ServerConfig
 import jb.openware.app.ui.viewmodel.splash.MainViewModel
@@ -24,8 +26,6 @@ class SplashFragment : Fragment() {
     private var _binding: FragmentSplashBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
-
-    private var hasDecided = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +44,9 @@ class SplashFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (hasDecided) return
-        hasDecided = true
 
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(200) // allow Material animation to start
+            delay(100) // allow Material animation to start
 
             if (!Utils.isConnected(requireContext())) {
                 viewModel.onNoInternet()
@@ -74,8 +72,9 @@ class SplashFragment : Fragment() {
                             config, appVersion = BuildConfig.VERSION_CODE
                         )
 
-                    } catch (_: Exception) {
-                        viewModel.onNoInternet()
+                    } catch (e: Exception) {
+                        Log.e("ServerGithub", e.message!!)
+//                        viewModel.onNoInternet()
                     }
                 }
 

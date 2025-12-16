@@ -1,7 +1,7 @@
 package jb.openware.app.util
 
 import android.os.Build
-import `in`.afi.codekosh.BuildConfig
+import jb.openware.app.BuildConfig
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

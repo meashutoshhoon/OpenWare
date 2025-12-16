@@ -5,7 +5,7 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import `in`.afi.codekosh.activity.home.HomeActivity
+import jb.openware.app.BuildConfig
 import jb.openware.app.databinding.ActivityMainBinding
 import jb.openware.app.ui.activity.home.HomeActivity
 import jb.openware.app.ui.activity.login.LoginActivity

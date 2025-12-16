@@ -26,7 +26,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _serverConfig.value = config
 
         when {
-            appVersion < config.necessaryUpdateVersion -> {
+            appVersion < config.version -> {
                 _updateEvent.value = config
             }
 

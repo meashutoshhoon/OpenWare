@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktfmt.gradle)
+    alias(libs.plugins.google.services)
     id("kotlin-parcelize")
 }
 
@@ -75,7 +76,6 @@ android {
 
         create("githubPreview") {
             dimension = "publishChannel"
-            applicationIdSuffix = ".preview"
             resValue("string", "app_name", "OpenWare Preview")
         }
     }
@@ -153,7 +153,4 @@ dependencies {
 
     // MMKV(ultra fast storage)
     implementation(libs.mmkv)
-
-    // SafetyNet
-    implementation(libs.play.services.safetynet)
 }

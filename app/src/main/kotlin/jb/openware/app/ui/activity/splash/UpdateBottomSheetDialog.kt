@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toUri
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import jb.openware.app.databinding.UpdateCusBinding
+import jb.openware.app.ui.components.TextFormatter
 import jb.openware.app.ui.items.ServerConfig
 
 class UpdateBottomSheetDialog(
@@ -30,7 +32,7 @@ class UpdateBottomSheetDialog(
         val isMandatory = appVersion < config.necessaryUpdateVersion
 
         binding.version.text = "v${config.typoVersion}"
-        binding.message.text = config.updateMessage
+        TextFormatter.format(binding.message, config.updateMessage)
 
         binding.later.visibility = if (isMandatory) View.GONE else View.VISIBLE
         isCancelable = !isMandatory
