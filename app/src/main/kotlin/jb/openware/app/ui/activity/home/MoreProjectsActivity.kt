@@ -22,6 +22,7 @@ import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityHomeExtendBinding
+import jb.openware.app.ui.activity.profile.ProfileActivity
 import jb.openware.app.ui.activity.project.ProjectViewActivity
 import jb.openware.app.ui.adapter.BaseProjectAdapter
 import jb.openware.app.ui.common.BaseActivity
@@ -143,7 +144,7 @@ class MoreProjectsActivity :
                     getSharedPreferences("developer", MODE_PRIVATE).edit {
                         putString("uid", getUid())
                     }
-                    startActivity(ProfileActivity::class.java)
+                    openActivity<ProfileActivity>()
                 }
                 false
             }

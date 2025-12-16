@@ -151,9 +151,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    // Google Admob
-    implementation(libs.bundles.admob)
-
     // MMKV(ultra fast storage)
     implementation(libs.mmkv)
 

@@ -51,6 +51,7 @@ import jb.openware.app.databinding.ActivityProjectViewBinding
 import jb.openware.app.ui.activity.drawer.UploadActivity
 import jb.openware.app.ui.activity.other.CategoryActivity
 import jb.openware.app.ui.activity.other.LikesCountActivity
+import jb.openware.app.ui.activity.profile.ProfileActivity
 import jb.openware.app.ui.cells.ProjectScreenshotCell
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.BottomSheetController

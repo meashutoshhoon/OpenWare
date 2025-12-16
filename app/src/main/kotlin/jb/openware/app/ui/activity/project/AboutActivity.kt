@@ -55,12 +55,12 @@ class AboutActivity : BaseActivity<ActivityAboutBinding>(ActivityAboutBinding::i
     @SuppressLint("SetTextI18n")
     private fun updateUI(data: Project) = with(binding) {
 
-        title.text = data.title.orEmpty()
+        title.text = data.title
 
         hideViews(card)
 
         // What's new
-        if (!data.whatsNew.isNullOrEmpty() && data.whatsNew != "none") {
+        if (data.whatsNew.isNotEmpty() && data.whatsNew != "none") {
             showViews(linear6)
             TextFormatter.format(whatsNew, data.whatsNew)
         } else {
@@ -68,13 +68,13 @@ class AboutActivity : BaseActivity<ActivityAboutBinding>(ActivityAboutBinding::i
         }
 
         // Description
-        TextFormatter.format(about, data.description.orEmpty())
+        TextFormatter.format(about, data.description)
 
-        downloads.text = data.downloads.orEmpty()
-        dateR.text = data.time.orEmpty()
+        downloads.text = data.downloads
+        dateR.text = data.time
 
         // Updated date
-        if (!data.updateTime.isNullOrEmpty() && data.updateTime != "none") {
+        if (data.updateTime.isNotEmpty() && data.updateTime != "none") {
             showViews(linear13)
             date.text = data.updateTime
         } else {
@@ -118,7 +118,7 @@ class AboutActivity : BaseActivity<ActivityAboutBinding>(ActivityAboutBinding::i
 
         project.let {
             updateUI(it)
-            it.uid?.let { uid -> attachUserListener(uid) }
+            attachUserListener(it.uid)
         }
     }
 

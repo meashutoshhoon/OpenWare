@@ -42,8 +42,8 @@ class BaseProjectCell(context: Context) : FrameLayout(context) {
             .into(icon)
 
         title.text = project.title
-        val comments = project.comments?.takeIf { it.isNotBlank() } ?: "0"
-        val likes = project.likes?.takeIf { it.isNotBlank() } ?: "0"
+        val comments = project.comments.takeIf { it.isNotBlank() } ?: "0"
+        val likes = project.likes.takeIf { it.isNotBlank() } ?: "0"
         commentsText.text = formatNumber(comments)
         likesText.text = formatNumber(likes)
     }

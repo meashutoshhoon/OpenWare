@@ -9,7 +9,6 @@ const val DYNAMIC_THEME = "dynamic_theme"
 const val HAPTICS_VIBRATION = "haptics_vibration"
 const val SMOOTH_SCROLLING = "smooth_scrolling"
 const val APP_THEME = "app_theme"
-const val ADS = "ads"
 const val NEW_USER = "new_user"
 
 
@@ -28,7 +27,6 @@ private val BooleanPreferenceDefaults = mapOf(
     AMOLED_THEME to true,
     DYNAMIC_THEME to true,
     SMOOTH_SCROLLING to true,
-    ADS to false,
     NEW_USER to true
 )
 

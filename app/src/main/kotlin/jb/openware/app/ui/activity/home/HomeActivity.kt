@@ -6,7 +6,6 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -23,11 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.button.MaterialButton
-import com.google.android.ump.ConsentInformation
-import com.google.android.ump.ConsentRequestParameters
-import com.google.android.ump.UserMessagingPlatform
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -46,6 +41,7 @@ import jb.openware.app.ui.activity.drawer.settings.SettingsActivity
 import jb.openware.app.ui.activity.home.fragments.CategoryFragment
 import jb.openware.app.ui.activity.home.fragments.HomeFragment
 import jb.openware.app.ui.activity.home.fragments.NotificationFragment
+import jb.openware.app.ui.activity.profile.ProfileActivity
 import jb.openware.app.ui.adapter.ListProjectAdapter
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.common.booleanState
@@ -54,7 +50,6 @@ import jb.openware.app.ui.components.BottomSheetController
 import jb.openware.app.ui.components.DrawableGenerator
 import jb.openware.app.ui.components.SearchBarView
 import jb.openware.app.ui.items.Project
-import jb.openware.app.util.ADS
 import jb.openware.app.util.Const
 import jb.openware.app.util.NEW_USER
 import jb.openware.app.util.PreferenceUtil.updateBoolean
@@ -79,17 +74,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
     private var query: Query? = null
     private var limit = 0
     private var page = 0
-
-    // UI state
-    private var adsInitialized = false
-    private var premiumEnabled = false
     private var enable = false
-    private var isMobileAdsInitialized = false
 
     private lateinit var searchBar: SearchBarView
-
-    // Consent
-    private lateinit var consentInformation: ConsentInformation
 
 
     private val projectListener = object : ValueEventListener {
@@ -269,15 +256,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
             }
         })
 
-        buildConsent()
-
-        if (consentInformation.canRequestAds()) {
-            ADS.updateBoolean(true)
-            initializeMobileAdsSdk()
-        } else {
-            ADS.updateBoolean(false)
-        }
-
     }
 
     private fun setupFragments() {
@@ -432,58 +410,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
                     binding.progressbar1.visibility = View.VISIBLE
                 }
             }
-        })
-    }
-
-    private fun buildConsent() {
-        val params = ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(false).build()
-
-        consentInformation = UserMessagingPlatform.getConsentInformation(this)
-
-        consentInformation.requestConsentInfoUpdate(this, params, {
-            if (consentInformation.isConsentFormAvailable) {
-                loadForm()
-            }
-        }, { error ->
-            Log.e("s", "${error.errorCode}: ${error.message}")
-        })
-    }
-
-    private fun initializeMobileAdsSdk() {
-        if (isMobileAdsInitialized) return
-        isMobileAdsInitialized = true
-        MobileAds.initialize(this)
-    }
-
-    private fun loadForm() {
-        UserMessagingPlatform.loadConsentForm(this, { consentForm ->
-            when (consentInformation.consentStatus) {
-
-                ConsentInformation.ConsentStatus.REQUIRED -> {
-                    consentForm.show(this) {
-                        val consentGiven =
-                            consentInformation.consentStatus == ConsentInformation.ConsentStatus.OBTAINED
-
-                        ADS.updateBoolean(consentGiven)
-
-                        if (consentGiven) {
-                            initializeMobileAdsSdk()
-                        }
-                    }
-                }
-
-                ConsentInformation.ConsentStatus.OBTAINED -> {
-                    ADS.updateBoolean(true)
-                    initializeMobileAdsSdk()
-                }
-
-                else -> {
-                    ADS.updateBoolean(true)
-                    initializeMobileAdsSdk()
-                }
-            }
-        }, { error ->
-            alertCreator(error.message)
         })
     }
 

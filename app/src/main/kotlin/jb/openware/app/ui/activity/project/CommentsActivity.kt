@@ -36,6 +36,7 @@ import com.google.gson.reflect.TypeToken
 import de.hdodenhof.circleimageview.CircleImageView
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityCommentsBinding
+import jb.openware.app.ui.activity.profile.ProfileActivity
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.common.HapticFeedback.slightHapticFeedback
 import jb.openware.app.ui.components.BadgeDrawable
@@ -177,16 +178,13 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
         usersRef.addChildEventListener(usersChildListener!!)
 
         getConnectionsManager(
-            url = moderatorUrl,
-            method = GET,
-            listener = object : RequestListener {
+            url = moderatorUrl, method = GET, listener = object : RequestListener {
 
                 override fun onResponse(
                     tag: String, response: String, responseHeaders: HashMap<String, Any>
                 ) {
                     val data: List<Map<String, String>> = Gson().fromJson(
-                        response,
-                        object : TypeToken<List<Map<String, String>>>() {}.type
+                        response, object : TypeToken<List<Map<String, String>>>() {}.type
                     )
 
                     moderatorIds.clear()
@@ -250,7 +248,7 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
             CommentOption.VIEW_PROFILE -> {
                 val uid = item.uid
                 putPrefString("developer", "uid", uid)
-                startActivity(ProfileActivity::class.java)
+                openActivity<ProfileActivity>()
             }
 
             CommentOption.COPY -> {
@@ -391,7 +389,7 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
 
             putPrefString("developer", "uid", uid)
 
-            startActivity(ProfileActivity::class.java)
+            openActivity<ProfileActivity>()
         }
 
         override fun updateDrawState(ds: TextPaint) {
@@ -465,7 +463,7 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
 
             h.avatar.setOnClickListener {
                 putPrefString("developer", "uid", uid)
-                startActivity(ProfileActivity::class.java)
+                openActivity<ProfileActivity>()
             }
         }
 

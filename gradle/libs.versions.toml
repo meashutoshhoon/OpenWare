@@ -15,13 +15,11 @@ navigationFragment = "2.9.6"
 okhttp = "5.3.2"
 gson = "2.13.2"
 photoview = "2.2.0"
-playServicesAds = "24.9.0"
 playServicesSafetynet = "18.1.0"
 roundedimageview = "2.3.0"
 shimmer = "0.5.0"
 swiperefreshlayout = "1.2.0"
 transition = "1.6.0"
-userMessagingPlatform = "4.0.0"
 kotlin = "2.2.21"
 viewpager2 = "1.1.0"
 volley = "1.2.1"
@@ -71,9 +69,6 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database" 
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
-user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }
-play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
-
 play-services-safetynet = { group = "com.google.android.gms", name = "play-services-safetynet", version.ref = "playServicesSafetynet" }
 
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
@@ -93,6 +88,3 @@ firebase = ["firebase-auth",
     "firebase-database",
     "firebase-storage",
     "firebase-messaging"]
-
-admob = ["play-services-ads",
-    "user-messaging-platform"]

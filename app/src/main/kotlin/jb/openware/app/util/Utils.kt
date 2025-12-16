@@ -82,13 +82,6 @@ object Utils {
         return size // bytes
     }
 
-    fun Context.copyText(text: String) {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(
-            ClipData.newPlainText("text", text)
-        )
-    }
-
     fun Context.shareText(text: String, title: String = "Share via") {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"

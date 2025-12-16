@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
+import jb.openware.app.ui.activity.project.ProjectViewActivity
 import jb.openware.app.ui.cells.ProjectListCell
 import jb.openware.app.ui.items.Project
 import jb.openware.app.ui.items.ProjectItem
@@ -30,15 +31,15 @@ class ListProjectAdapter(
         val project = data[position]
 
         // Prefer mapped name (from your hashMap), else fallback to project.name
-        val displayName = nameMap[project.uid] ?: project.name.orEmpty()
+        val displayName = nameMap[project.uid] ?: project.name
 
         // Convert Project → ProjectItem for display
         val item = ProjectItem(
-            icon = project.icon.orEmpty(),
-            title = project.title.orEmpty(),
-            comments = project.comments.orEmpty(),
-            likes = project.likes.orEmpty(),
-            downloads = project.downloads.orEmpty(),
+            icon = project.icon,
+            title = project.title,
+            comments = project.comments,
+            likes = project.likes,
+            downloads = project.downloads,
             userName = displayName
         )
 

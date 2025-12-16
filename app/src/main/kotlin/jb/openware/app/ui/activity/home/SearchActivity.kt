@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import jb.openware.app.databinding.ActivitySearchBinding
+import jb.openware.app.ui.activity.project.ProjectViewActivity
 import jb.openware.app.ui.cells.ProjectCell
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.SearchBarView

@@ -1,17 +1,18 @@
 package jb.openware.app.util.net
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
-import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.FileProvider
 import jb.openware.app.R
-import kotlinx.coroutines.*
-import java.io.File
-import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class DownloadService : Service() {
 
@@ -60,8 +61,7 @@ class DownloadService : Service() {
                 putExtra(EXTRA_PROGRESS, state.progress)
                 putExtra(EXTRA_DONE, state.done)
                 putExtra(EXTRA_ERROR, state.error != null)
-            }
-        )
+            })
 
         updateNotificationSafely(state.progress)
     }
@@ -77,31 +77,23 @@ class DownloadService : Service() {
 
     private fun updateNotificationSafely(progress: Int) {
         try {
-            NotificationManagerCompat.from(this)
-                .notify(notificationId, buildNotification(progress))
+            NotificationManagerCompat.from(this).notify(notificationId, buildNotification(progress))
         } catch (_: SecurityException) {
             // Permission denied → ignore
         }
     }
 
     private fun buildNotification(progress: Int): Notification {
-        return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Downloading")
-            .setContentText("$progress%")
-            .setSmallIcon(R.drawable.demo_icon)
-            .setOnlyAlertOnce(true)
-            .setProgress(100, progress, false)
-            .build()
+        return NotificationCompat.Builder(this, channelId).setContentTitle("Downloading")
+            .setContentText("$progress%").setSmallIcon(R.drawable.demo_icon).setOnlyAlertOnce(true)
+            .setProgress(100, progress, false).build()
     }
 
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            channelId,
-            "Downloads",
-            NotificationManager.IMPORTANCE_LOW
+            channelId, "Downloads", NotificationManager.IMPORTANCE_LOW
         )
-        getSystemService(NotificationManager::class.java)
-            .createNotificationChannel(channel)
+        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
     override fun onDestroy() {

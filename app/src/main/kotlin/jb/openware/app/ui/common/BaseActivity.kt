@@ -32,11 +32,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -63,8 +65,6 @@ import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import kotlin.math.roundToInt
-import androidx.core.content.edit
-import com.google.android.material.color.MaterialColors
 
 abstract class BaseActivity<VB : ViewBinding>(
     private val bindingInflater: (LayoutInflater) -> VB
@@ -120,23 +120,21 @@ abstract class BaseActivity<VB : ViewBinding>(
             }
         }
 
-    private val pickMultipleImagesLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(5)
-        ) { uris ->
+    private val pickMultipleImagesLauncher = registerForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(5)
+    ) { uris ->
 
-            if (uris.isEmpty()) return@registerForActivityResult
+        if (uris.isEmpty()) return@registerForActivityResult
 
-            val screenshots = uris.map { uri ->
-                val (path, name) = resolveImageMeta(uri)
-                ScreenshotItem(
-                    path = path,
-                    name = name
-                )
-            }.toMutableList()
+        val screenshots = uris.map { uri ->
+            val (path, name) = resolveImageMeta(uri)
+            ScreenshotItem(
+                path = path, name = name
+            )
+        }.toMutableList()
 
-            multipleImagePickedListener?.onImagePicked(screenshots)
-        }
+        multipleImagePickedListener?.onImagePicked(screenshots)
+    }
 
 
     fun convertUriToFilePath(context: Context, uri: Uri): String? {
@@ -387,8 +385,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         return mode == Configuration.UI_MODE_NIGHT_YES
     }
 
-    suspend fun getMessagingToken(): String =
-        FirebaseMessaging.getInstance().token.await()
+    suspend fun getMessagingToken(): String = FirebaseMessaging.getInstance().token.await()
 
     fun hideViews(vararg views: View) {
         views.forEach { it.visibility = View.GONE }
@@ -398,8 +395,13 @@ abstract class BaseActivity<VB : ViewBinding>(
         views.forEach { it.visibility = View.VISIBLE }
     }
 
-    fun View.show() { isVisible = true }
-    fun View.hide() { isGone = true }
+    fun View.show() {
+        isVisible = true
+    }
+
+    fun View.hide() {
+        isGone = true
+    }
 
     fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -480,8 +482,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun getUid(): String =
-        FirebaseAuth.getInstance().currentUser?.uid
-            ?: error("User not authenticated")
+        FirebaseAuth.getInstance().currentUser?.uid ?: error("User not authenticated")
 
 
     inline fun <reified T : Activity> openActivity(
@@ -499,19 +500,15 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun Context.putPrefString(name: String = NAME, key: String, value: String) {
-        getSharedPreferences(name, MODE_PRIVATE)
-            .edit {
+        getSharedPreferences(name, MODE_PRIVATE).edit {
                 putString(key, value)
             }
     }
 
     fun Context.getPrefString(
-        name: String = NAME,
-        key: String,
-        default: String
+        name: String = NAME, key: String, default: String
     ): String {
-        return getSharedPreferences(name, MODE_PRIVATE)
-            .getString(key, default) ?: default
+        return getSharedPreferences(name, MODE_PRIVATE).getString(key, default) ?: default
     }
 
     fun Context.getThemeColor(attr: Int, fallback: Int = Color.TRANSPARENT): Int {
@@ -652,20 +649,14 @@ abstract class BaseActivity<VB : ViewBinding>(
         onSuccess: (Uri) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val fileRef = FirebaseStorage
-            .getInstance()
-            .getReference(storagePath)
-            .child(child)
+        val fileRef = FirebaseStorage.getInstance().getReference(storagePath).child(child)
 
-        fileRef.putFile(fileUri)
-            .continueWithTask { task ->
+        fileRef.putFile(fileUri).continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let { throw it }
                 }
                 fileRef.downloadUrl
-            }
-            .addOnSuccessListener(onSuccess)
-            .addOnFailureListener(onFailure)
+            }.addOnSuccessListener(onSuccess).addOnFailureListener(onFailure)
     }
 
 
@@ -676,30 +667,22 @@ abstract class BaseActivity<VB : ViewBinding>(
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        FirebaseDatabase.getInstance()
-            .getReference(reference)
-            .child(child)
-            .updateChildren(dataMap)
+        FirebaseDatabase.getInstance().getReference(reference).child(child).updateChildren(dataMap)
             .addOnSuccessListener {
                 Log.d("Firebase", "Data pushed successfully")
                 onSuccess()
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.e("Firebase", "Failed to push data", e)
                 onFailure(e)
             }
     }
 
     fun getProjectId(
-        key: String,
-        premium: Boolean,
-        callback: (String) -> Unit
+        key: String, premium: Boolean, callback: (String) -> Unit
     ) {
         val databasePath = if (premium) "projects/premium" else "projects/normal"
 
-        FirebaseDatabase.getInstance()
-            .getReference(databasePath)
-            .child(key)
+        FirebaseDatabase.getInstance().getReference(databasePath).child(key)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -708,12 +691,12 @@ abstract class BaseActivity<VB : ViewBinding>(
                         return
                     }
 
-                    val data = snapshot.getValue(
-                        object : GenericTypeIndicator<Map<String, Any>>() {}
-                    ) ?: run {
-                        callback("error")
-                        return
-                    }
+                    val data =
+                        snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
+                            ?: run {
+                                callback("error")
+                                return
+                            }
 
                     val id = data["id"]?.toString()
                     if (id != null) {
@@ -731,13 +714,9 @@ abstract class BaseActivity<VB : ViewBinding>(
 
 
     fun getDataFromDatabase(
-        reference: String,
-        child: String,
-        callback: (Map<String, Any>?) -> Unit
+        reference: String, child: String, callback: (Map<String, Any>?) -> Unit
     ) {
-        FirebaseDatabase.getInstance()
-            .getReference(reference)
-            .child(child)
+        FirebaseDatabase.getInstance().getReference(reference).child(child)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -746,9 +725,8 @@ abstract class BaseActivity<VB : ViewBinding>(
                         return
                     }
 
-                    val data = snapshot.getValue(
-                        object : GenericTypeIndicator<Map<String, Any>>() {}
-                    )
+                    val data =
+                        snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
 
                     callback(data)
                 }
@@ -763,9 +741,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         callback: (String) -> Unit
     ) {
         val nodeKey = "pp_3"
-        val databaseRef = FirebaseDatabase.getInstance()
-            .getReference("pp")
-            .child(nodeKey)
+        val databaseRef = FirebaseDatabase.getInstance().getReference("pp").child(nodeKey)
 
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -775,9 +751,7 @@ abstract class BaseActivity<VB : ViewBinding>(
                     return
                 }
 
-                val data = snapshot.getValue(
-                    object : GenericTypeIndicator<Map<String, Any>>() {}
-                )
+                val data = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
 
                 val points = data?.get("points")?.toString() ?: "0"
                 callback(points)
@@ -813,8 +787,7 @@ abstract class BaseActivity<VB : ViewBinding>(
                 reference = databasePath,
                 child = nodeKey,
                 onSuccess = onSuccess,
-                onFailure = { e -> alertCreator(e.message) }
-            )
+                onFailure = { e -> alertCreator(e.message) })
         }
     }
 

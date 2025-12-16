@@ -3,8 +3,12 @@ package jb.openware.app.ui.activity.other
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import jb.openware.app.databinding.ActivityLikesCountBinding
+import jb.openware.app.ui.activity.profile.ProfileActivity
 import jb.openware.app.ui.cells.UsersCell
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.items.Like
@@ -37,8 +41,7 @@ class LikesCountActivity :
     override fun initLogic() {
         adapter = LikesAdapter(likesList, usersMap) { uid ->
             putPrefString("developer", "uid", uid)
-
-            startActivity(ProfileActivity::class.java)
+            openActivity<ProfileActivity>()
         }
 
         binding.recyclerview.layoutManager = LinearLayoutManager(this)

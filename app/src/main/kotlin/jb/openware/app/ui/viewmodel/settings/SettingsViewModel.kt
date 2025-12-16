@@ -8,7 +8,5 @@ class SettingsViewModel : ViewModel() {
 
     var isToolbarExpanded: Boolean = true
 
-    var settingsData: List<SettingsItem> = emptyList()
-
     var rvPositionAndOffset: Pair<Int, Int>? = null
 }

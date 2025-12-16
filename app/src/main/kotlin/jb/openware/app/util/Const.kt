@@ -2,7 +2,6 @@ package jb.openware.app.util
 
 object Const {
     const val DEV_MAIL = "sketchwarechannel@gmail.com"
-    const val CURRENT_FRAGMENT = "current_fragment"
     const val URL_DEV_GITHUB = "https://github.com/meashutoshhoon"
     const val URL_DEV_BM_COFFEE = "https://github.com/meashutoshhoon"
     const val ID_ABOUT = "id_about"
@@ -17,10 +16,6 @@ object Const {
     const val ID_DISCORD = "id_discord"
     const val ID_LICENSE = "id_license"
 
-    const val FEEDBACK_MODE_BUG = "bug"
-    const val FEEDBACK_MODE_FEATURE = "feature"
-
-
     const val URL_EMAIL_BUG = "mailto:sketchwarechannel@gmail.com?subject=Bug%20Report"
 
     const val URL_EMAIL_FEATURE = "mailto:sketchwarechannel@gmail.com?subject=Feature%20Suggestion"
@@ -33,12 +28,10 @@ object Const {
         val displayName: String, val githubUrl: String
     ) {
         ASHUTOSH("Ashutosh Gupta", "https://github.com/meashutoshhoon"), ANKIT(
-            "Ankit Goyal",
-            "https://github.com/Ankit-Goyal012"
+            "Ankit Goyal", "https://github.com/Ankit-Goyal012"
         ),
         ANUSHKA("Anushka Shrivastava", "https://github.com/MeAnushkaHoon"), ATHARV(
-            "Atharv Puranik",
-            "https://github.com/MeAnushkaHoon"
+            "Atharv Puranik", "https://github.com/MeAnushkaHoon"
         ),
     }
 

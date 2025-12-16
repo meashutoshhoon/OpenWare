@@ -9,8 +9,8 @@ object DownloadStateStore {
 
     fun save(context: Context, progress: Int, done: Boolean, path: String) {
         context.getSharedPreferences(PREF, Context.MODE_PRIVATE).edit {
-                putInt("progress", progress).putBoolean("done", done).putString("path", path)
-            }
+            putInt("progress", progress).putBoolean("done", done).putString("path", path)
+        }
     }
 
     fun get(context: Context): Triple<Int, Boolean, String?> {

@@ -10,16 +10,13 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 data class DownloadProgress(
-    val progress: Int,
-    val done: Boolean = false,
-    val error: Exception? = null
+    val progress: Int, val done: Boolean = false, val error: Exception? = null
 )
 
 object Downloader {
 
     fun download(
-        fileUrl: String,
-        destinationPath: String
+        fileUrl: String, destinationPath: String
     ): Flow<DownloadProgress> = flow {
 
         emit(DownloadProgress(0))
