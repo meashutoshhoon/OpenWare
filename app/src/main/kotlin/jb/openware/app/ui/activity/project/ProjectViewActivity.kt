@@ -50,6 +50,7 @@ import jb.openware.app.R
 import jb.openware.app.databinding.ActivityProjectViewBinding
 import jb.openware.app.ui.activity.drawer.UploadActivity
 import jb.openware.app.ui.activity.other.CategoryActivity
+import jb.openware.app.ui.activity.other.LikesCountActivity
 import jb.openware.app.ui.cells.ProjectScreenshotCell
 import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.BottomSheetController
@@ -309,8 +310,8 @@ class ProjectViewActivity :
             startActivity(
                 Intent(this, CommentsActivity::class.java).apply {
                     putExtra("title", projectData.title)
-                    putExtra("key", key)
-                    putExtra("uid", uid)
+                    putExtra("key", projectKey)
+                    putExtra("uid", userUid)
                 })
         }
 
@@ -351,7 +352,7 @@ class ProjectViewActivity :
         binding.likesLin.setOnClickListener {
             startActivity(
                 Intent(this, LikesCountActivity::class.java).apply {
-                    putExtra("key", key)
+                    putExtra("key", projectKey)
                 })
         }
 

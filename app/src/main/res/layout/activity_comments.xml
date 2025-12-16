@@ -4,8 +4,8 @@
     android:id="@+id/refer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/_app_bar"
@@ -41,7 +41,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_semibold"
                 android:text="Title"
-                android:textColor="#000000"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:textSize="18sp" />
 
 
@@ -68,9 +68,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:choiceMode="none"
-                tools:listitem="@layout/comments_cell"
                 android:fastScrollEnabled="true"
-                android:smoothScrollbar="true" />
+                android:smoothScrollbar="true"
+                tools:listitem="@layout/comments_cell" />
 
             <LinearLayout
                 android:id="@+id/linear_shimmer"
@@ -125,7 +125,7 @@
             android:id="@+id/linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="5dp">
 
@@ -138,8 +138,8 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/opensans_regular"
                 android:hint="Type Here..."
-                android:padding="8dp"
                 android:inputType="text"
+                android:padding="8dp"
                 android:textSize="16sp" />
 
             <ImageView
@@ -147,11 +147,11 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@null"
                 android:hapticFeedbackEnabled="true"
                 android:padding="6dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/send"
-                android:contentDescription="@null" />
+                android:src="@drawable/send" />
 
         </LinearLayout>
 

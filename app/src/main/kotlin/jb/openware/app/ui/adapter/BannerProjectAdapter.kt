@@ -8,6 +8,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import jb.openware.app.ui.activity.project.ProjectViewActivity
 import jb.openware.app.ui.cells.BannerCell
 import jb.openware.app.ui.items.Project
 
@@ -22,10 +23,10 @@ class BannerProjectAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
 
-        val icon = item.icon.toString()
-        val title = item.title.toString()
-        val category = item.category.toString()
-        val size = item.size.toString()
+        val icon = item.icon
+        val title = item.title
+        val category = item.category
+        val size = item.size
 
         val screenshotsJson = item.screenshots.toString()
         val screenshots: List<String> = runCatching {
@@ -48,8 +49,8 @@ class BannerProjectAdapter(
             }
 
             val intent = Intent(activity, ProjectViewActivity::class.java).apply {
-                putExtra("key", item["key"]?.toString())
-                putExtra("uid", item["uid"]?.toString())
+                putExtra("key", item.key)
+                putExtra("uid", item.uid)
             }
 
             activity.startActivity(intent)

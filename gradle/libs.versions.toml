@@ -28,7 +28,6 @@ volley = "1.2.1"
 ktfmt = "0.25.0"
 mmkv = "2.3.0"
 coreKtx = "1.17.0"
-firebaseFirestoreKtx = "26.0.2"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -79,7 +78,6 @@ play-services-safetynet = { group = "com.google.android.gms", name = "play-servi
 
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

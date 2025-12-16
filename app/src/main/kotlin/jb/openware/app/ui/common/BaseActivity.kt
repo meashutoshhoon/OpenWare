@@ -244,9 +244,6 @@ abstract class BaseActivity<VB : ViewBinding>(
         }
         vibrationDuration = 250L
 
-
-
-
         init()
         initLogic()
     }
@@ -567,15 +564,11 @@ abstract class BaseActivity<VB : ViewBinding>(
     fun alertToast(text: String) {
 
         if (vibrationDuration > 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(
-                    VibrationEffect.createOneShot(
-                        vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE
-                    )
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE
                 )
-            } else {
-                @Suppress("DEPRECATION") (vibrator.vibrate(vibrationDuration))
-            }
+            )
         }
         toast(text)
     }
