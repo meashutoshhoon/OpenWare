@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -83,7 +82,6 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
 
     @SuppressLint("SetTextI18n")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun init() {
         binding.toolbar.setNavigationOnClickListener(Utils.getBackPressedClickListener(this))
 
@@ -459,8 +457,8 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     latest = true,
                     screenshots = screen,
 
-                    time = if (newProject) dateFormat.format(calendar.time)
-                    else receivedHashMap?.get("time")?.toString(),
+                    time = if (newProject) dateFormat.format(calendar.time).toString()
+                    else receivedHashMap?.get("time").toString(),
 
                     updateTime = if (newProject) "none"
                     else dateFormat.format(calendar.time),
@@ -474,7 +472,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     visible = binding.visibility.isChecked,
                     key = key,
                     name = if (newProject) userConfig.name
-                    else receivedHashMap?.get("name")?.toString()
+                    else receivedHashMap?.get("name").toString()
                 )
 
                 val id = if (newProject) {
@@ -585,40 +583,39 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
     fun Project.toFirebaseMap(
         id: String
     ): Map<String, Any> = mapOf(
-        "icon" to (icon ?: "none"),
-        "title" to (title ?: ""),
-        "description" to (description ?: ""),
-        "whatsNew" to (whatsNew ?: "none"),
-        "downloadUrl" to (downloadUrl ?: "none"),
-        "size" to (size ?: "0"),
-        "uid" to (uid ?: ""),
-        "key" to (key ?: ""),
+        "icon" to (icon),
+        "title" to (title),
+        "description" to (description),
+        "whatsNew" to (whatsNew),
+        "downloadUrl" to (downloadUrl),
+        "size" to (size),
+        "uid" to (uid),
+        "key" to (key),
 
         // counters (preserved correctly)
-        "likes" to (likes ?: "0"),
-        "comments" to (comments ?: "0"),
-        "downloads" to (downloads ?: "0"),
+        "likes" to (likes),
+        "comments" to (comments),
+        "downloads" to (downloads),
 
-        "category" to (category ?: ""),
+        "category" to (category),
         "trending" to trending.toString(),
         "latest" to latest.toString(),
 
         "screenshots" to Gson().toJson(screenshots),
 
-        "time" to (time ?: "none"),
-        "updateTime" to (updateTime ?: "none"),
+        "time" to (time),
+        "updateTime" to (updateTime),
 
-        "unlockCode" to (unlockCode ?: "none"),
+        "unlockCode" to (unlockCode),
         "verify" to verified.toString(),
         "editorsChoice" to editorsChoice.toString(),
         "commentsVisibility" to commentsVisible.toString(),
         "visibility" to visible.toString(),
 
-        "name" to (name ?: ""),
+        "name" to (name),
         "id" to id
     )
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun add(input: String): String {
         return try {
             val formatter = DateTimeFormatter.ofPattern("MMMM d, h:mm a", Locale.ENGLISH)
