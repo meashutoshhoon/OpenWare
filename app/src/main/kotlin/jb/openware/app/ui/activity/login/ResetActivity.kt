@@ -13,6 +13,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import jb.openware.app.databinding.ActivityResetBinding
+import jb.openware.app.ui.common.HapticFeedback.slightHapticFeedback
 import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
@@ -53,12 +54,13 @@ class ResetActivity : AppCompatActivity() {
             showLoadingDialog()
 
             auth.sendPasswordResetEmail(email).addOnSuccessListener {
-                    dismissLoadingDialog()
-                    showSuccessDialog()
-                }.addOnFailureListener { e ->
-                    dismissLoadingDialog()
-                    showErrorDialog(e)
-                }
+                dismissLoadingDialog()
+                binding.button.slightHapticFeedback()
+                showSuccessDialog()
+            }.addOnFailureListener { e ->
+                dismissLoadingDialog()
+                showErrorDialog(e)
+            }
         }
     }
 

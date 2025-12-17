@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refer"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <ScrollView
@@ -29,10 +29,10 @@
                 android:padding="5dp">
 
                 <ImageView
+                    android:id="@+id/back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:id="@+id/back"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/back"
                     android:src="@drawable/back" />
@@ -41,10 +41,11 @@
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progress"
+                style="@style/Widget.Material3Expressive.LinearProgressIndicator.Wavy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:indeterminate="true" />
+                android:indeterminate="true"
+                android:visibility="invisible" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animation_view"
@@ -67,7 +68,7 @@
                 android:paddingBottom="0dp"
                 android:text="@string/password_recovery"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                android:textColor="?attr/colorOnSurface"/>
+                android:textColor="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/content"
@@ -92,10 +93,10 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                app:boxCornerRadiusTopEnd="14dp"
-                app:boxCornerRadiusTopStart="14dp"
                 app:boxCornerRadiusBottomEnd="14dp"
                 app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
                 app:startIconDrawable="@drawable/email">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -122,7 +123,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </LinearLayout>

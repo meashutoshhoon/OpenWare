@@ -113,8 +113,7 @@
             android:name=".ui.activity.splash.MainActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:exported="true"
-            android:hardwareAccelerated="true"
-            android:launchMode="singleTask">
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

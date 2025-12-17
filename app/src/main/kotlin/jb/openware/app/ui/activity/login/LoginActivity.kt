@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.Settings
 import android.util.Patterns
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
@@ -90,12 +91,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         toggle(login)
         setLoading(false)
 
-
         binding.linearGo.addView(
             progressView, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 weight = 17f
+                gravity = Gravity.CENTER
             })
 
     }
@@ -264,17 +265,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                             "To proceed, account verification is necessary. " + "Please check your email for the verification process."
                         ).setPositiveButton("RESEND") { _, _ ->
                             user.sendEmailVerification().addOnCompleteListener { taskResend ->
-                                    if (taskResend.isSuccessful) {
-                                        MaterialAlertDialogBuilder(this).setTitle("Alert")
-                                            .setMessage("A verification link has been dispatched to your email.")
-                                            .setPositiveButton("OK", null).show()
-                                    } else {
-                                        alertCreator(
-                                            taskResend.exception?.message
-                                                ?: "Failed to resend email."
-                                        )
-                                    }
+                                if (taskResend.isSuccessful) {
+                                    MaterialAlertDialogBuilder(this).setTitle("Alert")
+                                        .setMessage("A verification link has been dispatched to your email.")
+                                        .setPositiveButton("OK", null).show()
+                                } else {
+                                    alertCreator(
+                                        taskResend.exception?.message ?: "Failed to resend email."
+                                    )
                                 }
+                            }
                         }.show()
                     }
                 }
@@ -352,45 +352,44 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             )
 
             users.child(uid).updateChildren(profile.toMap()).addOnCompleteListener { profileTask ->
-                    if (!profileTask.isSuccessful) {
+                if (!profileTask.isSuccessful) {
+                    setLoading(false)
+                    alertCreator(
+                        profileTask.exception?.message ?: "Failed to save user profile."
+                    )
+                    return@addOnCompleteListener
+                }
+
+                val profileUpdates = userProfileChangeRequest {
+                    displayName = username
+                }
+
+                user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
+                    if (!updateTask.isSuccessful) {
                         setLoading(false)
                         alertCreator(
-                            profileTask.exception?.message ?: "Failed to save user profile."
+                            updateTask.exception?.message ?: "Failed to update profile."
                         )
                         return@addOnCompleteListener
                     }
 
-                    val profileUpdates = userProfileChangeRequest {
-                        displayName = username
-                    }
+                    user.sendEmailVerification().addOnCompleteListener { emailTask ->
+                        setLoading(false)
+                        if (emailTask.isSuccessful) {
+                            toggle(true)
+                            MaterialAlertDialogBuilder(this).setTitle("Message").setMessage(
+                                "A verification link has been dispatched to your email address.\n" + "*Check spam folder also."
+                            ).setPositiveButton("OK", null).show()
 
-                    user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
-                        if (!updateTask.isSuccessful) {
-                            setLoading(false)
+                            FirebaseAuth.getInstance().signOut()
+                        } else {
                             alertCreator(
-                                updateTask.exception?.message ?: "Failed to update profile."
+                                emailTask.exception?.message ?: "Failed to send verification email."
                             )
-                            return@addOnCompleteListener
-                        }
-
-                        user.sendEmailVerification().addOnCompleteListener { emailTask ->
-                            setLoading(false)
-                            if (emailTask.isSuccessful) {
-                                toggle(true)
-                                MaterialAlertDialogBuilder(this).setTitle("Message").setMessage(
-                                        "A verification link has been dispatched to your email address.\n" + "*Check spam folder also."
-                                    ).setPositiveButton("OK", null).show()
-
-                                FirebaseAuth.getInstance().signOut()
-                            } else {
-                                alertCreator(
-                                    emailTask.exception?.message
-                                        ?: "Failed to send verification email."
-                                )
-                            }
                         }
                     }
                 }
+            }
         }
     }
 
