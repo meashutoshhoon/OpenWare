@@ -1,9 +1,6 @@
 package jb.openware.app.ui.activity.drawer.settings
 
-import android.os.Bundle
 import android.util.Pair
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.component1
 import androidx.core.util.component2
 import androidx.lifecycle.ViewModelProvider
@@ -11,18 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivitySettingsBinding
 import jb.openware.app.ui.adapter.SettingsAdapter
+import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.common.booleanState
 import jb.openware.app.ui.items.SettingsItem
 import jb.openware.app.ui.viewmodel.settings.SettingsItemViewModel
 import jb.openware.app.ui.viewmodel.settings.SettingsViewModel
 import jb.openware.app.util.Const
 import jb.openware.app.util.SMOOTH_SCROLLING
-import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
-class SettingsActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivitySettingsBinding
+class SettingsActivity : BaseActivity<ActivitySettingsBinding>(ActivitySettingsBinding::inflate) {
 
     private lateinit var settingsData: MutableList<SettingsItem>
     private lateinit var adapter: SettingsAdapter
@@ -32,19 +27,14 @@ class SettingsActivity : AppCompatActivity() {
 
     private var rvPositionAndOffset: Pair<Int, Int>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        ThemeUtil.updateTheme(this)
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+    override fun init() {
         val context = this
 
         viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         itemViewModel = ViewModelProvider(this)[SettingsItemViewModel::class.java]
 
-        binding.toolbar.setNavigationOnClickListener(Utils.getBackPressedClickListener(this))
+
 
         settingsData = mutableListOf()
 
@@ -99,6 +89,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.rvSettings.viewTreeObserver.addOnDrawListener {
             startPostponedEnterTransition()
         }
+    }
+
+    override fun initLogic() {
+        binding.toolbar.setNavigationOnClickListener(Utils.getBackPressedClickListener(this))
     }
 
     override fun onPause() {

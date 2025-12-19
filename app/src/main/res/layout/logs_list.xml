@@ -4,15 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="?attr/colorSurface"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/base_cardview"
-        style="@style/Widget.Material3.CardView.Elevated"
+        style="@style/CardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:elevation="0dp"
+        app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="5dp">
 
         <LinearLayout
@@ -74,8 +78,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_regular"
-                            android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:text="Released on: 27–11–2022"/>
+                            android:text="Released on: 27–11–2022"
+                            android:textAppearance="?attr/textAppearanceBodySmall" />
 
                     </LinearLayout>
 
@@ -114,9 +118,9 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="5dp"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
                     android:fontFamily="@font/opensans_regular"
-                    android:text="string/mc2_log" />
+                    android:text="string/mc2_log"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
         </LinearLayout>

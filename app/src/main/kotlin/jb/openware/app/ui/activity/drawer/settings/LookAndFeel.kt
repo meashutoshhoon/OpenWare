@@ -1,18 +1,14 @@
 package jb.openware.app.ui.activity.drawer.settings
 
-import android.content.Intent
 import android.os.Build
-import android.os.Bundle
-import android.provider.Settings
 import android.util.Pair
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.RadioButton
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import jb.openware.app.databinding.SettingsLookAndFeelBinding
+import jb.openware.app.ui.common.ActivityReloader
+import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.common.booleanState
 import jb.openware.app.ui.common.intState
 import jb.openware.app.ui.viewmodel.settings.SettingsItemViewModel
@@ -27,24 +23,21 @@ import jb.openware.app.util.THEME_MODE
 import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
-class LookAndFeelActivity : AppCompatActivity() {
-
-    private lateinit var binding: SettingsLookAndFeelBinding
+class LookAndFeelActivity :
+    BaseActivity<SettingsLookAndFeelBinding>(SettingsLookAndFeelBinding::inflate) {
     private lateinit var viewModel: SettingsItemViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = SettingsLookAndFeelBinding.inflate(LayoutInflater.from(this))
-        setContentView(binding.root)
-
+    override fun init() {
         viewModel = ViewModelProvider(this)[SettingsItemViewModel::class.java]
 
-        setupBackPress()
         setupThemeOptions()
         setupAmoledSwitch()
         setupDynamicColorsSwitch()
         setupHapticAndVibration()
-        setupDefaultLanguageOnClick()
+    }
+
+    override fun initLogic() {
+        setupBackPress()
     }
 
     override fun onPause() {
@@ -116,7 +109,7 @@ class LookAndFeelActivity : AppCompatActivity() {
             HapticUtils.weakVibrate(view)
             AMOLED_THEME.updateBoolean(isChecked)
             if (ThemeUtil.isNightMode(this)) {
-                recreate()
+                ActivityReloader.recreateAll()
             }
         }
         binding.highContrastDarkTheme.setOnClickListener {
@@ -133,7 +126,7 @@ class LookAndFeelActivity : AppCompatActivity() {
         binding.switchDynamicColors.setOnCheckedChangeListener { view, isChecked ->
             HapticUtils.weakVibrate(view)
             DYNAMIC_THEME.updateBoolean(isChecked)
-            recreate()
+            ActivityReloader.recreateAll()
         }
         binding.dynamicColors.setOnClickListener {
             binding.switchDynamicColors.performClick()
@@ -148,23 +141,6 @@ class LookAndFeelActivity : AppCompatActivity() {
         }
         binding.hapticAndVibration.setOnClickListener {
             binding.switchHapticAndVibration.performClick()
-        }
-    }
-
-    private fun setupDefaultLanguageOnClick() {
-        // Only Android 13+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            binding.defaultLanguage.visibility = View.VISIBLE
-        }
-
-        binding.defaultLanguage.setOnClickListener { v ->
-            HapticUtils.weakVibrate(v)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
-                    data = "package:$packageName".toUri()
-                }
-                startActivity(intent)
-            }
         }
     }
 }

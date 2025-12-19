@@ -53,6 +53,7 @@ import jb.openware.app.ui.components.LinkSpan
 import jb.openware.app.ui.components.MaterialProgressDialog
 import jb.openware.app.ui.items.ScreenshotItem
 import jb.openware.app.util.ConnectionManager
+import jb.openware.app.util.Const
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.UserConfig
@@ -233,6 +234,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         binding = bindingInflater(layoutInflater)
         setContentView(binding.root)
         FirebaseApp.initializeApp(this)
+        ActivityReloader.register(this)
 
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -244,6 +246,11 @@ abstract class BaseActivity<VB : ViewBinding>(
 
         init()
         initLogic()
+    }
+
+    override fun onDestroy() {
+        ActivityReloader.unregister(this)
+        super.onDestroy()
     }
 
     protected abstract fun init()
@@ -570,8 +577,8 @@ abstract class BaseActivity<VB : ViewBinding>(
         toast(text)
     }
 
-    fun sendEmail(subject: String, body: String, email: String) {
-        val uri = "mailto:$email".toUri().buildUpon().appendQueryParameter("subject", subject)
+    fun sendEmail(subject: String, body: String) {
+        val uri = "mailto:${Const.DEV_MAIL}".toUri().buildUpon().appendQueryParameter("subject", subject)
             .appendQueryParameter("body", body).build()
 
         val intent = Intent(Intent.ACTION_SENDTO).apply {

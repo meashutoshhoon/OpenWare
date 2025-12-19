@@ -286,7 +286,6 @@ class AboutAdapter(
         private fun getAppIdUrlMap(): Map<String, String> = mapOf(
             Const.ID_GITHUB to Const.URL_GITHUB_REPOSITORY,
             Const.ID_TELEGRAM to Const.URL_TELEGRAM,
-            Const.ID_DISCORD to "https://discord.gg",
             Const.ID_LICENSE to Const.URL_APP_LICENSE
         )
     }

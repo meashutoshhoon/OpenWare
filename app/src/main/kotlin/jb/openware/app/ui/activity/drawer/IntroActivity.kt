@@ -1,35 +1,28 @@
 package jb.openware.app.ui.activity.drawer
 
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityIntroBinding
 import jb.openware.app.ui.adapter.OnBoardingAdapter
+import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.items.OnBoardingItem
-import jb.openware.app.util.ThemeUtil
 
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
 
-    private lateinit var binding: ActivityIntroBinding
     private lateinit var onBoardingAdapter: OnBoardingAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        ThemeUtil.updateTheme(this)
-        super.onCreate(savedInstanceState)
-        binding = ActivityIntroBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun init() {
         setupOnBoardingItems()
         setupViewPager()
         setupIndicators()
         setCurrentOnBoardingIndicator(0)
+    }
+
+    override fun initLogic() {
         setupButton()
     }
 

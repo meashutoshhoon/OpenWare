@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,8 +35,8 @@
                     android:focusable="false"
                     android:fontFamily="@font/en_light"
                     android:padding="8dp"
-                    android:textAppearance="?attr/textAppearanceTitleLarge"
                     android:text="Notifications"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
                     android:textSize="29sp" />
             </LinearLayout>
         </com.google.android.material.appbar.AppBarLayout>

@@ -27,7 +27,7 @@ import jb.openware.imageviewer.ImageViewer
 class NotificationFragment : Fragment() {
 
     private var _binding: FragmentNotificationBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
 
     private lateinit var listView: RecyclerView
     private lateinit var refreshLayoutUser: SwipeRefreshLayout

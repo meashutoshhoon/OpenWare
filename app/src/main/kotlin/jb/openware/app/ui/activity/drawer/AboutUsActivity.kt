@@ -1,38 +1,26 @@
 package jb.openware.app.ui.activity.drawer
 
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.util.Pair
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityAboutUsBinding
 import jb.openware.app.ui.adapter.AboutAdapter
+import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.items.CategoryAbout
 import jb.openware.app.util.Const
 import jb.openware.app.util.Const.Contributors
-import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.Utils
 
-class AboutUsActivity : AppCompatActivity(), AboutAdapter.AdapterListener {
-    private lateinit var binding: ActivityAboutUsBinding
+class AboutUsActivity : BaseActivity<ActivityAboutUsBinding>(ActivityAboutUsBinding::inflate),
+    AboutAdapter.AdapterListener {
 
-    private var rvPositionAndOffset: Pair<Int, Int>? = null
-    private var loadingDots: LottieAnimationView? = null
-    private var updateButtonIcon: Drawable? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        ThemeUtil.updateTheme(this)
-        binding = ActivityAboutUsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun init() {
         setupRecyclerView()
+    }
+
+    override fun initLogic() {
         setupListeners()
     }
 
@@ -153,5 +141,6 @@ class AboutUsActivity : AppCompatActivity(), AboutAdapter.AdapterListener {
     override fun onCheckUpdate(
         button: Button, loadingDots: LottieAnimationView
     ) {
+        Utils.openUrl(this, Const.RELEASES_URL)
     }
 }

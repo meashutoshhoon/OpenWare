@@ -1,5 +1,8 @@
 package jb.openware.app.ui.items
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserProfile(
     val name: String,
     val email: String,
@@ -17,7 +20,8 @@ data class UserProfile(
     val token: String? = "null",
     val notify: String = "true",
     val avatar: String = "none",
-    val badge: String = "0"
+    val badge: String = "0",
+    val reason: String = ""
 ) {
     fun toMap(): Map<String, Any?> = mapOf(
         "name" to name,
@@ -36,6 +40,7 @@ data class UserProfile(
         "token" to token,
         "notify" to notify,
         "avatar" to avatar,
-        "badge" to badge
+        "badge" to badge,
+        "reason" to reason
     )
 }

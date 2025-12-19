@@ -27,7 +27,7 @@ import jb.openware.app.ui.items.Project
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
 
     private val db by lazy {
         FirebaseDatabase.getInstance().getReference("projects/normal")

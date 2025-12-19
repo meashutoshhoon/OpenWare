@@ -26,7 +26,7 @@ import jb.openware.app.util.categoryUrl
 class CategoryFragment : Fragment() {
 
     private var _binding: FragmentCategoryBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
 
     private val gson = Gson()
     private lateinit var connectionManager: ConnectionManager

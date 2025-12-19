@@ -27,7 +27,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import jb.openware.app.R
@@ -50,6 +49,7 @@ import jb.openware.app.ui.components.BottomSheetController
 import jb.openware.app.ui.components.DrawableGenerator
 import jb.openware.app.ui.components.SearchBarView
 import jb.openware.app.ui.items.Project
+import jb.openware.app.ui.items.UserProfile
 import jb.openware.app.util.Const
 import jb.openware.app.util.NEW_USER
 import jb.openware.app.util.PreferenceUtil.updateBoolean
@@ -278,11 +278,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         val userListener = object : ChildEventListener {
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                handleUserSnapshot(snapshot)
+//                handleUserSnapshot(snapshot)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                handleUserSnapshot(snapshot)
+//                handleUserSnapshot(snapshot)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) = Unit
@@ -297,43 +297,33 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         query?.addValueEventListener(projectListener)
     }
 
-    private fun handleUserSnapshot(snapshot: DataSnapshot) {
-        val data =
-            snapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {}) ?: return
+//    private fun handleUserSnapshot(snapshot: DataSnapshot) {
+//        val user = snapshot.getValue(UserProfile::class.java) ?: return
+//
+//        val uid = user.uid
+//        val nameValue = user.name
+//
+//        userNames[uid] = nameValue
+//
+//        if (snapshot.key != getUid()) return
+//
+//        updateCurrentUserUI(user)
+//    }
 
-        val uid = data["uid"]?.toString() ?: return
-        val nameValue = data["name"]?.toString()
-
-        if (nameValue != null) {
-            userNames[uid] = nameValue
-        }
-
-        if (snapshot.key != getUid()) return
-
-        updateCurrentUserUI(data)
-    }
-
-    private fun updateCurrentUserUI(data: Map<String, Any>) {
-        val nameValue = data["name"]?.toString() ?: return
-        val avatar = data["avatar"]?.toString() ?: "none"
-        val color = (data["color"]?.toString() ?: "#006493").toColorInt()
-        val verified = data["verified"]?.toString()?.toBoolean() == true
-        val badgeData = data["badge"]?.toString()?.toIntOrNull() ?: 0
-        val blocked = data["block"]?.toString()?.toBoolean() == true
-
+    private fun updateCurrentUserUI(user: UserProfile) {
         userConfig.apply {
-            name = nameValue
-            profileUrl = avatar
-            badge = badgeData
+            name = user.name
+            profileUrl = user.avatar
+            badge = user.badge.toInt()
         }
 
-        headerBinding.textView.text = nameValue
+        headerBinding.textView.text = user.name
 
-        updateAvatarUI(avatar, nameValue, color)
-        updateBadgeUI(badgeData, verified)
+        updateAvatarUI(user.avatar, user.name, user.color.toColorInt())
+        updateBadgeUI(user.badge.toInt(), user.verified.toBoolean())
 
-        if (blocked) {
-            showBlockedDialog(data["reason"]?.toString())
+        if (user.block.toBoolean()) {
+            showBlockedDialog(user.reason)
         }
     }
 
@@ -438,7 +428,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         }
 
         sendEmail(
-            subject = "OpenWare Feedback", body = body, email = Const.DEV_MAIL
+            subject = "OpenWare Feedback", body = body
         )
     }
 
