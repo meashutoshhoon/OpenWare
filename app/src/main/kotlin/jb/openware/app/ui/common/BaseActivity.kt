@@ -578,7 +578,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun sendEmail(subject: String, body: String) {
-        val uri = "mailto:${Const.DEV_MAIL}".toUri().buildUpon().appendQueryParameter("subject", subject)
+        val uri = "mailto:sketchwarechannel@gmail.com".toUri().buildUpon().appendQueryParameter("subject", subject)
             .appendQueryParameter("body", body).build()
 
         val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -594,10 +594,18 @@ abstract class BaseActivity<VB : ViewBinding>(
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    fun openUrl(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+    fun Context.openUrl(url: String) {
+        val fixedUrl = if (!url.startsWith("http")) "https://$url" else url
+        val uri = fixedUrl.toUri()
+
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
+        } else {
+            Log.e("OPEN_URL", "No browser available for $fixedUrl")
         }
     }
 

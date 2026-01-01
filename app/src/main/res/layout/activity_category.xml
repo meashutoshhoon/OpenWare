@@ -5,6 +5,7 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     android:fitsSystemWindows="true"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -12,8 +13,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Widget.Material3.AppBarLayout">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -30,9 +30,9 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:fillViewport="true"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="5dp"
-        android:gravity="center"
         android:transitionGroup="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -40,17 +40,17 @@
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/project_horizontal"
             android:layout_marginTop="2dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/project_horizontal" />
 
 
         <com.google.android.material.loadingindicator.LoadingIndicator
-            style="@style/Widget.Material3.LoadingIndicator.Contained"
             android:id="@+id/loading"
+            style="@style/Widget.Material3.LoadingIndicator.Contained"
             android:layout_width="90dp"
-            android:layout_height="90dp"/>
+            android:layout_height="90dp" />
 
 
     </LinearLayout>

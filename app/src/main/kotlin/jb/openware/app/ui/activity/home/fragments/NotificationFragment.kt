@@ -27,10 +27,10 @@ import jb.openware.imageviewer.ImageViewer
 class NotificationFragment : Fragment() {
 
     private var _binding: FragmentNotificationBinding? = null
-    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
+    private val binding get() = _binding
 
-    private lateinit var listView: RecyclerView
-    private lateinit var refreshLayoutUser: SwipeRefreshLayout
+    private var listView: RecyclerView? = null
+    private var refreshLayout: SwipeRefreshLayout? = null
     private lateinit var connectionManager: ConnectionManager
 
     private val gson = Gson()
@@ -39,7 +39,7 @@ class NotificationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotificationBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,15 +54,16 @@ class NotificationFragment : Fragment() {
             setPaddingRelative(0, 0, 0, 0)
         }
 
-        refreshLayoutUser = SwipeRefreshLayout(requireContext()).apply {
+        refreshLayout = SwipeRefreshLayout(requireContext()).apply {
             addView(listView)
             setOnRefreshListener { refreshData() }
         }
 
-        // layout1 is from fragment_notification.xml, via viewbinding
-        binding.layout.addView(
-            refreshLayoutUser, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+        binding?.layout?.removeAllViews()
+        binding?.layout?.addView(
+            refreshLayout, ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
             )
         )
 
@@ -71,7 +72,8 @@ class NotificationFragment : Fragment() {
     }
 
     private fun refreshData() {
-        refreshLayoutUser.isRefreshing = true
+        val rl = refreshLayout ?: return
+        rl.isRefreshing = true
 
         connectionManager.startRequest(
             "GET", notificationUrl, "A", object : ConnectionManager.RequestListener {
@@ -79,18 +81,22 @@ class NotificationFragment : Fragment() {
                 override fun onResponse(
                     tag: String, response: String, responseHeaders: HashMap<String, Any>
                 ) {
+                    if (view == null || !isAdded || _binding == null) return
+
                     val type = object : TypeToken<List<NotificationItem>>() {}.type
                     val items: List<NotificationItem> = gson.fromJson(response, type)
 
-                    listView.adapter = NotificationAdapter(items)
-                    refreshLayoutUser.isRefreshing = false
+                    listView?.adapter = NotificationAdapter(items)
+                    rl.isRefreshing = false
                 }
 
                 override fun onErrorResponse(tag: String, message: String) {
+                    if (view == null || !isAdded || _binding == null) return
+
                     MaterialAlertDialogBuilder(requireActivity()).setTitle("Alert")
                         .setMessage(message).setPositiveButton(android.R.string.ok, null).show()
 
-                    refreshLayoutUser.isRefreshing = false
+                    rl.isRefreshing = false
                 }
             })
     }
@@ -109,39 +115,47 @@ class NotificationFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = data[position]
-            val ctx = holder.binding.root.context
+            val b = holder.binding
+            val ctx = b.root.context
 
-            holder.binding.title.text = item.title
-            holder.binding.message.text = item.message
-            holder.binding.date.text = item.date
+            b.title.text = item.title
+            b.message.text = item.message
+            b.date.text = item.date
 
-            TextFormatter.format(holder.binding.message, item.message)
-            holder.binding.message.movementMethod = LinkMovementMethod.getInstance()
+            TextFormatter.format(b.message, item.message)
+            b.message.movementMethod = LinkMovementMethod.getInstance()
 
             if (item.url == "none") {
-                holder.binding.image.visibility = View.GONE
-                holder.binding.image.setOnClickListener(null)
+                b.image.visibility = View.GONE
+                b.image.setOnClickListener(null)
             } else {
-                holder.binding.image.visibility = View.VISIBLE
-
+                b.image.visibility = View.VISIBLE
                 val images = listOf(item.url)
 
-                holder.binding.image.setOnClickListener { imageView ->
-                    ImageViewer.Builder(
-                        imageView.context, images
-                    ) { imageViewInner, image ->
+                b.image.setOnClickListener { _ ->
+                    if (!isAdded) return@setOnClickListener
+
+                    ImageViewer.Builder(ctx, images) { imageViewInner, image ->
                         Glide.with(imageViewInner.context).load(image)
                             .transition(DrawableTransitionOptions.withCrossFade())
-                            .placeholder(0xFFD3D3D3.toInt().toDrawable()).into(imageViewInner)
-                    }.withStartPosition(0).withHiddenStatusBar(true).allowZooming(true)
-                        .allowSwipeToDismiss(true).withTransitionFrom(holder.binding.image)
-                        .withDismissListener {
-                            holder.binding.image.visibility = View.VISIBLE
-                        }.show()
+                            .placeholder(0xFFD3D3D3.toInt().toDrawable())
+                            .into(imageViewInner)
+                    }
+                        .withStartPosition(0)
+                        .withHiddenStatusBar(true)
+                        .allowZooming(true)
+                        .allowSwipeToDismiss(true)
+                        .withTransitionFrom(b.image)
+                        .withDismissListener { b.image.visibility = View.VISIBLE }
+                        .show()
                 }
 
-                Glide.with(ctx).load(item.url).transition(DrawableTransitionOptions.withCrossFade())
-                    .placeholder(R.color.grey).centerCrop().into(holder.binding.image)
+                Glide.with(ctx)
+                    .load(item.url)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .placeholder(R.color.grey)
+                    .centerCrop()
+                    .into(b.image)
             }
         }
 
@@ -152,7 +166,9 @@ class NotificationFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        listView = null
+        refreshLayout = null
         _binding = null
+        super.onDestroyView()
     }
 }

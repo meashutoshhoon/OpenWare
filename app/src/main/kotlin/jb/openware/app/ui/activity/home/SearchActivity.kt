@@ -91,9 +91,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
                         Project.fromMap(raw)
                     }.getOrNull() ?: return@forEach
 
-                    if (project.visible && project.title?.contains(
+                    if (project.visibility && project.title.contains(
                             query, ignoreCase = true
-                        ) == true
+                        )
                     ) {
                         projects.add(project)
                     }

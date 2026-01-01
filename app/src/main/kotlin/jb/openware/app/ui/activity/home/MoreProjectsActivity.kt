@@ -54,6 +54,7 @@ class MoreProjectsActivity :
     }
 
     override fun initLogic() {
+        binding.toolbar.setNavigationOnClickListener(Utils.getBackPressedClickListener(this))
         binding.recyclerview.layoutManager = GridLayoutManager(this, 3)
 
         adapter = BaseProjectAdapter(projects) { project ->
@@ -96,7 +97,7 @@ class MoreProjectsActivity :
 
             snapshot.children.mapNotNull { it.value as? HashMap<String, Any> }
                 .mapNotNull { runCatching { Project.fromMap(it) }.getOrNull() }
-                .filter { it.visible }.let { list ->
+                .filter { it.visibility }.let { list ->
                     if (key == "like") {
                         projects.addAll(
                             list.sortedByDescending {

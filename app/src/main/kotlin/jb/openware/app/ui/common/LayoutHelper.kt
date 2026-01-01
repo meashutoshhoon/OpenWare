@@ -30,11 +30,11 @@ object LayoutHelper {
 
     @get:SuppressLint("RtlHardcoded")
     val absoluteGravityStart: Int
-        get() = Gravity.LEFT
+        get() = Gravity.START
 
     @get:SuppressLint("RtlHardcoded")
     val absoluteGravityEnd: Int
-        get() = Gravity.RIGHT
+        get() = Gravity.END
 
     //endregion
     //region ScrollView

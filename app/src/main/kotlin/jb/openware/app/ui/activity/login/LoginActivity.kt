@@ -345,7 +345,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                 email = email,
                 uid = uid,
                 color = colorCode,
-                id = id,
+                deviceId = id,
                 registrationDate = registrationDate,
                 password = password,
                 token = token

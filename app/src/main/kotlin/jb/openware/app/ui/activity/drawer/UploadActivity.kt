@@ -438,41 +438,38 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 }
 
                 val baseProject = Project(
-                    icon = iconUrl,
-                    title = binding.titleMsg.text.toString().trim(),
-                    description = binding.descriptionMsg.text.toString().trim(),
-                    whatsNew = if (newProject) "none"
-                    else binding.whatsNewMsg.text.toString().trim(),
-
-                    downloadUrl = binding.downloadUrl.toString(),
-                    size = Utils.formatFileSize(Utils.getGithubApkSize(binding.downloadUrl.toString())),
-                    uid = getUid(),
-
-                    likes = likesValue,
+                    category = binding.categoryText.text.toString().trim(),
                     comments = commentsValue,
+                    commentsVisibility = binding.comments.isChecked,
+                    description = binding.descriptionMsg.text.toString().trim(),
+                    downloadUrl = binding.downloadUrl.text.toString().trim(),
                     downloads = downloadsValue,
-
-                    category = binding.categoryText.text.toString(),
-                    trending = false,
-                    latest = true,
-                    screenshots = screen,
-
-                    time = if (newProject) dateFormat.format(calendar.time).toString()
-                    else receivedHashMap?.get("time").toString(),
-
-                    updateTime = if (newProject) "none"
-                    else dateFormat.format(calendar.time),
-
-                    unlockCode = if (isPremium) binding.premiumString.text.toString()
-                    else "none",
-
-                    verified = false,
                     editorsChoice = false,
-                    commentsVisible = binding.comments.isChecked,
-                    visible = binding.visibility.isChecked,
+                    icon = iconUrl,
+                    id = key,
                     key = key,
-                    name = if (newProject) userConfig.name
-                    else receivedHashMap?.get("name").toString()
+                    latest = true,
+                    likes = likesValue,
+                    name = if (newProject) userConfig.name else receivedHashMap?.get("name").toString(),
+                    screenshots = Gson().toJson(screenshots),
+                    size = Utils.formatFileSize(
+                        Utils.getGithubApkSize(binding.downloadUrl.text.toString().trim())
+                    ),
+                    time = if (newProject)
+                        dateFormat.format(calendar.time)
+                    else
+                        receivedHashMap?.get("time").toString(),
+                    title = binding.titleMsg.text.toString().trim(),
+                    trending = false,
+                    uid = getUid(),
+                    unlockCode = if (isPremium) binding.premiumString.text.toString() else "none",
+                    updateTime = if (newProject)
+                        "none"
+                    else
+                        dateFormat.format(calendar.time),
+                    verified = false,
+                    visibility = binding.visibility.isChecked,
+                    whatsNew = if (newProject) "none" else binding.whatsNewMsg.text.toString().trim()
                 )
 
                 val id = if (newProject) {
@@ -579,41 +576,31 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             }
     }
 
-
-    fun Project.toFirebaseMap(
-        id: String
-    ): Map<String, Any> = mapOf(
-        "icon" to (icon),
-        "title" to (title),
-        "description" to (description),
-        "whatsNew" to (whatsNew),
-        "downloadUrl" to (downloadUrl),
-        "size" to (size),
-        "uid" to (uid),
-        "key" to (key),
-
-        // counters (preserved correctly)
-        "likes" to (likes),
-        "comments" to (comments),
-        "downloads" to (downloads),
-
-        "category" to (category),
-        "trending" to trending.toString(),
-        "latest" to latest.toString(),
-
-        "screenshots" to Gson().toJson(screenshots),
-
-        "time" to (time),
-        "updateTime" to (updateTime),
-
-        "unlockCode" to (unlockCode),
-        "verify" to verified.toString(),
-        "editorsChoice" to editorsChoice.toString(),
-        "commentsVisibility" to commentsVisible.toString(),
-        "visibility" to visible.toString(),
-
-        "name" to (name),
-        "id" to id
+    fun Project.toFirebaseMap(id: String): Map<String, Any?> = mapOf(
+        "category" to category,
+        "comments" to comments,
+        "commentsVisibility" to commentsVisibility,
+        "description" to description,
+        "downloadUrl" to downloadUrl,
+        "downloads" to downloads,
+        "editorsChoice" to editorsChoice,
+        "icon" to icon,
+        "id" to id,
+        "key" to key,
+        "latest" to latest,
+        "likes" to likes,
+        "name" to name,
+        "screenshots" to screenshots,
+        "size" to size,
+        "time" to time,
+        "title" to title,
+        "trending" to trending,
+        "uid" to uid,
+        "unlockCode" to unlockCode,
+        "updateTime" to updateTime,
+        "verified" to verified,
+        "visibility" to visibility,
+        "whatsNew" to whatsNew
     )
 
     private fun add(input: String): String {

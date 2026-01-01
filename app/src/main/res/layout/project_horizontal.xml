@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="24dp"
@@ -16,16 +17,17 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@null"
         app:cardElevation="0dp">
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@null"
             android:focusable="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/demo_icon"
-            android:contentDescription="@null" />
+            android:src="@drawable/demo_icon" />
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
@@ -41,9 +43,9 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:fontFamily="@font/en_light"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:singleLine="true"
             android:text="OpemWare"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:textColor="?attr/colorOnSurface" />
 
         <TextView
@@ -52,8 +54,8 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:fontFamily="@font/opensans_regular"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:text="OpenWare Inc."
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 
@@ -67,10 +69,10 @@
                 android:id="@+id/i1"
                 android:layout_width="13sp"
                 android:layout_height="13sp"
+                android:contentDescription="@null"
                 android:gravity="center"
                 android:paddingTop="2dp"
                 android:src="@drawable/like"
-                android:contentDescription="@null"
                 app:tint="?attr/colorOnSurfaceVariant" />
 
             <TextView
@@ -78,10 +80,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_semibold"
-                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                android:textColor="?attr/colorOnSurfaceVariant"
                 android:gravity="center"
-                android:text="1.2K" />
+                android:text="1.2K"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
             <ImageView
                 android:id="@+id/i2"
@@ -91,8 +93,8 @@
                 android:contentDescription="@null"
                 android:gravity="center"
                 android:paddingTop="2dp"
-                app:tint="?attr/colorOnSurfaceVariant"
-                app:srcCompat="@drawable/comment" />
+                app:srcCompat="@drawable/comment"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <TextView
                 android:id="@+id/comments"
@@ -100,10 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:fontFamily="@font/opensans_semibold"
-                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                android:textColor="?attr/colorOnSurfaceVariant"
                 android:gravity="center"
-                android:text="1.2K"/>
+                android:text="1.2K"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
             <ImageView
                 android:id="@+id/i3"
@@ -112,8 +114,8 @@
                 android:layout_marginStart="8dp"
                 android:contentDescription="@null"
                 android:paddingTop="2dp"
-                app:tint="?attr/colorOnSurfaceVariant"
-                app:srcCompat="@drawable/download" />
+                app:srcCompat="@drawable/download"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <TextView
                 android:id="@+id/download"
@@ -121,10 +123,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:fontFamily="@font/opensans_semibold"
-                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                android:textColor="?attr/colorOnSurfaceVariant"
                 android:gravity="center"
-                android:text="1.2K" />
+                android:text="1.2K"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

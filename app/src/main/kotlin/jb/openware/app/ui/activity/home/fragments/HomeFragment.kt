@@ -27,7 +27,7 @@ import jb.openware.app.ui.items.Project
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
+    private val binding get() = _binding
 
     private val db by lazy {
         FirebaseDatabase.getInstance().getReference("projects/normal")
@@ -44,36 +44,37 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupRecyclerViews()
         setupClicks()
-        hideViews(binding.recyclerviewEditors)
+        binding?.let { hideViews(it.recyclerviewEditors, it.linearShimmer1) }
 
         loadEditorsChoice()
-        beginTransition(binding.base, 400L)
+        binding?.let { beginTransition(it.base, 400L) }
     }
 
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null // clear binding
     }
 
     // ---------------- SETUP ----------------
 
-    private fun setupRecyclerViews() = with(binding) {
-        recyclerviewEditors.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerviewLatest.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerviewLiked.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+    private fun setupRecyclerViews() {
+        val b = binding ?: return
 
-        recyclerviewEditors.setHasFixedSize(true)
-        recyclerviewLatest.setHasFixedSize(true)
-        recyclerviewLiked.setHasFixedSize(true)
+        b.recyclerviewEditors.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        b.recyclerviewLatest.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        b.recyclerviewLiked.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+        b.recyclerviewEditors.setHasFixedSize(true)
+        b.recyclerviewLatest.setHasFixedSize(true)
+        b.recyclerviewLiked.setHasFixedSize(true)
     }
 
-    private fun setupClicks() = with(binding) {
-        editorSeemore.setOnClickListener { openMore("editors_choice") }
-        textview7.setOnClickListener { openMore("all") }
-        textview11.setOnClickListener { openMore("like") }
+    private fun setupClicks() {
+        val b = binding ?: return
+
+        b.editorSeemore.setOnClickListener { openMore("editors_choice") }
+        b.textview7.setOnClickListener { openMore("all") }
+        b.textview11.setOnClickListener { openMore("like") }
     }
 
     private fun openMore(id: String) {
@@ -86,14 +87,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun loadEditorsChoice() {
         db.limitToLast(limit).orderByChild("editors_choice").equalTo(true)
             .addListenerForSingleValueEvent(projectListener { list ->
+                if (!isAdded || binding == null) return@projectListener
+
                 editorsChoice.clear()
                 editorsChoice.addAll(list)
 
-                binding.recyclerviewEditors.adapter =
-                    BannerProjectAdapter(editorsChoice, requireActivity(), 1)
-
-                hideViews(binding.linearShimmer1)
-                showViews(binding.recyclerviewEditors)
+                binding?.apply {
+                    recyclerviewEditors.adapter = BannerProjectAdapter(editorsChoice, requireActivity(), 1)
+                    hideViews(linearShimmer1)
+                    showViews(recyclerviewEditors)
+                }
 
                 loadLatest()
             })
@@ -102,24 +105,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun loadLatest() {
         db.limitToLast(limit).orderByChild("latest").equalTo(true)
             .addListenerForSingleValueEvent(projectListener { list ->
+                if (!isAdded || binding == null) return@projectListener
                 latestProjects.clear()
                 latestProjects.addAll(list)
 
-                binding.recyclerviewLatest.adapter = BaseProjectAdapter(latestProjects) { project ->
-
-                    requireActivity().getSharedPreferences("developer", MODE_PRIVATE).edit {
-                            putString("type", "Free")
-                        }
-
-                    startActivity(
-                        Intent(requireContext(), ProjectViewActivity::class.java).apply {
-                            putExtra("key", project.key)
-                            putExtra("uid", project.uid)
-                        })
+                binding?.apply {
+                    recyclerviewLatest.adapter = BaseProjectAdapter(latestProjects) { project ->
+                        openProject(project)
+                    }
+                    hideViews(linearShimmer2)
+                    showViews(recyclerviewLatest)
                 }
-
-                hideViews(binding.linearShimmer2)
-                showViews(binding.recyclerviewLatest)
 
                 loadMostLiked()
             })
@@ -128,26 +124,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun loadMostLiked() {
         db.limitToLast(limit).orderByChild("visible").equalTo(true)
             .addListenerForSingleValueEvent(projectListener { list ->
+                if (!isAdded || binding == null) return@projectListener
+
                 mostLiked.clear()
-                mostLiked.addAll(list)
+                mostLiked.addAll(list.sortedByDescending { it.likes })
 
-                mostLiked.sortByDescending { it.likes }
-
-                binding.recyclerviewLiked.adapter = BaseProjectAdapter(mostLiked) { project ->
-
-                    requireActivity().getSharedPreferences("developer", MODE_PRIVATE).edit {
-                            putString("type", "Free")
-                        }
-
-                    startActivity(
-                        Intent(requireContext(), ProjectViewActivity::class.java).apply {
-                            putExtra("key", project.key)
-                            putExtra("uid", project.uid)
-                        })
+                binding?.apply {
+                    recyclerviewLiked.adapter = BaseProjectAdapter(mostLiked) { project ->
+                        openProject(project)
+                    }
+                    hideViews(linearShimmer4)
+                    showViews(recyclerviewLiked)
                 }
-
-                hideViews(binding.linearShimmer4)
-                showViews(binding.recyclerviewLiked)
             })
     }
 
@@ -156,13 +144,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ) = object : ValueEventListener {
 
         override fun onDataChange(snapshot: DataSnapshot) {
+            if (!isAdded || _binding == null) return  // STOP if view is destroyed
+
             val list = snapshot.children.mapNotNull { it.getValue(Project::class.java) }
-                .filter { it.visible }
+                .filter { it.visibility }
 
             onResult(list.reversed())
         }
 
         override fun onCancelled(error: DatabaseError) = Unit
+    }
+
+    private fun openProject(project: Project) {
+        if (!isAdded) return
+
+        requireContext().getSharedPreferences("developer", MODE_PRIVATE)
+            .edit {
+                putString("type", "Free")
+            }
+
+        startActivity(
+            Intent(requireContext(), ProjectViewActivity::class.java).apply {
+                putExtra("key", project.key)
+                putExtra("uid", project.uid)
+            }
+        )
     }
 
     fun beginTransition(

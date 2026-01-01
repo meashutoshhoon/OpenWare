@@ -26,17 +26,17 @@ import jb.openware.app.util.categoryUrl
 class CategoryFragment : Fragment() {
 
     private var _binding: FragmentCategoryBinding? = null
-    private val binding get() = _binding ?: error("Attempting to access binding outside of view lifecycle")
+    private val binding get() = _binding
 
     private val gson = Gson()
     private lateinit var connectionManager: ConnectionManager
-    private lateinit var listView: RecyclerView
+    private var listView: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,96 +47,97 @@ class CategoryFragment : Fragment() {
         listView = RecyclerView(requireContext()).apply {
             layoutManager = LinearLayoutManager(requireContext())
             isNestedScrollingEnabled = true
-            setPaddingRelative(0, 0, 0, 0)
         }
 
-        // Add RecyclerView into container from binding (layout1)
-        binding.layout.addView(
-            listView, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+        // Remove any previous view (prevents duplicates)
+        binding?.layout?.removeAllViews()
+        binding?.layout?.addView(
+            listView,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
             )
         )
 
-        // initial data load
         setData()
     }
 
     private fun setData() {
         connectionManager.startRequest(
-            "GET",
-            categoryUrl,
-            "A",
-            object : ConnectionManager.RequestListener {
+            "GET", categoryUrl, "A", object : ConnectionManager.RequestListener {
+
                 override fun onResponse(
                     tag: String,
                     response: String,
                     responseHeaders: HashMap<String, Any>
                 ) {
+                    if (!isAdded || view == null || _binding == null) return
 
                     val type = object : TypeToken<List<CategoryItem>>() {}.type
                     val items: List<CategoryItem> = gson.fromJson(response, type)
 
-                    listView.adapter = CategoryAdapter(items)
+                    listView?.adapter = CategoryAdapter(items)
                 }
 
                 override fun onErrorResponse(tag: String, message: String) {
-                    MaterialAlertDialogBuilder(requireActivity()).setTitle("Alert")
+                    if (!isAdded || view == null || _binding == null) return
+
+                    MaterialAlertDialogBuilder(requireContext()).setTitle("Alert")
                         .setMessage(message).setPositiveButton(android.R.string.ok, null).show()
                 }
             })
     }
 
-    private inner class CategoryAdapter(private val data: List<CategoryItem>) :
-        RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+    private inner class CategoryAdapter(
+        private val data: List<CategoryItem>
+    ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val cellBinding =
-                CategoryCellBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(cellBinding)
+            val binding = CategoryCellBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+            return ViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = data[position]
+            val b = holder.binding
+            val ctx = b.root.context
 
-            holder.binding.t2.text = item.name
+            b.t2.text = item.name
 
-            holder.binding.i1.setColorFilter(
-                holder.binding.root.context.getColorOnSurfaceVariant(),
-                PorterDuff.Mode.SRC_IN
-            )
+            b.i1.setColorFilter(ctx.getColorOnSurfaceVariant(), PorterDuff.Mode.SRC_IN)
 
-            holder.binding.root.setOnClickListener {
-                val intent =
-                    Intent(holder.binding.root.context, CategoryActivity::class.java).apply {
-                        putExtra("code", "category")
-                        putExtra("title", item.name)
-                    }
+            b.root.setOnClickListener {
+                if (!isAdded) return@setOnClickListener
+                val intent = Intent(ctx, CategoryActivity::class.java).apply {
+                    putExtra("code", "category")
+                    putExtra("title", item.name)
+                }
                 startActivity(intent)
             }
 
-            Glide.with(holder.binding.root.context).load(item.url)
-                .transition(DrawableTransitionOptions.withCrossFade()).centerCrop()
-                .into(holder.binding.i1)
+            Glide.with(ctx).load(item.url).transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop().into(b.i1)
         }
 
-        override fun getItemCount(): Int = data.size
-
-        private fun Context.getColorOnSurfaceVariant(): Int {
-            val typedValue = TypedValue()
-            theme.resolveAttribute(
-                com.google.android.material.R.attr.colorOnSurfaceVariant,
-                typedValue,
-                true
-            )
-            return typedValue.data
-        }
+        override fun getItemCount() = data.size
 
         inner class ViewHolder(val binding: CategoryCellBinding) :
             RecyclerView.ViewHolder(binding.root)
     }
 
+    private fun Context.getColorOnSurfaceVariant(): Int {
+        val tv = TypedValue()
+        theme.resolveAttribute(
+            com.google.android.material.R.attr.colorOnSurfaceVariant, tv, true
+        )
+        return tv.data
+    }
+
     override fun onDestroyView() {
-        super.onDestroyView()
+        listView = null
         _binding = null
+        super.onDestroyView()
     }
 }

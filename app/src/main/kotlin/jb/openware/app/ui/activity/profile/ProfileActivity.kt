@@ -204,7 +204,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
 
                 val project = snapshot.getValue(Project::class.java) ?: return
 
-                if (project.uid == currentUid && project.visible) {
+                if (project.uid == currentUid && project.visibility) {
 
                     premiumProjects.add(0, project)
 
@@ -303,7 +303,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun updateVerified(project: Project) {
-        if (project.visible && project.verified) {
+        if (project.visibility && project.verified) {
             verifiedProjects.add(0, project)
 
             if (binding.verifyR.adapter == null) {
@@ -331,7 +331,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun updateEditor(project: Project) {
-        if (project.visible && project.editorsChoice) {
+        if (project.visibility && project.editorsChoice) {
             editorProjects.add(0, project)
 
             if (binding.editorR.adapter == null) {
@@ -359,7 +359,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun updatePrivate(project: Project) {
-        if (!project.visible) {
+        if (!project.visibility) {
             privateProjects.add(0, project)
 
             if (binding.privateProjectsR.adapter == null) {
@@ -413,7 +413,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun updateMost(project: Project) {
-        if (!project.visible) return
+        if (!project.visibility) return
 
         mostProjects.add(project)
 

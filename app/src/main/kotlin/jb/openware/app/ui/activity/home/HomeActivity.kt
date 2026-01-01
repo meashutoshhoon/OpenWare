@@ -50,7 +50,6 @@ import jb.openware.app.ui.components.DrawableGenerator
 import jb.openware.app.ui.components.SearchBarView
 import jb.openware.app.ui.items.Project
 import jb.openware.app.ui.items.UserProfile
-import jb.openware.app.util.Const
 import jb.openware.app.util.NEW_USER
 import jb.openware.app.util.PreferenceUtil.updateBoolean
 import jb.openware.app.util.Utils.shareText
@@ -105,6 +104,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         R.id.label_five_ to { openUrl(websiteUrl) },
         R.id.dashboard_item_two to { navigateWithDelay<SettingsActivity>() },
         R.id.dashboard_item to { navigateWithDelay<UploadActivity>() },
+        R.id.search_item to { navigateWithDelay<ProfileActivity>() },
     )
 
 
@@ -146,7 +146,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         binding.navigationView.setNavigationItemSelectedListener {
             navActions[it.itemId]?.invoke()
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-            true
+            false
         }
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->

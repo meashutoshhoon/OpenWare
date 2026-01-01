@@ -97,7 +97,7 @@ class ProjectViewActivity :
     private var liked = false
     private var commentCount = 0
     private var likeCount = 0
-    private val isFree = getPrefString("developer", "type", "Free") == "Free"
+    private var isFree = false
     private lateinit var filePath: String
 
     // Collections
@@ -196,6 +196,8 @@ class ProjectViewActivity :
     }
 
     override fun init() {
+
+        isFree = getPrefString("developer", "type", "Free") == "Free"
 
         if (isNightMode()) {
             binding.linear28.background = outlined(30f, 0xFF41474D.toInt())
@@ -515,11 +517,13 @@ class ProjectViewActivity :
         binding.editorChoice.visibility = if (projectData.editorsChoice) View.VISIBLE else View.GONE
 
         binding.commentsLin.visibility =
-            if (projectData.commentsVisible) View.VISIBLE else View.GONE
+            if (projectData.commentsVisibility) View.VISIBLE else View.GONE
 
-        binding.privateProject.visibility = if (!projectData.visible) View.VISIBLE else View.GONE
+        binding.privateProject.visibility = if (!projectData.visibility) View.VISIBLE else View.GONE
 
-        screenshots = projectData.screenshots
+        screenshots = Gson().fromJson(
+            projectData.screenshots,
+            object : TypeToken<List<String>>() {}.type)
         screenshotsRecycler.adapter = ScreenShotsAdapter(screenshots)
     }
 
@@ -779,7 +783,11 @@ class ProjectViewActivity :
                         )
 
                         // delete screenshots
-                        projectData.screenshots.forEach { url ->
+                        val s: List<String> = Gson().fromJson(
+                            projectData.screenshots,
+                            object : TypeToken<List<String>>() {}.type)
+
+                        s.forEach { url ->
                             firebaseUtils.deleteFileFromStorageByUrl(url)
                         }
 
