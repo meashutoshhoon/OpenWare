@@ -578,14 +578,16 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun sendEmail(subject: String, body: String) {
-        val uri = "mailto:sketchwarechannel@gmail.com".toUri().buildUpon().appendQueryParameter("subject", subject)
-            .appendQueryParameter("body", body).build()
+        val emailSubject = Uri.encode(subject)
+        val emailBody = Uri.encode(body)
 
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = uri
+        val mailTo = "mailto:sketchwarechannel@gmail.com?subject=$emailSubject&body=$emailBody"
+
+        val emailIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = mailTo.toUri()
         }
 
-        startActivity(intent)
+        startActivity(emailIntent)
     }
 
     fun openKeyboard(editText: EditText) {

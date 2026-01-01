@@ -71,7 +71,7 @@ data class Project(
                 uid = map["uid"].toString(),
                 unlockCode = map["unlockCode"].toString(),
                 updateTime = map["updateTime"].toString(),
-                verified = map["verify"]?.toString().toBoolean(),
+                verified = map["verified"]?.toString().toBoolean(),
                 visibility = map["visibility"]?.toString().toBoolean(),
                 whatsNew = map["whatsNew"].toString()
             )

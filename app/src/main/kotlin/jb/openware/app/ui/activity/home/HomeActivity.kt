@@ -77,14 +77,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
 
     private lateinit var searchBar: SearchBarView
 
-
     private val projectListener = object : ValueEventListener {
-
         override fun onDataChange(snapshot: DataSnapshot) {
             projects.clear()
 
-            snapshot.children.mapNotNull { it.value as? Map<String, Any> }
-                .mapNotNull { runCatching { Project.fromMap(it) }.getOrNull() }
+            snapshot.children
+                .mapNotNull { it.getValue(Project::class.java) }
                 .let { projects.addAll(it.reversed()) }
 
             binding.progressbar1.isVisible = false
@@ -278,11 +276,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         val userListener = object : ChildEventListener {
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-//                handleUserSnapshot(snapshot)
+                handleUserSnapshot(snapshot)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-//                handleUserSnapshot(snapshot)
+                handleUserSnapshot(snapshot)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) = Unit
@@ -297,18 +295,18 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         query?.addValueEventListener(projectListener)
     }
 
-//    private fun handleUserSnapshot(snapshot: DataSnapshot) {
-//        val user = snapshot.getValue(UserProfile::class.java) ?: return
-//
-//        val uid = user.uid
-//        val nameValue = user.name
-//
-//        userNames[uid] = nameValue
-//
-//        if (snapshot.key != getUid()) return
-//
-//        updateCurrentUserUI(user)
-//    }
+    private fun handleUserSnapshot(snapshot: DataSnapshot) {
+        val user = snapshot.getValue(UserProfile::class.java) ?: return
+
+        val uid = user.uid
+        val nameValue = user.name
+
+        userNames[uid] = nameValue
+
+        if (snapshot.key != getUid()) return
+
+        updateCurrentUserUI(user)
+    }
 
     private fun updateCurrentUserUI(user: UserProfile) {
         userConfig.apply {

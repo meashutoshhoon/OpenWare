@@ -44,7 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupRecyclerViews()
         setupClicks()
-        binding?.let { hideViews(it.recyclerviewEditors, it.linearShimmer1) }
+        binding?.let { hideViews(it.recyclerviewEditors) }
 
         loadEditorsChoice()
         binding?.let { beginTransition(it.base, 400L) }
@@ -72,7 +72,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun setupClicks() {
         val b = binding ?: return
 
-        b.editorSeemore.setOnClickListener { openMore("editors_choice") }
+        b.editorSeemore.setOnClickListener { openMore("editorsChoice") }
         b.textview7.setOnClickListener { openMore("all") }
         b.textview11.setOnClickListener { openMore("like") }
     }
@@ -85,7 +85,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun loadEditorsChoice() {
-        db.limitToLast(limit).orderByChild("editors_choice").equalTo(true)
+        db.limitToLast(limit).orderByChild("editorsChoice").equalTo(true)
             .addListenerForSingleValueEvent(projectListener { list ->
                 if (!isAdded || binding == null) return@projectListener
 
@@ -122,12 +122,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun loadMostLiked() {
-        db.limitToLast(limit).orderByChild("visible").equalTo(true)
+        db.limitToLast(limit).orderByChild("visibility").equalTo(true)
             .addListenerForSingleValueEvent(projectListener { list ->
                 if (!isAdded || binding == null) return@projectListener
 
                 mostLiked.clear()
-                mostLiked.addAll(list.sortedByDescending { it.likes })
+                mostLiked.addAll(list.sortedByDescending { it.likes.toIntOrNull() ?: 0 })
 
                 binding?.apply {
                     recyclerviewLiked.adapter = BaseProjectAdapter(mostLiked) { project ->

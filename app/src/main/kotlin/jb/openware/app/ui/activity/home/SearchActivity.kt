@@ -84,22 +84,17 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 snapshot.children.forEach { child ->
-                    val raw = child.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
-                        ?: return@forEach
+                    val project = child.getValue(Project::class.java) ?: return@forEach
 
-                    val project = runCatching {
-                        Project.fromMap(raw)
-                    }.getOrNull() ?: return@forEach
-
-                    if (project.visibility && project.title.contains(
-                            query, ignoreCase = true
-                        )
+                    if (
+                        project.visibility &&
+                        project.title.contains(query, ignoreCase = true)
                     ) {
                         projects.add(project)
                     }
                 }
 
-                updateUi()
+                updateUi() // your existing method
             }
 
             override fun onCancelled(error: DatabaseError) {

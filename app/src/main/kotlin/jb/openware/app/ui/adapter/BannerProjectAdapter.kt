@@ -28,7 +28,7 @@ class BannerProjectAdapter(
         val category = item.category
         val size = item.size
 
-        val screenshotsJson = item.screenshots.toString()
+        val screenshotsJson = item.screenshots
         val screenshots: List<String> = runCatching {
             Gson().fromJson<List<String>>(
                 screenshotsJson, object : TypeToken<List<String>>() {}.type

@@ -79,8 +79,8 @@ class MoreProjectsActivity :
         showLoading(true)
 
         query = when (key) {
-            "editors_choice" -> normalRef.limitToLast(limit).orderByChild("editors_choice")
-                .equalTo("true")
+            "editorsChoice" -> normalRef.limitToLast(limit).orderByChild("editorsChoice")
+                .equalTo(true)
 
             "like" -> normalRef.limitToLast(limit)
 
@@ -95,18 +95,16 @@ class MoreProjectsActivity :
         override fun onDataChange(snapshot: DataSnapshot) {
             projects.clear()
 
-            snapshot.children.mapNotNull { it.value as? HashMap<String, Any> }
-                .mapNotNull { runCatching { Project.fromMap(it) }.getOrNull() }
-                .filter { it.visibility }.let { list ->
-                    if (key == "like") {
-                        projects.addAll(
-                            list.sortedByDescending {
-                                it.likes.toIntOrNull() ?: 0
-                            })
-                    } else {
-                        projects.addAll(list.reversed())
-                    }
-                }
+            val list = snapshot.children.mapNotNull { it.getValue(Project::class.java) }
+                .filter { it.visibility }
+
+            val sorted = if (key == "like") {
+                list.sortedByDescending { it.likes.toIntOrNull() ?: 0 }
+            } else {
+                list.reversed()
+            }
+
+            projects.addAll(sorted)
 
             adapter.notifyDataSetChanged()
             showLoading(false)
