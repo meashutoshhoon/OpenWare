@@ -43,7 +43,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import jb.openware.app.R
@@ -57,7 +56,10 @@ import jb.openware.app.ui.common.BaseActivity
 import jb.openware.app.ui.components.BottomSheetController
 import jb.openware.app.ui.components.ProgressButton
 import jb.openware.app.ui.components.TextFormatter
+import jb.openware.app.ui.items.Comment
+import jb.openware.app.ui.items.Like
 import jb.openware.app.ui.items.Project
+import jb.openware.app.ui.items.UserProfile
 import jb.openware.app.util.FirebaseUtils
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.RequestNetworkController.Companion.GET
@@ -103,7 +105,6 @@ class ProjectViewActivity :
     // Collections
     private var screenshots = listOf<String>()
     private var moderatorIds = mutableListOf<String>()
-    private var updateMap = hashMapOf<String, Any>()
 
     private lateinit var progressButton: ProgressButton
     private lateinit var screenshotsRecycler: RecyclerView
@@ -276,7 +277,7 @@ class ProjectViewActivity :
 
         projectReference = if (isFree) projectRef else premiumRef
 
-        projectRef.addChildEventListener(projectChildListener)
+        projectReference.addChildEventListener(projectChildListener)
 
         usersRef.addChildEventListener(usersChildListener)
 
@@ -287,7 +288,7 @@ class ProjectViewActivity :
     }
 
     override fun initLogic() {
-        binding.back.setOnClickListener { Utils.getBackPressedClickListener(this) }
+        binding.back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.options.setOnClickListener { showMenu(it) }
 
         setupScrollDivider(binding.nestedScrollView, binding.divider)
@@ -321,7 +322,7 @@ class ProjectViewActivity :
         binding.fab.setOnClickListener {
             startActivity(
                 Intent(this, UploadActivity::class.java).apply {
-                    putExtra("hashmap", updateMap)
+                    putExtra("data", projectData) // Project must be Parcelable
                 })
         }
 
@@ -335,7 +336,7 @@ class ProjectViewActivity :
         binding.content.detectLinksMaterial()
 
         binding.category.setOnClickListener { openTag("category") }
-        binding.editorChoice.setOnClickListener { openTag("editors_choice") }
+        binding.editorChoice.setOnClickListener { openTag("editorsChoice") }
         binding.verified.setOnClickListener { openTag("verify") }
         binding.premiumProject.setOnClickListener { openTag("premium") }
 
@@ -371,9 +372,8 @@ class ProjectViewActivity :
             val newValue = !liked
 
             val likeMap = hashMapOf<String, Any>(
-                "value" to newValue.toString(),
+                "value" to newValue,
                 "key" to projectKey,
-                "like_key" to likeKey,
                 "uid" to getUid()
             )
 
@@ -455,10 +455,9 @@ class ProjectViewActivity :
         val childKey = snapshot.key ?: return
         if (childKey != userUid) return
 
-        val data = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {}) ?: return
+        val user = snapshot.getValue(UserProfile::class.java) ?: return
 
-        val newName = data["name"]?.toString() ?: return
-        binding.username.text = newName
+        binding.username.text = user.name
     }
 
     @SuppressLint("SetTextI18n")
@@ -466,11 +465,10 @@ class ProjectViewActivity :
         val childKey = snapshot.key ?: return
         if (childKey != projectKey) return
 
-        val map =
-            snapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {}) ?: return
+        val project = snapshot.getValue(Project::class.java) ?: return
 
-        updateMap = map
-        projectData = Project.fromMap(map)
+        projectData = project
+//        updateMap = map
 
         // Premium badge visibility
         if (isFree) {
@@ -484,7 +482,7 @@ class ProjectViewActivity :
         }
 
         binding.title.text = projectData.title
-        binding.username.text = map["name"]?.toString().orEmpty()
+        binding.username.text = project.name
 
         delayTask {
             binding.downloadBtn.animateLayoutChange()
@@ -528,43 +526,35 @@ class ProjectViewActivity :
     }
 
     private fun handleCommentSnapshot(
-        snapshot: DataSnapshot, increment: Boolean
+        snapshot: DataSnapshot,
+        increment: Boolean
     ) {
-        val data = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {}) ?: return
+        val comment = snapshot.getValue(Comment::class.java) ?: return
 
-        val postKey = data["post_key"]?.toString() ?: return
-        if (postKey != projectKey) return
+        if (comment.postKey != projectKey) return
 
-        val targetRef = if (!isFree) {
-            premiumRef
-        } else {
-            projectRef
-        }
+        val targetRef = if (isFree) projectRef else premiumRef
 
         commentCount += if (increment) 1 else -1
 
-        targetRef.child(projectKey).child("comments").setValue(commentCount.toString())
+        targetRef
+            .child(projectKey)
+            .child("comments")
+            .setValue(commentCount.toString())
     }
 
     private fun handleLikeSnapshot(
-        snapshot: DataSnapshot, isChange: Boolean
+        snapshot: DataSnapshot,
+        isChange: Boolean
     ) {
-        val data = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {}) ?: return
+        val like = snapshot.getValue(Like::class.java) ?: return
 
-        val projectKey = data["key"]?.toString() ?: return
-        val value = data["value"]?.toString() ?: return
-        val uid = data["uid"]?.toString() ?: return
+        if (like.key != projectKey) return
 
-        if (projectKey != this.projectKey) return
+        val isLiked = like.value
+        val isCurrentUser = like.uid == getUid()
 
-        val isLiked = value == "true"
-        val isCurrentUser = uid == getUid()
-
-        val targetRef = if (!isFree) {
-            premiumRef
-        } else {
-            projectRef
-        }
+        val targetRef = if (isFree) projectRef else premiumRef
 
         // ---- like count update ----
         likeCount += when {
@@ -575,7 +565,10 @@ class ProjectViewActivity :
         }
 
         if (!isChange || isCurrentUser) {
-            targetRef.child(this.projectKey).child("likes").setValue(likeCount.toString())
+            targetRef
+                .child(projectKey)
+                .child("likes")
+                .setValue(likeCount.toString())
         }
 
         // ---- UI update for current user ----
@@ -750,7 +743,7 @@ class ProjectViewActivity :
     private fun openTag(tag: String) {
         val title = when (tag) {
             "category" -> projectData.category
-            "editors_choice", "verify", "premium" -> "true"
+            "editorChoice", "verify", "premium" -> "true"
             else -> return // invalid tag → do nothing
         }
 
@@ -834,6 +827,7 @@ class ProjectViewActivity :
         val submitButton: MaterialButton = bottomSheet.find(R.id.b1)
 
         inputField.requestFocus()
+        openKeyboard(inputField)
 
         submitButton.setOnClickListener {
             val message = inputField.text.toString().trim()

@@ -51,6 +51,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import jb.openware.app.ui.components.LinkSpan
 import jb.openware.app.ui.components.MaterialProgressDialog
+import jb.openware.app.ui.items.Project
 import jb.openware.app.ui.items.ScreenshotItem
 import jb.openware.app.util.ConnectionManager
 import jb.openware.app.util.Const
@@ -65,6 +66,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import kotlin.jvm.java
 import kotlin.math.roundToInt
 
 abstract class BaseActivity<VB : ViewBinding>(
@@ -88,6 +90,8 @@ abstract class BaseActivity<VB : ViewBinding>(
 
     protected lateinit var binding: VB
         private set
+
+    private var pickImageCallback: ((String, String, Uri) -> Unit)? = null
 
     companion object {
         private const val REQUEST_CODE_PICK_IMAGES = 1
@@ -116,8 +120,8 @@ abstract class BaseActivity<VB : ViewBinding>(
     private val pickSingleImageLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                val (path, name) = resolveImageMeta(uri)
-                imagePickedListener?.onImagePicked(path, name, uri)
+                val (path, filename) = resolveImageMeta(uri)
+                pickImageCallback?.invoke(path, filename, uri)
             }
         }
 
@@ -278,12 +282,9 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
 
-    fun pickSinglePhoto(listener: ImagePickedListener) {
-        this.imagePickedListener = listener
-
-        pickSingleImageLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        )
+    fun pickSinglePhoto(callback: (String, String, Uri) -> Unit) {
+        pickImageCallback = callback
+        pickSingleImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     fun pickMultiplePhotos(listener: MultipleImagePickedListener) {
@@ -695,40 +696,27 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun getProjectId(
-        key: String, premium: Boolean, callback: (String) -> Unit
+        key: String,
+        premium: Boolean,
+        callback: (String?) -> Unit
     ) {
         val databasePath = if (premium) "projects/premium" else "projects/normal"
 
-        FirebaseDatabase.getInstance().getReference(databasePath).child(key)
+        FirebaseDatabase.getInstance()
+            .getReference(databasePath)
+            .child(key)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        callback("error")
-                        return
-                    }
-
-                    val data =
-                        snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
-                            ?: run {
-                                callback("error")
-                                return
-                            }
-
-                    val id = data["id"]?.toString()
-                    if (id != null) {
-                        callback(id)
-                    } else {
-                        callback("error")
-                    }
+                    val project = snapshot.getValue(Project::class.java)
+                    callback(project?.id)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    callback("error")
+                    callback(null)
                 }
             })
     }
-
 
     fun getDataFromDatabase(
         reference: String, child: String, callback: (Map<String, Any>?) -> Unit
@@ -833,7 +821,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     interface ImagePickedListener {
-        fun onImagePicked(profilePath: String, imageFileName: String, imageUri: Uri)
+        fun pickSinglePhoto(callback: (profilePath: String, imageFileName: String, imageUri: Uri) -> Unit)
     }
 
     interface MultipleImagePickedListener {

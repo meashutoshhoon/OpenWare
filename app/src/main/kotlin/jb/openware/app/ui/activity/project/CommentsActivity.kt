@@ -77,10 +77,11 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
 
     private val MENTION_REGEX = "(?<!\\S)(([@#])([A-Za-z0-9_-]\\.?)+)(?![^\\s,])"
     private val MENTION_PATTERN = Pattern.compile(MENTION_REGEX)
-    private val MENTION_COLOR = getThemeColor(com.google.android.material.R.attr.colorTertiary)
+    private var MENTION_COLOR: Int = 0
 
 
     override fun init() {
+        MENTION_COLOR = getThemeColor(com.google.android.material.R.attr.colorTertiary)
         binding.edittext1.enableMentionHighlighting()
 
         binding.imageview2.setOnClickListener {
@@ -96,7 +97,7 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
                 "uid" to getUid(),
                 "postKey" to postKey,
                 "key" to key,
-                "time" to System.currentTimeMillis(),
+                "time" to System.currentTimeMillis().toString(),
                 "message" to message
             )
 
@@ -108,7 +109,7 @@ class CommentsActivity : BaseActivity<ActivityCommentsBinding>(ActivityCommentsB
 
     override fun initLogic() {
         toggleLoading(true)
-        binding.back.setOnClickListener { Utils.getBackPressedClickListener(this) }
+        binding.back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.title.text = intent.getStringExtra("title")
         postKey = intent.getStringExtra("key").toString()
 

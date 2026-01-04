@@ -4,14 +4,14 @@
     android:id="@+id/refer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Widget.Material3.AppBarLayout">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/tools"

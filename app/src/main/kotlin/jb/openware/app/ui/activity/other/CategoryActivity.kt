@@ -101,7 +101,7 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(ActivityCategoryB
         key?.let { k ->
             when (k) {
                 "category" -> binding.toolbar.setTitle(intent?.getStringExtra("title"))
-                "editors_choice" -> binding.toolbar.setTitle("Editor's Choice Projects")
+                "editorsChoice" -> binding.toolbar.setTitle("Editor's Choice Projects")
                 "verify" -> binding.toolbar.setTitle("Verified Projects")
             }
 

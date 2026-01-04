@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_regular"
-                android:text="Top accolade awarded to individuals contributing to CodeKosh's development."
+                android:text="Top accolade awarded to individuals contributing to OpenWare's development."
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
 
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_regular"
-                android:text="Runner-up position granted to members of CodeKosh's management staff."
+                android:text="Runner-up position granted to members of OpenWare's management staff."
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
 
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_regular"
-                android:text="Subordinate role assisting admins in CodeKosh management."
+                android:text="Subordinate role assisting admins in OpenWare management."
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
 
@@ -182,7 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_regular"
-                android:text="Awarded to users volunteering for CodeKosh beta testing."
+                android:text="Awarded to users volunteering for OpenWare beta testing."
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
 

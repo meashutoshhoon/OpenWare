@@ -4,9 +4,9 @@ import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import jb.openware.app.ui.items.UserProfile
 
 class FirebaseUtils {
 
@@ -27,21 +27,18 @@ class FirebaseUtils {
 
     /* -------------------------------- Database -------------------------------- */
 
-    fun getData(
-        reference: String, child: String, callback: (Map<String, Any>?) -> Unit
+    fun getUser(
+        reference: String,
+        child: String,
+        callback: (UserProfile?) -> Unit
     ) {
-        database.getReference(reference).child(child)
+        database.getReference(reference)
+            .child(child)
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        callback(null)
-                        return
-                    }
-
-                    val data =
-                        snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
-                    callback(data)
+                    val user = snapshot.getValue(UserProfile::class.java)
+                    callback(user)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -72,8 +69,11 @@ class FirebaseUtils {
     }
 
     private fun updateUserCounter(key: String, uid: String, delta: Int) {
-        getData("Users", uid) { data ->
-            val current = data?.get(key)?.toString()?.toIntOrNull() ?: return@getData
+        getUser("Users", uid) { user ->
+            var current = 0
+            if (key == "likes") {
+                current = user?.likes.toString().toIntOrNull() ?: return@getUser
+            }
             val updated = (current + delta).coerceAtLeast(0)
 
             pushToDatabase(

@@ -2,7 +2,7 @@ package jb.openware.app.ui.cells
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.graphics.toColorInt
 import com.bumptech.glide.Glide
+import com.google.android.material.color.MaterialColors
 import jb.openware.app.R
 import jb.openware.app.databinding.CellUsersBinding
 import jb.openware.app.ui.components.BadgeDrawable
@@ -25,11 +26,6 @@ class UsersCell(context: Context) : FrameLayout(context) {
     private val wordText get() = binding.txWord
     private val nameText get() = binding.text
     private val badgeView get() = binding.badge
-
-    private fun isNightMode(): Boolean {
-        val mask = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return mask == Configuration.UI_MODE_NIGHT_YES
-    }
 
     fun setData(
         userItem: UserItem
@@ -78,11 +74,18 @@ class UsersCell(context: Context) : FrameLayout(context) {
                 badgeView.visible()
                 BadgeDrawable(context).setBadge(badgeInt.toString(), badgeView)
                 nameText.setTextColor(
-                    if (isNightMode()) 0xFF8DCDFF.toInt()
-                    else 0xFF006493.toInt()
+                    getBadgeColor()
                 )
             }
         }
+    }
+
+    fun Context.getThemeColor(attr: Int, fallback: Int = Color.TRANSPARENT): Int {
+        return MaterialColors.getColor(this, attr, fallback)
+    }
+
+    private fun getBadgeColor(): Int {
+        return context.getThemeColor(com.google.android.material.R.attr.colorSecondary)
     }
 
     private fun View.gone() {

@@ -52,7 +52,8 @@ class ListProjectAdapter(
             }
 
             val intent = Intent(context, ProjectViewActivity::class.java).apply {
-                putExtra("project", project)
+                putExtra("key", project.key)
+                putExtra("uid", project.uid)
             }
             context.startActivity(intent)
         }

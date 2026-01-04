@@ -102,7 +102,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(ActivityHomeBinding::infl
         R.id.label_five_ to { openUrl(websiteUrl) },
         R.id.dashboard_item_two to { navigateWithDelay<SettingsActivity>() },
         R.id.dashboard_item to { navigateWithDelay<UploadActivity>() },
-        R.id.search_item to { navigateWithDelay<ProfileActivity>() },
+        R.id.search_item to {
+            putPrefString(name = "developer", key = "uid", value = getUid())
+            navigateWithDelay<ProfileActivity>()
+        },
     )
 
 

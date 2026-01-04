@@ -75,7 +75,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
 
     // Other
-    private var receivedHashMap: HashMap<String, Any>? = null
+    private var projectData: Project? = null
 
     // RecyclerView
     private lateinit var recyclerView: RecyclerView
@@ -117,16 +117,13 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             }
         }
 
-        @Suppress("UNCHECKED_CAST")
-        receivedHashMap =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getSerializableExtra("hashmap", HashMap::class.java) as? HashMap<String, Any>
-            } else {
-                intent.getSerializableExtra("hashmap") as? HashMap<String, Any>
-            } ?: error("Missing hashmap in intent")
+        projectData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("data", Project::class.java)
+        } else {
+            @Suppress("DEPRECATION") intent.getParcelableExtra("data")
+        }
 
-
-        if (receivedHashMap == null) {
+        if (projectData == null) {
             // -------- NEW PROJECT --------
             hideViews(binding.warning, binding.whatsNewMsg)
             newProject = true
@@ -139,7 +136,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             // -------- EDIT PROJECT --------
             newProject = false
 
-            val lastUpdateTime = receivedHashMap?.get("time")?.toString()
+            val lastUpdateTime = projectData?.time
             val dateString = add(lastUpdateTime ?: "")
 
             binding.data.text = """
@@ -152,28 +149,27 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             hideViews(binding.warning)
 
             // Icon
-            iconPath = receivedHashMap?.get("icon")?.toString().orEmpty()
+            iconPath = projectData?.icon.orEmpty()
             Glide.with(this).load(iconPath).centerCrop().into(binding.circleImg)
 
             showViews(binding.circleImg)
             hideViews(binding.circle)
 
             // Text fields
-            binding.titleMsg.setText(receivedHashMap?.get("title").toString())
-            binding.descriptionMsg.setText(receivedHashMap?.get("description").toString())
+            binding.titleMsg.setText(projectData?.title)
+            binding.descriptionMsg.setText(projectData?.description)
 
-            receivedHashMap?.get("whats_new")?.toString()?.takeIf { it != "none" }
+            projectData?.whatsNew?.takeIf { it != "none" }
                 ?.let { binding.whatsNewMsg.setText(it) }
 
-            binding.categoryText.text = receivedHashMap?.get("category").toString()
+            binding.categoryText.text = projectData?.category
 
             // Switches
-            binding.visibility.isChecked = receivedHashMap?.get("visibility").toString() == "true"
-            binding.comments.isChecked =
-                receivedHashMap?.get("comments_visibility").toString() == "true"
+            binding.visibility.isChecked = projectData?.visibility == true
+            binding.comments.isChecked = projectData?.commentsVisibility == true
 
             // Premium
-            val unlockCode = receivedHashMap?.get("unlock_code")?.toString()
+            val unlockCode = projectData?.unlockCode
             if (!unlockCode.isNullOrEmpty() && unlockCode != "none") {
                 binding.premium.isChecked = true
                 binding.premiumString.setText(unlockCode)
@@ -193,7 +189,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 )
             )
 
-            val screenshotsJson = receivedHashMap?.get("screenshots").toString()
+            val screenshotsJson = projectData?.screenshots
             val screenshotsTemp: List<String> = Gson().fromJson(
                 screenshotsJson, object : TypeToken<List<String>>() {}.type
             )
@@ -243,22 +239,17 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
 
         binding.pickImage.setOnClickListener {
-            pickSinglePhoto(object : ImagePickedListener {
-                override fun onImagePicked(
-                    profilePath: String, imageFileName: String, imageUri: Uri
-                ) {
-                    val avatar = ImageUtil.compressImage(this@UploadActivity, imageUri, 40)
+            pickSinglePhoto { _, _, uri ->
+                val avatar = ImageUtil.compressImage(this@UploadActivity, uri, 40)
 
-                    Glide.with(this@UploadActivity).load(Uri.fromFile(avatar)).centerCrop()
-                        .into(binding.circleImg)
+                Glide.with(this@UploadActivity).load(Uri.fromFile(avatar)).centerCrop()
+                    .into(binding.circleImg)
 
-                    iconPath = Uri.fromFile(avatar).toString()
+                iconPath = Uri.fromFile(avatar).toString()
 
-                    showViews(binding.circleImg)
-                    hideViews(binding.circle)
-                }
-
-            })
+                showViews(binding.circleImg)
+                hideViews(binding.circle)
+            }
         }
 
 
@@ -275,9 +266,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             if (!newProject) {
 
                 // ----- UPDATE PROJECT -----
-                if (binding.downloadUrl.text.toString() == "" && binding.downloadUrl.text.toString() == receivedHashMap?.get(
-                        "downloadUrl"
-                    )
+                if (binding.downloadUrl.text.toString() == "" && binding.downloadUrl.text.toString() == projectData?.downloadUrl
                 ) {
                     // Retro update (file unchanged)
                     retro = true
@@ -422,19 +411,19 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 val likesValue = if (newProject) {
                     "0"
                 } else {
-                    receivedHashMap?.get("likes")?.toString() ?: "0"
+                    projectData?.likes ?: "0"
                 }
 
                 val commentsValue = if (newProject) {
                     "0"
                 } else {
-                    receivedHashMap?.get("comments")?.toString() ?: "0"
+                    projectData?.comments ?: "0"
                 }
 
                 val downloadsValue = if (newProject) {
                     "0"
                 } else {
-                    receivedHashMap?.get("downloads")?.toString() ?: "0"
+                    projectData?.downloads ?: "0"
                 }
 
                 val baseProject = Project(
@@ -450,7 +439,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     key = key,
                     latest = true,
                     likes = likesValue,
-                    name = if (newProject) userConfig.name else receivedHashMap?.get("name").toString(),
+                    name = if (newProject) userConfig.name else projectData?.name.toString(),
                     screenshots = Gson().toJson(screenshots),
                     size = Utils.formatFileSize(
                         Utils.getGithubApkSize(binding.downloadUrl.text.toString().trim())
@@ -458,7 +447,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     time = if (newProject)
                         dateFormat.format(calendar.time)
                     else
-                        receivedHashMap?.get("time").toString(),
+                        projectData?.time.toString(),
                     title = binding.titleMsg.text.toString().trim(),
                     trending = false,
                     uid = getUid(),
@@ -475,7 +464,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 val id = if (newProject) {
                     (getId.toInt() + 1).toString()
                 } else {
-                    receivedHashMap?.get("id").toString()
+                    projectData?.id.toString()
                 }
 
                 val dataMap = baseProject.toFirebaseMap(id)

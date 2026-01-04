@@ -23,7 +23,7 @@ class AboutActivity : BaseActivity<ActivityAboutBinding>(ActivityAboutBinding::i
     private var project: Project? = null
 
     override fun init() {
-        binding.back.setOnClickListener { Utils.getBackPressedClickListener(this) }
+        binding.back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
     override fun initLogic() {
@@ -35,7 +35,7 @@ class AboutActivity : BaseActivity<ActivityAboutBinding>(ActivityAboutBinding::i
 
         project?.let {
             updateUI(it)
-            it.uid?.let { uid -> attachUserListener(uid) }
+            attachUserListener(it.uid)
         }
 
     }

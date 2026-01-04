@@ -143,14 +143,18 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
 
     private fun handleUserSnapshot(snapshot: DataSnapshot) {
         val currentUid = getPrefString("developer", "uid", "")
-        if (snapshot.key != currentUid) {
-            hideViews(binding.edit, binding.logout)
-            return
-        }
 
-        val user = snapshot.getValue(UserProfile::class.java) ?: return
-        renderUserProfile(user)
+        if (snapshot.key == currentUid) {
+            // It's your own profile
+            showViews(binding.edit, binding.logout)
+            val user = snapshot.getValue(UserProfile::class.java) ?: return
+            renderUserProfile(user)
+        } else {
+            // Someone else's profile
+            hideViews(binding.edit, binding.logout)
+        }
     }
+
 
     private fun renderUserProfile(user: UserProfile) {
         this.userProfile = user
@@ -162,6 +166,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             hideViews(binding.badge)
         }
 
+        binding.usernameText.text = user.name
         binding.totalProjects.text = formatNumber(user.projects)
         binding.totalDownloads.text = formatNumber(user.downloads)
         binding.likes.text = formatNumber(user.likes)
@@ -625,7 +630,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             binding.content.hide()
             binding.share.hide()
             binding.logout.hide()
-            binding.edit.hide()
+//            binding.edit.hide()
         } else {
             binding.content.show()
             binding.share.show()

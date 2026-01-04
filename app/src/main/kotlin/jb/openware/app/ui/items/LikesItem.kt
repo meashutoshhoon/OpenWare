@@ -4,7 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Like(
-    val key: String = "", val uid: String = "", val value: Boolean = false
+    val key: String = "",
+    val uid: String = "",
+    val value: Boolean = false
 )
 
 

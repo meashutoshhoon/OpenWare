@@ -1,9 +1,10 @@
 package jb.openware.app.ui.components
 
 import android.content.Context
-import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.widget.ImageView
+import com.google.android.material.color.MaterialColors
 import jb.openware.app.R
 
 class BadgeDrawable(private val context: Context) {
@@ -25,9 +26,11 @@ class BadgeDrawable(private val context: Context) {
         imageView.setColorFilter(getBadgeColor(), PorterDuff.Mode.SRC_IN)
     }
 
+    fun Context.getThemeColor(attr: Int, fallback: Int = Color.TRANSPARENT): Int {
+        return MaterialColors.getColor(this, attr, fallback)
+    }
+
     private fun getBadgeColor(): Int {
-        val mask = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return if (mask == Configuration.UI_MODE_NIGHT_YES) 0xFF8DCDFF.toInt()
-        else 0xFF006493.toInt()
+        return context.getThemeColor(com.google.android.material.R.attr.colorSecondary)
     }
 }
