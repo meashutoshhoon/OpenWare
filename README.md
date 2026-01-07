@@ -38,8 +38,8 @@ It brings together scattered open-source Android projects into one beautifully d
 ## 🖼 Screenshots
 
 <p align="center">
-  <img src="screenshots/home.png" width="250" alt="Home Screen"/>
-  <img src="screenshots/details.png" width="250" alt="Details Screen"/>
+  <img src="screenshots/home_new.png" width="250" alt="Home Screen"/>
+  <img src="screenshots/details_new.png" width="250" alt="Details Screen"/>
   <img src="screenshots/theme.png" width="250" alt="Comments Screen"/>
 </p>
 
