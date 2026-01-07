@@ -3,10 +3,7 @@ package jb.openware.app.ui.activity.project
 import android.Manifest
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -30,6 +27,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
@@ -66,10 +64,11 @@ import jb.openware.app.util.RequestNetworkController.Companion.GET
 import jb.openware.app.util.Utils
 import jb.openware.app.util.Utils.shareText
 import jb.openware.app.util.moderatorUrl
-import jb.openware.app.util.net.DownloadService
-import jb.openware.app.util.net.DownloadStateStore
+import jb.openware.app.util.net.DownloadCallback
+import jb.openware.app.util.net.downloadFiles
 import jb.openware.app.util.websiteUrl
 import jb.openware.imageviewer.ImageViewer
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -112,24 +111,7 @@ class ProjectViewActivity :
     // Models & callbacks
     private lateinit var projectData: Project
 
-    private val progressReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val progress = intent?.getIntExtra(
-                DownloadService.EXTRA_PROGRESS, 0
-            ) ?: return
-
-            val done = intent.getBooleanExtra(
-                DownloadService.EXTRA_DONE, false
-            )
-
-            progressButton.setProgress(progress)
-
-            if (done) {
-                progressButton.showProgress(false)
-                installApk()
-            }
-        }
-    }
+    private lateinit var callback: DownloadCallback
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -372,9 +354,7 @@ class ProjectViewActivity :
             val newValue = !liked
 
             val likeMap = hashMapOf<String, Any>(
-                "value" to newValue,
-                "key" to projectKey,
-                "uid" to getUid()
+                "value" to newValue, "key" to projectKey, "uid" to getUid()
             )
 
             likeRef.child(likeKey).updateChildren(likeMap).addOnSuccessListener {
@@ -444,6 +424,29 @@ class ProjectViewActivity :
             }
         }
 
+        callback = object : DownloadCallback {
+
+            override fun onDownloadStart() {
+            }
+
+            override fun onProgressUpdate(progress: Int) {
+                progressButton.setProgress(progress)
+            }
+
+            override fun onDownloadComplete() {
+                FirebaseUtils().increaseUserKeyData("downloads", getUid())
+                progressButton.showProgress(false)
+                progressButton.setText("Download complete")
+                installApk()
+            }
+
+            override fun onDownloadFailed(e: Exception?) {
+                progressButton.showProgress(false)
+                alertCreator(e?.message)
+            }
+
+        }
+
     }
 
     fun outlined(
@@ -468,7 +471,6 @@ class ProjectViewActivity :
         val project = snapshot.getValue(Project::class.java) ?: return
 
         projectData = project
-//        updateMap = map
 
         // Premium badge visibility
         if (isFree) {
@@ -519,15 +521,14 @@ class ProjectViewActivity :
 
         binding.privateProject.visibility = if (!projectData.visibility) View.VISIBLE else View.GONE
 
-        screenshots = Gson().fromJson(
-            projectData.screenshots,
-            object : TypeToken<List<String>>() {}.type)
+        screenshots =
+            Gson().fromJson(
+                projectData.screenshots, object : TypeToken<List<String>>() {}.type)
         screenshotsRecycler.adapter = ScreenShotsAdapter(screenshots)
     }
 
     private fun handleCommentSnapshot(
-        snapshot: DataSnapshot,
-        increment: Boolean
+        snapshot: DataSnapshot, increment: Boolean
     ) {
         val comment = snapshot.getValue(Comment::class.java) ?: return
 
@@ -537,15 +538,11 @@ class ProjectViewActivity :
 
         commentCount += if (increment) 1 else -1
 
-        targetRef
-            .child(projectKey)
-            .child("comments")
-            .setValue(commentCount.toString())
+        targetRef.child(projectKey).child("comments").setValue(commentCount.toString())
     }
 
     private fun handleLikeSnapshot(
-        snapshot: DataSnapshot,
-        isChange: Boolean
+        snapshot: DataSnapshot, isChange: Boolean
     ) {
         val like = snapshot.getValue(Like::class.java) ?: return
 
@@ -565,10 +562,7 @@ class ProjectViewActivity :
         }
 
         if (!isChange || isCurrentUser) {
-            targetRef
-                .child(projectKey)
-                .child("likes")
-                .setValue(likeCount.toString())
+            targetRef.child(projectKey).child("likes").setValue(likeCount.toString())
         }
 
         // ---- UI update for current user ----
@@ -628,59 +622,31 @@ class ProjectViewActivity :
         popupMenu.show()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val (progress, done, _) = DownloadStateStore.get(this)
-
-        if (!done) {
-            progressButton.showProgress(true)
-            progressButton.setProgress(progress)
-        } else {
-            progressButton.showProgress(false)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val filter = IntentFilter(DownloadService.ACTION_PROGRESS)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(
-                progressReceiver, filter, RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            @SuppressLint("UnspecifiedRegisterReceiverFlag") registerReceiver(
-                progressReceiver, filter
-            )
-        }
-    }
-
-    override fun onStop() {
-        unregisterReceiver(progressReceiver)
-        super.onStop()
-    }
-
     private fun runDownload() {
         requestNotificationPermissionWithDialog()
     }
 
     fun requestNotificationPermissionWithDialog() {
+
         // Android < 13 → no permission required
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            runDownload2()
+            return
+        }
 
         // Already granted
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
-        ) return
+        ) {
+            runDownload2()
+            return
+        }
 
         MaterialAlertDialogBuilder(
             this,
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
-        ).setIcon(R.drawable.ic_notifications) // optional
-            .setTitle("Enable notifications").setMessage(
+        ).setIcon(R.drawable.ic_notifications).setTitle("Enable notifications").setMessage(
                 "We use notifications to show download progress and completion. " + "Downloads will still work without this permission."
             ).setPositiveButton("Allow") { _, _ ->
                 notificationPermissionLauncher.launch(
@@ -713,12 +679,11 @@ class ProjectViewActivity :
     private fun startDownload(url: String, apkPath: String) {
         progressButton.showProgress(true)
 
-        startService(
-            Intent(this, DownloadService::class.java).apply {
-                putExtra("url", url)
-                putExtra("dest", apkPath)
-            })
-
+        lifecycleScope.launch {
+            downloadFiles(
+                fileUrl = url, destinationPath = apkPath, callback = callback
+            )
+        }
     }
 
     private fun installApk() {
@@ -778,7 +743,8 @@ class ProjectViewActivity :
                         // delete screenshots
                         val s: List<String> = Gson().fromJson(
                             projectData.screenshots,
-                            object : TypeToken<List<String>>() {}.type)
+                            object : TypeToken<List<String>>() {}.type
+                        )
 
                         s.forEach { url ->
                             firebaseUtils.deleteFileFromStorageByUrl(url)

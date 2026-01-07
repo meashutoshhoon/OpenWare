@@ -84,7 +84,7 @@
             android:name=".ui.activity.project.ProjectViewActivity"
             android:exported="false"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.drawer.UploadActivity"
             android:exported="false"
@@ -160,11 +160,6 @@
                 <data android:host="openware.000webhostapp.com" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".util.net.DownloadService"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

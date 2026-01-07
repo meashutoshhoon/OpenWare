@@ -25,13 +25,11 @@ class ProfileEditActivity :
     BaseActivity<ActivityProfileEditBinding>(ActivityProfileEditBinding::inflate) {
 
     private val usersRef = FirebaseDatabase.getInstance().getReference("Users")
-
     private val usernames = mutableSetOf<String>()
     private var url: String = "none"
     private var namePre: String = ""
     private var avatar: File? = null
     private var pickedNewAvatar = false
-
     private var name: String? = null
     private lateinit var color: String
 

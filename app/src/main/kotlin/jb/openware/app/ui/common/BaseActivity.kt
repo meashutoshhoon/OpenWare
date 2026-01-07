@@ -46,15 +46,17 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import jb.openware.app.ui.components.LinkSpan
 import jb.openware.app.ui.components.MaterialProgressDialog
 import jb.openware.app.ui.items.Project
+import jb.openware.app.ui.items.ProjectPoints
 import jb.openware.app.ui.items.ScreenshotItem
 import jb.openware.app.util.ConnectionManager
-import jb.openware.app.util.Const
 import jb.openware.app.util.HapticUtils
 import jb.openware.app.util.ThemeUtil
 import jb.openware.app.util.UserConfig
@@ -743,27 +745,23 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     fun retrieveProjectsListFromFirebase(
-        callback: (String) -> Unit
+        callback: (Int) -> Unit
     ) {
         val nodeKey = "pp_3"
-        val databaseRef = FirebaseDatabase.getInstance().getReference("pp").child(nodeKey)
+        val databaseRef = FirebaseDatabase
+            .getInstance()
+            .getReference("pp")
+            .child(nodeKey)
 
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!snapshot.exists()) {
-                    callback("0")
-                    return
-                }
-
-                val data = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
-
-                val points = data?.get("points")?.toString() ?: "0"
-                callback(points)
+                val pp = snapshot.getValue(ProjectPoints::class.java)
+                callback(pp?.points ?: 0)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                callback("error")
+                callback(0)
             }
         })
     }
@@ -772,30 +770,31 @@ abstract class BaseActivity<VB : ViewBinding>(
         onSuccess: () -> Unit
     ) {
         val nodeKey = "pp_3"
-        val databasePath = "pp"
 
-        retrieveProjectsListFromFirebase { value ->
-            if (value == "error") {
-                alertCreator("Failed to retrieve points")
-                return@retrieveProjectsListFromFirebase
-            }
+        FirebaseDatabase.getInstance()
+            .getReference("pp")
+            .child(nodeKey)
+            .runTransaction(object : Transaction.Handler {
 
-            val currentPoints = value.toIntOrNull() ?: 0
-            val updatedPoints = currentPoints + 1
+                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                    val pp = currentData.getValue(ProjectPoints::class.java) ?: ProjectPoints()
+                    currentData.value = pp.copy(points = pp.points + 1)
+                    return Transaction.success(currentData)
+                }
 
-            val dataMap = mapOf(
-                "points" to updatedPoints.toString()
-            )
-
-            pushToDatabase(
-                dataMap = dataMap,
-                reference = databasePath,
-                child = nodeKey,
-                onSuccess = onSuccess,
-                onFailure = { e -> alertCreator(e.message) })
-        }
+                override fun onComplete(
+                    error: DatabaseError?,
+                    committed: Boolean,
+                    snapshot: DataSnapshot?
+                ) {
+                    if (error != null) {
+                        alertCreator(error.message)
+                    } else if (committed) {
+                        onSuccess()
+                    }
+                }
+            })
     }
-
 
     interface UidTimestampListener {
         fun onUidTimestampGenerated(uid: String, timestamp: String)

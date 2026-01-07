@@ -3,6 +3,7 @@ package jb.openware.app.ui.activity.drawer
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -41,14 +42,14 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
     private var screenshots: MutableList<ScreenshotItem> = mutableListOf()
 
     // Firebase references
-    private val avatar = FirebaseStorage.getInstance().getReference("screenshots")
+    private val screenshotsStorage = FirebaseStorage.getInstance().getReference("screenshots")
     private val project = FirebaseDatabase.getInstance().getReference("projects/normal")
     private val premiumServer = FirebaseDatabase.getInstance().getReference("projects/premium")
 
     // Strings
     private var iconUrl: String = ""
     private var iconPath: String = ""
-    private var getId: String = ""
+    private var getId: Int = 0
 
     // Booleans / numbers
     private var newProject: Boolean = false
@@ -130,7 +131,6 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
 
             hideViews(binding.t4)
             binding.comments.isChecked = true
-            binding.visibility.isChecked = true
 
         } else {
             // -------- EDIT PROJECT --------
@@ -165,7 +165,6 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
             binding.categoryText.text = projectData?.category
 
             // Switches
-            binding.visibility.isChecked = projectData?.visibility == true
             binding.comments.isChecked = projectData?.commentsVisibility == true
 
             // Premium
@@ -404,7 +403,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 val calendar = Calendar.getInstance()
                 val dateFormat = SimpleDateFormat("MMMM d, h:mm a", Locale.getDefault())
 
-                val key = project.push().key ?: return
+                val key = if(newProject) projectData?.key.toString() else project.push().key.toString()
                 val isPremium = binding.premium.isChecked
 
                 // ---- Preserve counters correctly ----
@@ -440,10 +439,11 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     latest = true,
                     likes = likesValue,
                     name = if (newProject) userConfig.name else projectData?.name.toString(),
-                    screenshots = Gson().toJson(screenshots),
+                    screenshots = Gson().toJson(screen),
                     size = Utils.formatFileSize(
                         Utils.getGithubApkSize(binding.downloadUrl.text.toString().trim())
                     ),
+                    sourceUrl = binding.githubUrl.text.toString().trim(),
                     time = if (newProject)
                         dateFormat.format(calendar.time)
                     else
@@ -457,12 +457,12 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     else
                         dateFormat.format(calendar.time),
                     verified = false,
-                    visibility = binding.visibility.isChecked,
+                    visibility = false,
                     whatsNew = if (newProject) "none" else binding.whatsNewMsg.text.toString().trim()
                 )
 
                 val id = if (newProject) {
-                    (getId.toInt() + 1).toString()
+                    (getId + 1).toString()
                 } else {
                     projectData?.id.toString()
                 }
@@ -480,7 +480,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                     targetRef.child(key).updateChildren(dataMap)
                 }
 
-                updateProjectsListToFirebase { }
+                updateProjectsListToFirebase{}
             }
 
             override fun onTaskComplete() {
@@ -499,15 +499,17 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
     private fun uploadUpdate() {
 
         // 1️⃣ Collect already-uploaded screenshot URLs
-        screenshots.drop(1) // skip placeholder
-            .filter { it.path.startsWith("https") }.forEach { screen.add(it.path) }
+        screen.clear()
+        screenshots.drop(1)
+            .filter { it.path.startsWith("https") }
+            .forEach { screen.add(it.path) }
 
         showProgressDialog()
 
         // 2️⃣ ICON handling
         if (iconPath.startsWith("https")) {
             iconUrl = iconPath
-            handleScreenshotsAndFile()
+            uploadScreenshotsSequentially(0, newProject)
         } else {
             val iconName = generateFileNameWithTimestamp()
             uploadFileToFirebaseStorage(
@@ -516,52 +518,82 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
                 fileUri = iconPath.toUri(),
                 onSuccess = { uri ->
                     iconUrl = uri.toString()
-                    handleScreenshotsAndFile()
+                    uploadScreenshotsSequentially(0, newProject)
                 },
-                onFailure = { e -> alertCreator(e.message) })
+                onFailure = { e -> alertCreator(e.message) }
+            )
         }
     }
 
-    private fun handleScreenshotsAndFile() {
+    private fun uploadScreenshotsSequentially(
+        index: Int,
+        isNewProject: Boolean
+    ) {
+        val sourceList = if (isNewProject) screenshots else screenshots2
 
-        if (screenshots2.isNotEmpty()) {
-            uploadScreenshotAtIndex(0)
+        if (index >= sourceList.size) {
+            upload() // FINAL step
             return
         }
 
-        upload()
-    }
+        val item = sourceList[index]
+        val path = item.path
 
-    private fun uploadScreenshotAtIndex(index: Int) {
-
-        if (index >= screenshots2.size) {
-            handleScreenshotsAndFile()
+        // 🔴 Skip picker / empty item
+        if (path.isBlank() && path.equals("empty", ignoreCase = true)) {
+            uploadScreenshotsSequentially(index + 1, isNewProject)
             return
         }
 
-        val item = screenshots2[index]
-
-        // Already uploaded
-        if (item.path.startsWith("https")) {
-            screen.add(item.path)
-            uploadScreenshotAtIndex(index + 1)
+        // ✅ Already uploaded
+        if (path.startsWith("https")) {
+            screen.add(path)
+            uploadScreenshotsSequentially(index + 1, isNewProject)
             return
         }
 
-        val fileName = item.path.toUri().lastPathSegment ?: return
-        val fileRef = avatar.child(fileName)
+        // ✅ Must be a real local file
+        val file = File(path)
+        if (!file.exists()) {
+            Log.e("Upload", "File does not exist: $path")
+            uploadScreenshotsSequentially(index + 1, isNewProject)
+            return
+        }
+
+        val fileName = generateFileNameWithTimestamp()
+        val fileRef = screenshotsStorage.child(fileName)
 
         val compressed = ImageUtil.compressImage(
-            this, Uri.fromFile(File(item.path)), 40
-        )
+            this,
+            Uri.fromFile(file),
+            40
+        ) ?: run {
+            Log.e("Upload", "Compression failed for $path")
+            uploadScreenshotsSequentially(index + 1, isNewProject)
+            return
+        }
 
-        fileRef.putFile(Uri.fromFile(compressed)).continueWithTask { fileRef.downloadUrl }
+        fileRef.putFile(Uri.fromFile(compressed))
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    throw task.exception ?: Exception("Upload failed")
+                }
+                fileRef.downloadUrl
+            }
             .addOnSuccessListener { uri ->
                 screen.add(uri.toString())
-                uploadScreenshotAtIndex(index + 1)
-            }.addOnFailureListener { e ->
-                MaterialAlertDialogBuilder(this).setTitle("Error").setMessage(e.message)
-                    .setPositiveButton("Retry", null).show()
+                uploadScreenshotsSequentially(index + 1, isNewProject)
+            }
+            .addOnFailureListener { e ->
+                dismissProgressDialog()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Screenshot upload failed")
+                    .setMessage(e.message)
+                    .setPositiveButton("Retry") { _, _ ->
+                        uploadScreenshotsSequentially(index, isNewProject)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
     }
 
@@ -581,6 +613,7 @@ class UploadActivity : BaseActivity<ActivityUploadBinding>(ActivityUploadBinding
         "name" to name,
         "screenshots" to screenshots,
         "size" to size,
+        "sourceUrl" to sourceUrl,
         "time" to time,
         "title" to title,
         "trending" to trending,

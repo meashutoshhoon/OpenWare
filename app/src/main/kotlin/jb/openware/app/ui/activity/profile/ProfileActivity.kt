@@ -23,6 +23,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import jb.openware.app.R
 import jb.openware.app.databinding.ActivityProfileBinding
 import jb.openware.app.ui.activity.login.LoginActivity
@@ -40,6 +41,13 @@ import jb.openware.app.util.Utils
 import jb.openware.app.util.Utils.shareText
 import jb.openware.app.util.websiteUrl
 import jb.openware.imageviewer.ImageViewer
+
+sealed class UiState {
+    object Content : UiState()
+    object LoadingList : UiState()
+    object Empty : UiState()
+    object FullLoading : UiState()
+}
 
 class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBinding::inflate) {
 
@@ -60,22 +68,23 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     private var normalChildListener: ChildEventListener? = null
 
     private lateinit var userProfile: UserProfile
+    private var userProjectCount = 0
 
     override fun init() {
         binding.refer.performTransition()
-
-        setParameters(2)
+        render(UiState.FullLoading)
 
         attachUserListener()
         attachPremiumListener()
+
+        checkInitialProjectsState()
         attachNormalListener()
     }
 
     override fun initLogic() {
         setUpDivider()
-        setLoading(true)
 
-        binding.back.setOnClickListener { Utils.getBackPressedClickListener(this) }
+        binding.back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         binding.logout.setOnClickListener {
             showLogoutDialog()
@@ -145,18 +154,12 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
         val currentUid = getPrefString("developer", "uid", "")
 
         if (snapshot.key == currentUid) {
-            // It's your own profile
-            showViews(binding.edit, binding.logout)
             val user = snapshot.getValue(UserProfile::class.java) ?: return
-            renderUserProfile(user)
-        } else {
-            // Someone else's profile
-            hideViews(binding.edit, binding.logout)
+            renderUserProfile(user, getUid() == currentUid)
         }
     }
 
-
-    private fun renderUserProfile(user: UserProfile) {
+    private fun renderUserProfile(user: UserProfile, isUser: Boolean) {
         this.userProfile = user
 
         if (user.badge != "0") {
@@ -164,6 +167,14 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             showViews(binding.badge)
         } else {
             hideViews(binding.badge)
+        }
+
+        if (isUser) {
+            binding.logout.show()
+            binding.edit.show()
+        } else {
+            binding.logout.hide()
+            binding.edit.hide()
         }
 
         binding.usernameText.text = user.name
@@ -187,18 +198,14 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             binding.txWord.text = user.name.firstOrNull()?.toString().orEmpty()
         } else {
             Glide.with(this).load(user.avatar.toUri()).into(binding.circleimageview1)
-
             binding.circleimageview1.show()
             binding.linearWord.hide()
         }
 
-        /* -------- COLOR -------- */
         binding.linearWord.background = GradientDrawable().apply {
             cornerRadius = 360f
             setColor(user.color.toColorInt())
         }
-
-        setLoading(false)
     }
 
     private fun attachPremiumListener() {
@@ -256,6 +263,31 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
         premiumProjectsRef.addChildEventListener(premiumChildListener!!)
     }
 
+    private fun checkInitialProjectsState() {
+        val currentUid = getPrefString("developer", "uid", "")
+
+        normalProjectsRef
+            .orderByChild("uid")
+            .equalTo(currentUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        userProjectCount = snapshot.childrenCount.toInt()
+                        render(UiState.Content)
+                    } else {
+                        userProjectCount = 0
+                        render(UiState.Empty)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    render(UiState.Empty)
+                }
+            }
+        )
+    }
+
     private fun attachNormalListener() {
         normalChildListener = object : ChildEventListener {
 
@@ -264,17 +296,18 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
                 val project = snapshot.getValue(Project::class.java) ?: return
 
                 if (project.uid == currentUid) {
+                    userProjectCount++
                     processProject(project)
-                    setParameters(1)
-                } else {
-                    setParameters(3)
+
+                    // ≥ 1 project → Content
+                    render(UiState.Content)
                 }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, prev: String?) {
                 val updated = snapshot.getValue(Project::class.java) ?: return
 
-                val index = normalProjects.indexOfFirst { it.uid == updated.uid }
+                val index = normalProjects.indexOfFirst { it.key == updated.key }
                 if (index != -1) {
                     normalProjects[index] = updated
                     processProject(updated, replace = true)
@@ -282,8 +315,20 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
+                val currentUid = getPrefString("developer", "uid", "")
                 val removed = snapshot.getValue(Project::class.java) ?: return
-                normalProjects.removeAll { it.uid == removed.uid }
+
+                if (removed.uid == currentUid) {
+                    userProjectCount--
+
+                    // 0 projects → Empty
+                    if (userProjectCount <= 0) {
+                        userProjectCount = 0
+                        render(UiState.Empty)
+                    }
+                }
+
+                normalProjects.removeAll { it.key == removed.key }
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, prev: String?) = Unit
@@ -294,14 +339,14 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun processProject(project: Project, replace: Boolean = false) {
-        if (!replace) {
+        if (!replace && normalProjects.none { it.key == project.key }) {
             normalProjects.add(0, project)
         }
 
         updateVerified(project)
         updateEditor(project)
         updatePrivate(project)
-        updateAll(project)
+        updateAll()
         updateMost(project)
 
         refreshAdapters()
@@ -391,9 +436,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
         }
     }
 
-    private fun updateAll(project: Project) {
-        normalProjects.add(0, project)
-
+    private fun updateAll() {
         if (binding.allProjects.adapter == null) {
             binding.allProjects.adapter = BaseProjectAdapter(normalProjects) { project ->
                 getSharedPreferences("developer", MODE_PRIVATE).edit {
@@ -599,11 +642,59 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
         openActivity<LoginActivity>()
     }
 
+    private fun render(state: UiState) {
+        TransitionManager.beginDelayedTransition(binding.refer)
+
+        when (state) {
+
+            UiState.Content -> {
+                binding.tools.show()
+                binding.loading.hide()
+                binding.content.show()
+
+                binding.projects.show()
+                binding.textview2.hide()
+                binding.loading2.hide()
+                binding.share.show()
+            }
+
+            UiState.LoadingList -> {
+                binding.tools.show()
+                binding.loading.hide()
+                binding.content.show()
+
+                binding.projects.hide()
+                binding.textview2.hide()
+                binding.loading2.show()
+                binding.share.show()
+            }
+
+            UiState.Empty -> {
+                binding.tools.show()
+                binding.loading.hide()
+                binding.content.show()
+
+                binding.projects.hide()
+                binding.loading2.hide()
+                binding.textview2.show()
+                binding.share.show()
+            }
+
+            UiState.FullLoading -> {
+                binding.loading.show()
+                binding.content.hide()
+                binding.tools.hide()
+            }
+        }
+    }
+
     private fun setParameters(state: Int) {
         when (state) {
             1 -> {
-                binding.tools.hide()
+                binding.tools.show()
                 binding.projects.show()
+                binding.textview2.hide()
+                binding.loading2.hide()
             }
 
             2 -> {
@@ -630,7 +721,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
             binding.content.hide()
             binding.share.hide()
             binding.logout.hide()
-//            binding.edit.hide()
+            binding.edit.hide()
         } else {
             binding.content.show()
             binding.share.show()

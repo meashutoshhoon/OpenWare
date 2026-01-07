@@ -1,8 +1,6 @@
 package jb.openware.app.ui.items
 
 import android.os.Parcelable
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
 
 data class ProjectItem(
@@ -12,6 +10,10 @@ data class ProjectItem(
     val likes: String,
     val downloads: String,
     val userName: String
+)
+
+data class ProjectPoints(
+    val points: Int = 0
 )
 
 @Parcelize
@@ -31,6 +33,7 @@ data class Project(
     val name: String = "",
     val screenshots: String = "",
     val size: String = "",
+    val sourceUrl: String = "",
     val time: String = "",
     val title: String = "",
     val trending: Boolean = false,
@@ -40,41 +43,4 @@ data class Project(
     val verified: Boolean = false,
     val visibility: Boolean = false,
     val whatsNew: String = ""
-) : Parcelable {
-    companion object {
-
-        fun fromMap(map: Map<String, Any>): Project {
-            val gson = Gson()
-
-            return Project(
-                category = map["category"].toString(),
-                comments = map["comments"].toString(),
-                commentsVisibility = map["commentsVisibility"]?.toString().toBoolean(),
-                description = map["description"].toString(),
-                downloadUrl = map["downloadUrl"].toString(),
-                downloads = map["downloads"].toString(),
-                editorsChoice = map["editorsChoice"]?.toString().toBoolean(),
-                icon = map["icon"].toString(),
-                id = map["id"].toString(),
-                key = map["key"]?.toString() ?: "",
-                latest = map["latest"]?.toString().toBoolean(),
-                likes = map["likes"].toString(),
-                name = map["name"].toString(),
-                screenshots = gson.fromJson(
-                    map["screenshots"]?.toString() ?: "[]",
-                    object : TypeToken<List<String>>() {}.type
-                ),
-                size = map["size"].toString(),
-                time = map["time"].toString(),
-                title = map["title"].toString(),
-                trending = map["trending"]?.toString().toBoolean(),
-                uid = map["uid"].toString(),
-                unlockCode = map["unlockCode"].toString(),
-                updateTime = map["updateTime"].toString(),
-                verified = map["verified"]?.toString().toBoolean(),
-                visibility = map["visibility"]?.toString().toBoolean(),
-                whatsNew = map["whatsNew"].toString()
-            )
-        }
-    }
-}
+) : Parcelable
