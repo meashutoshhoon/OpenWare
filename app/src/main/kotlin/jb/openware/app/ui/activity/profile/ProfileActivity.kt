@@ -594,7 +594,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(ActivityProfileBind
     }
 
     private fun openProfileImage(anchorView: ImageView) {
-        val imageUrl = userConfig.profileUrl
+        val imageUrl = userProfile.avatar
         if (imageUrl.isBlank()) return
 
         ImageViewer.Builder(

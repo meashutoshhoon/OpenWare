@@ -68,6 +68,7 @@ import jb.openware.app.util.net.DownloadCallback
 import jb.openware.app.util.net.downloadFiles
 import jb.openware.app.util.websiteUrl
 import jb.openware.imageviewer.ImageViewer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
@@ -382,6 +383,13 @@ class ProjectViewActivity :
         }
 
         binding.downloadBtn.setOnClickListener {
+            if (!packageManager.canRequestPackageInstalls()) {
+                startActivity(
+                    Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData("package:$packageName".toUri())
+                )
+                return@setOnClickListener
+            }
+
             val isPaidUser = !isFree
             val unlockCode = projectData.unlockCode
 
@@ -430,19 +438,25 @@ class ProjectViewActivity :
             }
 
             override fun onProgressUpdate(progress: Int) {
-                progressButton.setProgress(progress)
+                runOnUiThread {
+                    progressButton.setProgress(progress)
+                }
             }
 
             override fun onDownloadComplete() {
-                FirebaseUtils().increaseUserKeyData("downloads", getUid())
-                progressButton.showProgress(false)
-                progressButton.setText("Download complete")
-                installApk()
+                runOnUiThread {
+                    FirebaseUtils().increaseUserKeyData("downloads", getUid())
+                    progressButton.showProgress(false)
+                    progressButton.setText("Download complete")
+                    installApk()
+                }
             }
 
             override fun onDownloadFailed(e: Exception?) {
-                progressButton.showProgress(false)
-                alertCreator(e?.message)
+                runOnUiThread {
+                    progressButton.showProgress(false)
+                    alertCreator(e?.message)
+                }
             }
 
         }
@@ -647,14 +661,14 @@ class ProjectViewActivity :
             this,
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
         ).setIcon(R.drawable.ic_notifications).setTitle("Enable notifications").setMessage(
-                "We use notifications to show download progress and completion. " + "Downloads will still work without this permission."
-            ).setPositiveButton("Allow") { _, _ ->
-                notificationPermissionLauncher.launch(
-                    Manifest.permission.POST_NOTIFICATIONS
-                )
-            }.setNegativeButton("Not now") { _, _ ->
-                runDownload2()
-            }.setCancelable(false).show()
+            "We use notifications to show download progress and completion. " + "Downloads will still work without this permission."
+        ).setPositiveButton("Allow") { _, _ ->
+            notificationPermissionLauncher.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }.setNegativeButton("Not now") { _, _ ->
+            runDownload2()
+        }.setCancelable(false).show()
     }
 
     private fun runDownload2() {
@@ -679,7 +693,7 @@ class ProjectViewActivity :
     private fun startDownload(url: String, apkPath: String) {
         progressButton.showProgress(true)
 
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             downloadFiles(
                 fileUrl = url, destinationPath = apkPath, callback = callback
             )
@@ -742,8 +756,7 @@ class ProjectViewActivity :
 
                         // delete screenshots
                         val s: List<String> = Gson().fromJson(
-                            projectData.screenshots,
-                            object : TypeToken<List<String>>() {}.type
+                            projectData.screenshots, object : TypeToken<List<String>>() {}.type
                         )
 
                         s.forEach { url ->
